@@ -62,7 +62,7 @@ const menuItemsStructure: NavItem[] = [
     icon: BookOpen,
     href: "#",
     disabled: false,
-    defaultOpen: false,
+    defaultOpen: true,
     children: [
       { titleKey: "callCenter", icon: Phone, href: "/ventas/call-center", disabled: false },
       { titleKey: "frontDeskUpsell", icon: Users, href: "/ventas/front-desk-upsell", disabled: false },
