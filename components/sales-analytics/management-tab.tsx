@@ -2,28 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from "@/components/ui/chart"
-import {
-  Pie,
-  PieChart,
-  Cell,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  RadialBarChart,
-  RadialBar,
-  CartesianGrid,
-} from "recharts"
-import { Users, CheckCircle, XCircle, Clock, ArrowUpRight, ArrowDownRight, Target } from "lucide-react"
+import { ChartContainer } from "@/components/ui/chart"
+import { Users, CheckCircle, XCircle, Clock, ArrowUpRight, ArrowDownRight } from "lucide-react"
 
 const kpiData = [
   {
@@ -69,19 +49,19 @@ const kpiData = [
 ]
 
 const roomManagementData = [
-  { name: "Accepted", value: 40, color: "hsl(var(--chart-1))", count: 1298 },
-  { name: "Pending", value: 30, color: "hsl(var(--chart-2))", count: 974 },
-  { name: "Cancelled", value: 13, color: "hsl(var(--chart-3))", count: 422 },
-  { name: "Unmanaged", value: 7, color: "hsl(var(--chart-4))", count: 227 },
-  { name: "Other", value: 10, color: "hsl(var(--chart-5))", count: 324 },
+  { name: "Accepted", value: 40, color: "hsl(220 70% 50%)", count: 1298 },
+  { name: "Pending", value: 30, color: "hsl(160 60% 45%)", count: 974 },
+  { name: "Cancelled", value: 13, color: "hsl(0 70% 50%)", count: 422 },
+  { name: "Unmanaged", value: 7, color: "hsl(30 70% 50%)", count: 227 },
+  { name: "Other", value: 10, color: "hsl(270 60% 50%)", count: 324 },
 ]
 
 const extrasManagementData = [
-  { name: "Accepted", value: 40, color: "hsl(var(--chart-1))", count: 856 },
-  { name: "Pending", value: 30, color: "hsl(var(--chart-2))", count: 642 },
-  { name: "Cancelled", value: 13, color: "hsl(var(--chart-3))", count: 278 },
-  { name: "Unmanaged", value: 7, color: "hsl(var(--chart-4))", count: 150 },
-  { name: "Other", value: 10, color: "hsl(var(--chart-5))", count: 214 },
+  { name: "Accepted", value: 40, color: "hsl(220 70% 50%)", count: 856 },
+  { name: "Pending", value: 30, color: "hsl(160 60% 45%)", count: 642 },
+  { name: "Cancelled", value: 13, color: "hsl(0 70% 50%)", count: 278 },
+  { name: "Unmanaged", value: 7, color: "hsl(30 70% 50%)", count: 150 },
+  { name: "Other", value: 10, color: "hsl(270 60% 50%)", count: 214 },
 ]
 
 const weeklyData = [
@@ -91,49 +71,28 @@ const weeklyData = [
   { week: "Week 4", accepted: 96, pending: 41, cancelled: 9 },
 ]
 
-const performanceMetrics = [
-  { category: "Room Upgrades", current: 85, target: 90, color: "hsl(var(--chart-1))" },
-  { category: "Extra Services", current: 72, target: 80, color: "hsl(var(--chart-2))" },
-  { category: "ABS Services", current: 91, target: 85, color: "hsl(var(--chart-3))" },
-  { category: "Cancellations", current: 8, target: 12, color: "hsl(var(--chart-4))" },
-]
-
-const dailyTrend = [
-  { day: "Mon", requests: 45, accepted: 38, cancelled: 7 },
-  { day: "Tue", requests: 52, accepted: 44, cancelled: 8 },
-  { day: "Wed", requests: 48, accepted: 41, cancelled: 7 },
-  { day: "Thu", requests: 61, accepted: 53, cancelled: 8 },
-  { day: "Fri", requests: 58, accepted: 49, cancelled: 9 },
-  { day: "Sat", requests: 67, accepted: 59, cancelled: 8 },
-  { day: "Sun", requests: 43, accepted: 37, cancelled: 6 },
-]
-
 const chartConfig = {
-  accepted: { label: "Accepted", color: "hsl(var(--chart-1))" },
-  pending: { label: "Pending", color: "hsl(var(--chart-2))" },
-  cancelled: { label: "Cancelled", color: "hsl(var(--chart-3))" },
-  unmanaged: { label: "Unmanaged", color: "hsl(var(--chart-4))" },
-  other: { label: "Other", color: "hsl(var(--chart-5))" },
+  accepted: { label: "Accepted", color: "hsl(220 70% 50%)" },
+  pending: { label: "Pending", color: "hsl(160 60% 45%)" },
+  cancelled: { label: "Cancelled", color: "hsl(0 70% 50%)" },
+  unmanaged: { label: "Unmanaged", color: "hsl(30 70% 50%)" },
+  other: { label: "Other", color: "hsl(270 60% 50%)" },
 }
 
-const RADIAN = Math.PI / 180
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
+// Helper function to create pie chart paths
+const createPieSlice = (centerX: number, centerY: number, radius: number, startAngle: number, endAngle: number) => {
+  const start = polarToCartesian(centerX, centerY, radius, endAngle)
+  const end = polarToCartesian(centerX, centerY, radius, startAngle)
+  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"
+  return `M ${centerX} ${centerY} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`
+}
 
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="central"
-      className="text-xs font-semibold"
-    >
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  )
+const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
+  const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0
+  return {
+    x: centerX + radius * Math.cos(angleInRadians),
+    y: centerY + radius * Math.sin(angleInRadians),
+  }
 }
 
 export function ManagementTab() {
@@ -183,11 +142,11 @@ export function ManagementTab() {
         })}
       </div>
 
-      {/* Enhanced Management Overview */}
+      {/* Management Overview */}
       <div className="space-y-6">
         {/* Pie Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Room Management Enhanced Pie Chart */}
+          {/* Room Management Pie Chart */}
           <Card className="border-0 shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="flex items-center justify-center gap-2">
@@ -196,29 +155,42 @@ export function ManagementTab() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={chartConfig} className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={roomManagementData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={renderCustomizedLabel}
-                      outerRadius={100}
-                      innerRadius={40}
-                      fill="#8884d8"
-                      dataKey="value"
-                      paddingAngle={2}
-                    >
-                      {roomManagementData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
-                  </PieChart>
-                </ResponsiveContainer>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <div className="w-full h-[300px] flex items-center justify-center">
+                  <svg viewBox="0 0 400 300" className="w-full h-full">
+                    {/* Pie Chart */}
+                    <g transform="translate(200, 150)">
+                      {roomManagementData.map((item, index) => {
+                        let startAngle = 0
+                        for (let i = 0; i < index; i++) {
+                          startAngle += (roomManagementData[i].value / 100) * 360
+                        }
+                        const endAngle = startAngle + (item.value / 100) * 360
+
+                        return (
+                          <g key={index}>
+                            <path
+                              d={createPieSlice(0, 0, 80, startAngle, endAngle)}
+                              fill={item.color}
+                              stroke="white"
+                              strokeWidth="2"
+                            />
+                            {/* Percentage labels */}
+                            <text
+                              x={Math.cos((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
+                              y={Math.sin((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="fill-white text-xs font-semibold"
+                            >
+                              {item.value}%
+                            </text>
+                          </g>
+                        )
+                      })}
+                    </g>
+                  </svg>
+                </div>
               </ChartContainer>
               <div className="grid grid-cols-2 gap-2 mt-4">
                 {roomManagementData.map((item, index) => (
@@ -236,7 +208,7 @@ export function ManagementTab() {
             </CardContent>
           </Card>
 
-          {/* Extras Management Enhanced Pie Chart */}
+          {/* Extras Management Pie Chart */}
           <Card className="border-0 shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="flex items-center justify-center gap-2">
@@ -245,29 +217,42 @@ export function ManagementTab() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={chartConfig} className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={extrasManagementData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={renderCustomizedLabel}
-                      outerRadius={100}
-                      innerRadius={40}
-                      fill="#8884d8"
-                      dataKey="value"
-                      paddingAngle={2}
-                    >
-                      {extrasManagementData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
-                  </PieChart>
-                </ResponsiveContainer>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <div className="w-full h-[300px] flex items-center justify-center">
+                  <svg viewBox="0 0 400 300" className="w-full h-full">
+                    {/* Pie Chart */}
+                    <g transform="translate(200, 150)">
+                      {extrasManagementData.map((item, index) => {
+                        let startAngle = 0
+                        for (let i = 0; i < index; i++) {
+                          startAngle += (extrasManagementData[i].value / 100) * 360
+                        }
+                        const endAngle = startAngle + (item.value / 100) * 360
+
+                        return (
+                          <g key={index}>
+                            <path
+                              d={createPieSlice(0, 0, 80, startAngle, endAngle)}
+                              fill={item.color}
+                              stroke="white"
+                              strokeWidth="2"
+                            />
+                            {/* Percentage labels */}
+                            <text
+                              x={Math.cos((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
+                              y={Math.sin((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="fill-white text-xs font-semibold"
+                            >
+                              {item.value}%
+                            </text>
+                          </g>
+                        )
+                      })}
+                    </g>
+                  </svg>
+                </div>
               </ChartContainer>
               <div className="grid grid-cols-2 gap-2 mt-4">
                 {extrasManagementData.map((item, index) => (
@@ -286,82 +271,142 @@ export function ManagementTab() {
           </Card>
         </div>
 
-        {/* Performance Metrics and Daily Trend */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Performance Metrics Radial Chart */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Performance vs Targets
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[350px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={performanceMetrics}>
-                    <RadialBar dataKey="current" cornerRadius={10} fill="var(--color-accepted)" />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
-                  </RadialBarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-              <div className="space-y-3 mt-4">
-                {performanceMetrics.map((metric, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-medium">{metric.category}</span>
-                      <span className="text-muted-foreground">
-                        {metric.current}% / {metric.target}%
-                      </span>
-                    </div>
-                    <Progress value={metric.current} className="h-2" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Weekly Trend Chart */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-primary" />
+              Weekly Request Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="min-h-[350px]">
+              <div className="w-full h-[350px]">
+                <svg viewBox="0 0 800 350" className="w-full h-full">
+                  {/* Chart Background */}
+                  <rect width="800" height="350" fill="transparent" />
 
-          {/* Daily Trend Chart */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" />
-                Daily Request Trend
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[350px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={dailyTrend} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="requests" fill="var(--color-pending)" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="accepted" fill="var(--color-accepted)" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="cancelled" fill="var(--color-cancelled)" radius={[2, 2, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                <div className="text-center p-3 rounded-lg bg-blue-50">
-                  <div className="text-2xl font-bold text-blue-600">374</div>
-                  <div className="text-xs text-muted-foreground">Total Requests</div>
-                </div>
-                <div className="text-center p-3 rounded-lg bg-green-50">
-                  <div className="text-2xl font-bold text-green-600">321</div>
-                  <div className="text-xs text-muted-foreground">Accepted</div>
-                </div>
-                <div className="text-center p-3 rounded-lg bg-red-50">
-                  <div className="text-2xl font-bold text-red-600">53</div>
-                  <div className="text-xs text-muted-foreground">Cancelled</div>
-                </div>
+                  {/* Grid */}
+                  <defs>
+                    <pattern id="grid3" width="40" height="35" patternUnits="userSpaceOnUse">
+                      <path
+                        d="M 40 0 L 0 0 0 35"
+                        fill="none"
+                        stroke="hsl(var(--muted))"
+                        strokeWidth="0.5"
+                        opacity="0.3"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect width="800" height="350" fill="url(#grid3)" />
+
+                  {/* Axes */}
+                  <line x1="80" y1="300" x2="720" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
+                  <line x1="80" y1="50" x2="80" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
+
+                  {/* Bars */}
+                  {weeklyData.map((data, index) => {
+                    const x = 120 + index * 140
+                    const barWidth = 30
+                    const scale = 250 / 100
+
+                    return (
+                      <g key={index}>
+                        {/* Accepted bars */}
+                        <rect
+                          x={x}
+                          y={300 - data.accepted * scale}
+                          width={barWidth}
+                          height={data.accepted * scale}
+                          fill="hsl(220 70% 50%)"
+                          rx="2"
+                        />
+
+                        {/* Pending bars */}
+                        <rect
+                          x={x + 35}
+                          y={300 - data.pending * scale}
+                          width={barWidth}
+                          height={data.pending * scale}
+                          fill="hsl(160 60% 45%)"
+                          rx="2"
+                        />
+
+                        {/* Cancelled bars */}
+                        <rect
+                          x={x + 70}
+                          y={300 - data.cancelled * scale}
+                          width={barWidth}
+                          height={data.cancelled * scale}
+                          fill="hsl(0 70% 50%)"
+                          rx="2"
+                        />
+
+                        {/* Week label */}
+                        <text
+                          x={x + 50}
+                          y="320"
+                          textAnchor="middle"
+                          className="fill-current text-sm"
+                          fill="hsl(var(--foreground))"
+                        >
+                          {data.week}
+                        </text>
+                      </g>
+                    )
+                  })}
+
+                  {/* Y-axis labels */}
+                  {[0, 20, 40, 60, 80, 100].map((value, index) => (
+                    <g key={index}>
+                      <text
+                        x="70"
+                        y={300 - value * 2.5}
+                        textAnchor="end"
+                        className="fill-current text-xs"
+                        fill="hsl(var(--muted-foreground))"
+                      >
+                        {value}
+                      </text>
+                    </g>
+                  ))}
+
+                  {/* Legend */}
+                  <g transform="translate(500, 30)">
+                    <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2" />
+                    <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Accepted
+                    </text>
+
+                    <rect x="0" y="20" width="12" height="12" fill="hsl(160 60% 45%)" rx="2" />
+                    <text x="20" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Pending
+                    </text>
+
+                    <rect x="0" y="40" width="12" height="12" fill="hsl(0 70% 50%)" rx="2" />
+                    <text x="20" y="50" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Cancelled
+                    </text>
+                  </g>
+                </svg>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </ChartContainer>
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="text-center p-3 rounded-lg bg-blue-50">
+                <div className="text-2xl font-bold text-blue-600">351</div>
+                <div className="text-xs text-muted-foreground">Total Accepted</div>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-green-50">
+                <div className="text-2xl font-bold text-green-600">176</div>
+                <div className="text-xs text-muted-foreground">Total Pending</div>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-red-50">
+                <div className="text-2xl font-bold text-red-600">42</div>
+                <div className="text-xs text-muted-foreground">Total Cancelled</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

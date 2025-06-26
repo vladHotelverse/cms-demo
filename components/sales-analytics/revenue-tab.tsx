@@ -3,27 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from "@/components/ui/chart"
-import {
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Line,
-  Area,
-  AreaChart,
-  ComposedChart,
-  CartesianGrid,
-} from "recharts"
-import { TrendingUp, DollarSign, Users, Target, Award, ArrowUpRight, ArrowDownRight } from "lucide-react"
-import { BarChart3 } from "lucide-react" // Declaring the BarChart3 variable
+import { ChartContainer } from "@/components/ui/chart"
+import { TrendingUp, DollarSign, Users, Target, Award, ArrowUpRight, ArrowDownRight, BarChart3 } from "lucide-react"
 
 const kpiData = [
   {
@@ -85,12 +66,12 @@ const trendData = [
 ]
 
 const chartConfig = {
-  upsell: { label: "Upsell", color: "hsl(var(--chart-1))" },
-  abs: { label: "ABS", color: "hsl(var(--chart-2))" },
-  roomNumber: { label: "Room Number", color: "hsl(var(--chart-3))" },
-  extras: { label: "Extras", color: "hsl(var(--chart-4))" },
-  revenue: { label: "Revenue", color: "hsl(var(--chart-1))" },
-  target: { label: "Target", color: "hsl(var(--chart-2))" },
+  upsell: { label: "Upsell", color: "hsl(220.9 39.3% 11%)" },
+  abs: { label: "ABS", color: "hsl(220.9 39.3% 11%)" },
+  roomNumber: { label: "Room Number", color: "hsl(220.9 39.3% 11%)" },
+  extras: { label: "Extras", color: "hsl(220.9 39.3% 11%)" },
+  revenue: { label: "Revenue", color: "hsl(220.9 39.3% 11%)" },
+  target: { label: "Target", color: "hsl(220.9 39.3% 11%)" },
 }
 
 export function RevenueTab() {
@@ -206,7 +187,7 @@ export function RevenueTab() {
         </Badge>
       </div>
 
-      {/* Enhanced Charts Section */}
+      {/* Charts Section */}
       <div className="space-y-6">
         {/* Monthly Performance Chart */}
         <Card className="border-0 shadow-lg">
@@ -217,106 +198,297 @@ export function RevenueTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis dataKey="month" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent />} />
-                  <Bar yAxisId="left" dataKey="upsell" stackId="a" fill="var(--color-upsell)" radius={[0, 0, 0, 0]} />
-                  <Bar yAxisId="left" dataKey="abs" stackId="a" fill="var(--color-abs)" radius={[0, 0, 0, 0]} />
-                  <Bar
-                    yAxisId="left"
-                    dataKey="roomNumber"
-                    stackId="a"
-                    fill="var(--color-roomNumber)"
-                    radius={[0, 0, 0, 0]}
-                  />
-                  <Bar yAxisId="left" dataKey="extras" stackId="a" fill="var(--color-extras)" radius={[4, 4, 0, 0]} />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="total"
-                    stroke="hsl(var(--destructive))"
-                    strokeWidth={3}
-                    dot={{ fill: "hsl(var(--destructive))", strokeWidth: 2, r: 4 }}
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
+            <ChartContainer config={chartConfig} className="min-h-[400px]">
+              <div className="w-full h-[400px]">
+                <svg viewBox="0 0 800 400" className="w-full h-full">
+                  {/* Chart Background */}
+                  <rect width="800" height="400" fill="transparent" />
+
+                  {/* Grid Lines */}
+                  <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <path
+                        d="M 40 0 L 0 0 0 40"
+                        fill="none"
+                        stroke="hsl(var(--muted))"
+                        strokeWidth="0.5"
+                        opacity="0.3"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect width="800" height="400" fill="url(#grid)" />
+
+                  {/* X-Axis */}
+                  <line x1="80" y1="350" x2="720" y2="350" stroke="hsl(var(--border))" strokeWidth="1" />
+
+                  {/* Y-Axis */}
+                  <line x1="80" y1="50" x2="80" y2="350" stroke="hsl(var(--border))" strokeWidth="1" />
+
+                  {/* Bars */}
+                  {monthlyData.map((data, index) => {
+                    const x = 120 + index * 100
+                    const barWidth = 60
+
+                    // Calculate heights (scale to fit in 300px height)
+                    const scale = 300 / 1200
+                    const upsellHeight = data.upsell * scale
+                    const absHeight = data.abs * scale
+                    const roomHeight = data.roomNumber * scale
+                    const extrasHeight = data.extras * scale
+
+                    let currentY = 350
+
+                    return (
+                      <g key={index}>
+                        {/* Upsell bar */}
+                        <rect
+                          x={x}
+                          y={currentY - upsellHeight}
+                          width={barWidth}
+                          height={upsellHeight}
+                          fill="hsl(220 70% 50%)"
+                          rx="2"
+                        />
+                        {(currentY -= upsellHeight)}
+
+                        {/* ABS bar */}
+                        <rect
+                          x={x}
+                          y={currentY - absHeight}
+                          width={barWidth}
+                          height={absHeight}
+                          fill="hsl(160 60% 45%)"
+                          rx="2"
+                        />
+                        {(currentY -= absHeight)}
+
+                        {/* Room Number bar */}
+                        <rect
+                          x={x}
+                          y={currentY - roomHeight}
+                          width={barWidth}
+                          height={roomHeight}
+                          fill="hsl(30 70% 50%)"
+                          rx="2"
+                        />
+                        {(currentY -= roomHeight)}
+
+                        {/* Extras bar */}
+                        <rect
+                          x={x}
+                          y={currentY - extrasHeight}
+                          width={barWidth}
+                          height={extrasHeight}
+                          fill="hsl(270 60% 50%)"
+                          rx="2"
+                        />
+
+                        {/* Month label */}
+                        <text
+                          x={x + barWidth / 2}
+                          y={370}
+                          textAnchor="middle"
+                          className="fill-current text-sm"
+                          fill="hsl(var(--foreground))"
+                        >
+                          {data.month}
+                        </text>
+                      </g>
+                    )
+                  })}
+
+                  {/* Y-axis labels */}
+                  {[0, 200, 400, 600, 800, 1000, 1200].map((value, index) => (
+                    <g key={index}>
+                      <text
+                        x="70"
+                        y={350 - (value * 300) / 1200}
+                        textAnchor="end"
+                        className="fill-current text-xs"
+                        fill="hsl(var(--muted-foreground))"
+                      >
+                        {value}
+                      </text>
+                      <line
+                        x1="75"
+                        y1={350 - (value * 300) / 1200}
+                        x2="80"
+                        y2={350 - (value * 300) / 1200}
+                        stroke="hsl(var(--border))"
+                        strokeWidth="1"
+                      />
+                    </g>
+                  ))}
+
+                  {/* Legend */}
+                  <g transform="translate(500, 30)">
+                    <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2" />
+                    <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Upsell
+                    </text>
+
+                    <rect x="80" y="0" width="12" height="12" fill="hsl(160 60% 45%)" rx="2" />
+                    <text x="100" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      ABS
+                    </text>
+
+                    <rect x="0" y="20" width="12" height="12" fill="hsl(30 70% 50%)" rx="2" />
+                    <text x="20" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Room Number
+                    </text>
+
+                    <rect x="80" y="20" width="12" height="12" fill="hsl(270 60% 50%)" rx="2" />
+                    <text x="100" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Extras
+                    </text>
+                  </g>
+                </svg>
+              </div>
             </ChartContainer>
           </CardContent>
         </Card>
 
-        {/* Revenue Trend and Comparison Charts */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                Revenue vs Target Trend
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[350px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={trendData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Area
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="var(--color-revenue)"
-                      fill="var(--color-revenue)"
-                      fillOpacity={0.3}
-                      strokeWidth={3}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="target"
-                      stroke="var(--color-target)"
-                      strokeDasharray="5 5"
-                      strokeWidth={2}
-                      dot={{ fill: "var(--color-target)", strokeWidth: 2, r: 4 }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+        {/* Revenue Trend Chart */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Revenue vs Target Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="min-h-[350px]">
+              <div className="w-full h-[350px]">
+                <svg viewBox="0 0 800 350" className="w-full h-full">
+                  {/* Chart Background */}
+                  <rect width="800" height="350" fill="transparent" />
 
-          {/* Performance Distribution */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Performance Distribution
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[350px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="upsell" fill="var(--color-upsell)" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="abs" fill="var(--color-abs)" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="roomNumber" fill="var(--color-roomNumber)" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="extras" fill="var(--color-extras)" radius={[2, 2, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </div>
+                  {/* Grid */}
+                  <defs>
+                    <pattern id="grid2" width="40" height="35" patternUnits="userSpaceOnUse">
+                      <path
+                        d="M 40 0 L 0 0 0 35"
+                        fill="none"
+                        stroke="hsl(var(--muted))"
+                        strokeWidth="0.5"
+                        opacity="0.3"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect width="800" height="350" fill="url(#grid2)" />
+
+                  {/* Axes */}
+                  <line x1="80" y1="300" x2="720" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
+                  <line x1="80" y1="50" x2="80" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
+
+                  {/* Area Chart for Revenue */}
+                  <defs>
+                    <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="hsl(220 70% 50%)" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="hsl(220 70% 50%)" stopOpacity="0.1" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Revenue area path */}
+                  <path
+                    d={`M 80 ${300 - (8500 * 250) / 16000} 
+                        L ${80 + 160} ${300 - (12000 * 250) / 16000}
+                        L ${80 + 320} ${300 - (9800 * 250) / 16000}
+                        L ${80 + 480} ${300 - (15200 * 250) / 16000}
+                        L ${80 + 480} 300
+                        L ${80 + 320} 300
+                        L ${80 + 160} 300
+                        L 80 300 Z`}
+                    fill="url(#revenueGradient)"
+                  />
+
+                  {/* Revenue line */}
+                  <path
+                    d={`M 80 ${300 - (8500 * 250) / 16000} 
+                        L ${80 + 160} ${300 - (12000 * 250) / 16000}
+                        L ${80 + 320} ${300 - (9800 * 250) / 16000}
+                        L ${80 + 480} ${300 - (15200 * 250) / 16000}`}
+                    stroke="hsl(220 70% 50%)"
+                    strokeWidth="3"
+                    fill="none"
+                  />
+
+                  {/* Target line (dashed) */}
+                  <path
+                    d={`M 80 ${300 - (10000 * 250) / 16000} L ${80 + 480} ${300 - (10000 * 250) / 16000}`}
+                    stroke="hsl(0 70% 50%)"
+                    strokeWidth="2"
+                    strokeDasharray="5,5"
+                    fill="none"
+                  />
+
+                  {/* Data points */}
+                  {trendData.map((data, index) => (
+                    <circle
+                      key={index}
+                      cx={80 + index * 160}
+                      cy={300 - (data.revenue * 250) / 16000}
+                      r="4"
+                      fill="hsl(220 70% 50%)"
+                      stroke="white"
+                      strokeWidth="2"
+                    />
+                  ))}
+
+                  {/* X-axis labels */}
+                  {trendData.map((data, index) => (
+                    <text
+                      key={index}
+                      x={80 + index * 160}
+                      y="320"
+                      textAnchor="middle"
+                      className="fill-current text-sm"
+                      fill="hsl(var(--foreground))"
+                    >
+                      {data.date}
+                    </text>
+                  ))}
+
+                  {/* Y-axis labels */}
+                  {[0, 4000, 8000, 12000, 16000].map((value, index) => (
+                    <g key={index}>
+                      <text
+                        x="70"
+                        y={300 - (value * 250) / 16000}
+                        textAnchor="end"
+                        className="fill-current text-xs"
+                        fill="hsl(var(--muted-foreground))"
+                      >
+                        ${value}
+                      </text>
+                    </g>
+                  ))}
+
+                  {/* Legend */}
+                  <g transform="translate(500, 30)">
+                    <line x1="0" y1="6" x2="20" y2="6" stroke="hsl(220 70% 50%)" strokeWidth="3" />
+                    <text x="25" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Revenue
+                    </text>
+
+                    <line
+                      x1="0"
+                      y1="26"
+                      x2="20"
+                      y2="26"
+                      stroke="hsl(0 70% 50%)"
+                      strokeWidth="2"
+                      strokeDasharray="5,5"
+                    />
+                    <text x="25" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Target
+                    </text>
+                  </g>
+                </svg>
+              </div>
+            </ChartContainer>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
