@@ -4,8 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer, LineChart, Line } from "recharts"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart"
+import {
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Line,
+  ComposedChart,
+  Area,
+  CartesianGrid,
+  ScatterChart,
+  Scatter,
+} from "recharts"
 import { TrendingUp, DollarSign, Award, Users, Target, ArrowUpRight, ArrowDownRight, Crown } from "lucide-react"
 
 const kpiData = [
@@ -105,6 +123,22 @@ const commissionTrendData = [
   { month: "Apr", commission: 8100, target: 7000 },
   { month: "May", commission: 8450, target: 7000 },
   { month: "Jun", commission: 9200, target: 7000 },
+]
+
+const teamComparisonData = [
+  { quarter: "Q1", teamA: 15000, teamB: 12000, teamC: 18000, target: 16000 },
+  { quarter: "Q2", teamA: 18000, teamB: 15000, teamC: 21000, target: 18000 },
+  { quarter: "Q3", teamA: 22000, teamB: 18000, teamC: 25000, target: 20000 },
+  { quarter: "Q4", teamA: 25000, teamB: 22000, teamC: 28000, target: 24000 },
+]
+
+const performanceScatterData = [
+  { sales: 800, commission: 2400, agent: "Maria Rodriguez" },
+  { sales: 740, commission: 2220, agent: "Carlos Martinez" },
+  { sales: 690, commission: 2070, agent: "Ana Garcia" },
+  { sales: 560, commission: 1680, agent: "Luis Hernandez" },
+  { sales: 620, commission: 1860, agent: "Sofia Lopez" },
+  { sales: 580, commission: 1740, agent: "Diego Morales" },
 ]
 
 const chartConfig = {
@@ -285,71 +319,152 @@ export function CommissionTab() {
         </Badge>
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Agent Performance Chart */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-primary" />
-              Agent Performance Breakdown
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[350px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={agentPerformanceData}
-                  layout="horizontal"
-                  margin={{ top: 20, right: 30, left: 80, bottom: 5 }}
-                >
-                  <XAxis type="number" />
-                  <YAxis dataKey="agent" type="category" width={80} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="upsell" stackId="a" fill="var(--color-upsell)" />
-                  <Bar dataKey="abs" stackId="a" fill="var(--color-abs)" />
-                  <Bar dataKey="roomNumber" stackId="a" fill="var(--color-roomNumber)" />
-                  <Bar dataKey="extras" stackId="a" fill="var(--color-extras)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+      {/* Enhanced Charts Section */}
+      <div className="space-y-6">
+        {/* Agent Performance and Commission Trend */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Enhanced Agent Performance Chart */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                Agent Performance Breakdown
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={agentPerformanceData}
+                    layout="horizontal"
+                    margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis type="number" />
+                    <YAxis dataKey="agent" type="category" width={100} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar dataKey="upsell" stackId="a" fill="var(--color-upsell)" radius={[0, 2, 2, 0]} />
+                    <Bar dataKey="abs" stackId="a" fill="var(--color-abs)" radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="roomNumber" stackId="a" fill="var(--color-roomNumber)" radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="extras" stackId="a" fill="var(--color-extras)" radius={[0, 2, 2, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
 
-        {/* Commission Trend Chart */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Commission Trend
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[350px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={commissionTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Line
-                    type="monotone"
-                    dataKey="commission"
-                    stroke="var(--color-commission)"
-                    strokeWidth={3}
-                    dot={{ fill: "var(--color-commission)", strokeWidth: 2, r: 6 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="target"
-                    stroke="var(--color-target)"
-                    strokeDasharray="5 5"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+          {/* Enhanced Commission Trend Chart */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Commission vs Target Trend
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={commissionTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Area
+                      type="monotone"
+                      dataKey="commission"
+                      fill="var(--color-commission)"
+                      fillOpacity={0.3}
+                      stroke="var(--color-commission)"
+                      strokeWidth={3}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="target"
+                      stroke="var(--color-target)"
+                      strokeDasharray="5 5"
+                      strokeWidth={2}
+                      dot={{ fill: "var(--color-target)", strokeWidth: 2, r: 4 }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Team Comparison and Performance Scatter */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Team Comparison Chart */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-primary" />
+                Quarterly Team Comparison
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={teamComparisonData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="quarter" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar dataKey="teamA" fill="var(--color-upsell)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="teamB" fill="var(--color-abs)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="teamC" fill="var(--color-roomNumber)" radius={[2, 2, 0, 0]} />
+                    <Line
+                      type="monotone"
+                      dataKey="target"
+                      stroke="var(--color-extras)"
+                      strokeDasharray="5 5"
+                      strokeWidth={2}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Performance Scatter Chart */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Sales vs Commission Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ScatterChart data={performanceScatterData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="sales" name="Sales" />
+                    <YAxis dataKey="commission" name="Commission" />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Scatter dataKey="commission" fill="var(--color-commission)" />
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+              <div className="mt-4 p-4 rounded-lg bg-muted/30">
+                <div className="text-sm font-medium mb-2">Performance Insights</div>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="text-muted-foreground">Avg Commission Rate:</span>
+                    <span className="font-semibold ml-1">3.2%</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Top Performer:</span>
+                    <span className="font-semibold ml-1">Maria Rodriguez</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )

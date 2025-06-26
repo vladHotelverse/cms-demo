@@ -3,8 +3,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer, Line, Area, AreaChart } from "recharts"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart"
+import {
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Line,
+  Area,
+  AreaChart,
+  ComposedChart,
+  CartesianGrid,
+} from "recharts"
 import { TrendingUp, DollarSign, Users, Target, Award, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import { BarChart3 } from "lucide-react" // Declaring the BarChart3 variable
 
@@ -189,8 +206,8 @@ export function RevenueTab() {
         </Badge>
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      {/* Enhanced Charts Section */}
+      <div className="space-y-6">
         {/* Monthly Performance Chart */}
         <Card className="border-0 shadow-lg">
           <CardHeader>
@@ -200,57 +217,106 @@ export function RevenueTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[350px]">
+            <ChartContainer config={chartConfig} className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <ComposedChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                   <XAxis dataKey="month" />
-                  <YAxis />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="upsell" stackId="a" fill="var(--color-upsell)" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="abs" stackId="a" fill="var(--color-abs)" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="roomNumber" stackId="a" fill="var(--color-roomNumber)" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="extras" stackId="a" fill="var(--color-extras)" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar yAxisId="left" dataKey="upsell" stackId="a" fill="var(--color-upsell)" radius={[0, 0, 0, 0]} />
+                  <Bar yAxisId="left" dataKey="abs" stackId="a" fill="var(--color-abs)" radius={[0, 0, 0, 0]} />
+                  <Bar
+                    yAxisId="left"
+                    dataKey="roomNumber"
+                    stackId="a"
+                    fill="var(--color-roomNumber)"
+                    radius={[0, 0, 0, 0]}
+                  />
+                  <Bar yAxisId="left" dataKey="extras" stackId="a" fill="var(--color-extras)" radius={[4, 4, 0, 0]} />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="total"
+                    stroke="hsl(var(--destructive))"
+                    strokeWidth={3}
+                    dot={{ fill: "hsl(var(--destructive))", strokeWidth: 2, r: 4 }}
+                  />
+                </ComposedChart>
               </ResponsiveContainer>
             </ChartContainer>
           </CardContent>
         </Card>
 
-        {/* Revenue Trend Chart */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Revenue vs Target Trend
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[350px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={trendData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="var(--color-revenue)"
-                    fill="var(--color-revenue)"
-                    fillOpacity={0.3}
-                    strokeWidth={3}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="target"
-                    stroke="var(--color-target)"
-                    strokeDasharray="5 5"
-                    strokeWidth={2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+        {/* Revenue Trend and Comparison Charts */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Revenue vs Target Trend
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={trendData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Area
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="var(--color-revenue)"
+                      fill="var(--color-revenue)"
+                      fillOpacity={0.3}
+                      strokeWidth={3}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="target"
+                      stroke="var(--color-target)"
+                      strokeDasharray="5 5"
+                      strokeWidth={2}
+                      dot={{ fill: "var(--color-target)", strokeWidth: 2, r: 4 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Performance Distribution */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Performance Distribution
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar dataKey="upsell" fill="var(--color-upsell)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="abs" fill="var(--color-abs)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="roomNumber" fill="var(--color-roomNumber)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="extras" fill="var(--color-extras)" radius={[2, 2, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
