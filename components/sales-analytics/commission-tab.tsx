@@ -2,41 +2,38 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { DollarSign, TrendingUp, Target, Award } from "lucide-react"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Legend } from "recharts"
+import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { TrendingUp, TrendingDown, DollarSign, Award, Users, Target } from "lucide-react"
 
 const kpiData = [
   {
     title: "Total Commission",
-    value: "$28,475",
-    change: "+22.5%",
+    value: "$8,450",
+    change: "+22.1%",
     trend: "up",
     icon: DollarSign,
   },
   {
     title: "Total Upsells Importe",
-    value: "$184,750",
-    subtitle: "(cantidad)",
-    change: "+15.2%",
+    value: "$12,340",
+    change: "+18.5%",
     trend: "up",
-    icon: TrendingUp,
+    icon: Award,
   },
   {
     title: "Total Extras Importe",
-    value: "$56,240",
-    subtitle: "(cantidad)",
-    change: "+8.8%",
+    value: "$9,870",
+    change: "+15.2%",
     trend: "up",
     icon: Target,
   },
   {
     title: "Total Upgrades",
-    value: "1,247",
-    subtitle: "(cantidad)",
-    change: "+18.3%",
+    value: "1,456",
+    change: "+12.8%",
     trend: "up",
-    icon: Award,
+    icon: Users,
   },
 ]
 
@@ -46,27 +43,27 @@ const agentPerformanceData = [
     upsell: 300,
     abs: 200,
     roomNumber: 150,
-    extras: 100,
+    extras: 180,
   },
   {
     agent: "Agent 2",
-    upsell: 400,
-    abs: 150,
+    upsell: 380,
+    abs: 120,
     roomNumber: 100,
-    extras: 80,
+    extras: 140,
   },
   {
     agent: "Agent 3",
-    upsell: 350,
-    abs: 250,
-    roomNumber: 120,
+    upsell: 280,
+    abs: 180,
+    roomNumber: 160,
     extras: 0,
   },
   {
     agent: "Agent 4",
-    upsell: 280,
-    abs: 180,
-    roomNumber: 90,
+    upsell: 200,
+    abs: 160,
+    roomNumber: 80,
     extras: 120,
   },
 ]
@@ -99,18 +96,24 @@ export function CommissionTab() {
           const Icon = kpi.icon
           return (
             <Card key={index}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {kpi.title}
-                  {kpi.subtitle && <div className="text-xs text-muted-foreground mt-1">{kpi.subtitle}</div>}
-                </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{kpi.value}</div>
-                <Badge variant={kpi.trend === "up" ? "default" : "secondary"} className="mt-2">
-                  {kpi.change}
-                </Badge>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">{kpi.title}</p>
+                    <p className="text-2xl font-bold">{kpi.value}</p>
+                    <div className="flex items-center space-x-1">
+                      {kpi.trend === "up" ? (
+                        <TrendingUp className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <TrendingDown className="h-4 w-4 text-red-500" />
+                      )}
+                      <Badge variant={kpi.trend === "up" ? "default" : "destructive"} className="text-xs">
+                        {kpi.change}
+                      </Badge>
+                    </div>
+                  </div>
+                  <Icon className="h-8 w-8 text-muted-foreground" />
+                </div>
               </CardContent>
             </Card>
           )
@@ -120,25 +123,27 @@ export function CommissionTab() {
       {/* Goal and Team Bag Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-center text-4xl font-bold text-muted-foreground">Goal (%)</CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center h-32">
-            <div className="text-6xl font-bold text-primary">78%</div>
+          <CardContent className="p-8">
+            <div className="text-center space-y-4">
+              <h3 className="text-6xl font-bold text-muted-foreground">Goal (%)</h3>
+              <div className="text-4xl font-bold">78%</div>
+              <p className="text-sm text-muted-foreground">Commission Target Achievement</p>
+            </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-center text-4xl font-bold text-muted-foreground">Team Bag</CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center h-32">
-            <div className="text-4xl font-bold text-primary">$12,450</div>
+          <CardContent className="p-8">
+            <div className="text-center space-y-4">
+              <h3 className="text-6xl font-bold text-muted-foreground">Team Bag</h3>
+              <div className="text-4xl font-bold">$45,892</div>
+              <p className="text-sm text-muted-foreground">Total Team Earnings</p>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Category Filter Buttons */}
+      {/* Category Filter Badges */}
       <div className="flex flex-wrap gap-2">
         <Badge variant="default" className="px-4 py-2">
           Upsell
@@ -157,7 +162,7 @@ export function CommissionTab() {
       {/* Agent Performance Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Agent Performance</CardTitle>
+          <CardTitle>Agent Performance Breakdown</CardTitle>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[400px]">
@@ -165,12 +170,11 @@ export function CommissionTab() {
               <BarChart
                 data={agentPerformanceData}
                 layout="horizontal"
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
               >
                 <XAxis type="number" />
-                <YAxis dataKey="agent" type="category" width={80} />
+                <YAxis dataKey="agent" type="category" width={60} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
                 <Bar dataKey="upsell" stackId="a" fill="var(--color-upsell)" />
                 <Bar dataKey="abs" stackId="a" fill="var(--color-abs)" />
                 <Bar dataKey="roomNumber" stackId="a" fill="var(--color-roomNumber)" />
