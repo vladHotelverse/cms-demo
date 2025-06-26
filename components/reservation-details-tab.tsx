@@ -1,378 +1,192 @@
 "use client"
 
+import type React from "react"
 import { useState } from "react"
-import { Calendar, User, Bed, CreditCard } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { useLanguage } from "@/contexts/language-context"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  Grid,
+} from "@mui/material"
 
-interface ReservationData {
-  id: string
-  locator: string
+interface RoomUpgrade {
+  id: number
   name: string
-  email: string
-  checkIn: string
-  checkOut: string
-  aci: string
-  status: string
-  hasHotelverseRequest: boolean
+  description: string
+  price: number
+}
+
+interface Attribute {
+  id: number
+  name: string
+  value: string
+}
+
+interface Extra {
+  id: number
+  name: string
+  description: string
+  price: number
 }
 
 interface ReservationDetailsTabProps {
-  reservation: ReservationData
-  onShowAlert: (type: "success" | "error", message: string) => void
-  onCloseTab: () => void
-  isInReservationMode: boolean
+  reservationId: string // Example prop, adjust as needed
 }
 
-// Sample room types
-const roomTypes = [
-  { id: "standard", name: "Standard Room" },
-  { id: "deluxe", name: "Deluxe Double Room" },
-  { id: "suite", name: "Suite" },
-  { id: "premium", name: "Premium Room" },
-  { id: "family", name: "Family Room" },
-]
+const ReservationDetailsTab: React.FC<ReservationDetailsTabProps> = ({ reservationId }) => {
+  const [roomUpgrades, setRoomUpgrades] = useState<RoomUpgrade[]>([
+    { id: 1, name: "Deluxe Room", description: "Spacious room with a view", price: 50 },
+    { id: 2, name: "Suite", description: "Luxurious suite with separate living area", price: 100 },
+  ])
 
-// Sample segments
-const segments = [
-  { id: "standard", name: "Standard" },
-  { id: "premium", name: "Premium" },
-  { id: "luxury", name: "Luxury" },
-  { id: "business", name: "Business" },
-  { id: "family", name: "Family" },
-]
+  const [attributes, setAttributes] = useState<Attribute[]>([
+    { id: 1, name: "Check-in Time", value: "2:00 PM" },
+    { id: 2, name: "Check-out Time", value: "12:00 PM" },
+    { id: 3, name: "Number of Guests", value: "2" },
+  ])
 
-// Sample agents
-const agents = [
-  { id: "agent1", name: "Ana García" },
-  { id: "agent2", name: "Carlos López" },
-  { id: "agent3", name: "María Fernández" },
-  { id: "agent4", name: "Pedro Martínez" },
-]
+  const [extras, setExtras] = useState<Extra[]>([
+    { id: 1, name: "Breakfast", description: "Continental breakfast", price: 15 },
+    { id: 2, name: "Parking", description: "Valet parking", price: 20 },
+    { id: 3, name: "Spa Access", description: "Access to the spa facilities", price: 30 },
+  ])
 
-// Commission reasons
-const commissionReasons = [
-  { id: "upsell", name: "Upsell Services" },
-  { id: "room_upgrade", name: "Room Upgrade" },
-  { id: "extended_stay", name: "Extended Stay" },
-  { id: "additional_services", name: "Additional Services" },
-  { id: "special_package", name: "Special Package" },
-  { id: "loyalty_program", name: "Loyalty Program Benefits" },
-]
+  const [selectedRoomUpgrade, setSelectedRoomUpgrade] = useState<RoomUpgrade | null>(null)
+  const [selectedExtras, setSelectedExtras] = useState<number[]>([])
 
-export default function ReservationDetailsTab({
-  reservation,
-  onShowAlert,
-  onCloseTab,
-  isInReservationMode,
-}: ReservationDetailsTabProps) {
-  const [selectedRoomType, setSelectedRoomType] = useState("deluxe")
-  const [selectedSegment, setSelectedSegment] = useState("premium")
-  const [selectedAgent, setSelectedAgent] = useState("agent1")
-  const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks")
-  const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false)
-  const [selectedCommissionReason, setSelectedCommissionReason] = useState("")
-  const { t } = useLanguage()
-
-  const handleConfirmBooking = () => {
-    setIsCommissionModalOpen(true)
+  const handleRoomUpgradeSelect = (upgrade: RoomUpgrade) => {
+    setSelectedRoomUpgrade(upgrade)
   }
 
-  const handleCommissionConfirm = () => {
-    if (!selectedCommissionReason) {
-      onShowAlert("error", t("pleaseSelectReason"))
-      return
+  const handleExtraSelect = (extraId: number) => {
+    if (selectedExtras.includes(extraId)) {
+      setSelectedExtras(selectedExtras.filter((id) => id !== extraId))
+    } else {
+      setSelectedExtras([...selectedExtras, extraId])
     }
-
-    // Here you would handle the booking confirmation with the selected commission reason
-    console.log("Booking confirmed with commission reason:", selectedCommissionReason)
-
-    // Close modal and show success
-    setIsCommissionModalOpen(false)
-    setSelectedCommissionReason("")
-
-    onShowAlert(
-      "success",
-      t("bookingConfirmedSuccessfully"),
-    )
-
-    // Optionally close the tab after successful booking
-    setTimeout(() => {
-      onCloseTab()
-    }, 2000)
   }
 
-  const handleCommissionCancel = () => {
-    setIsCommissionModalOpen(false)
-    setSelectedCommissionReason("")
+  const handleApplyChanges = () => {
+    // Implement logic to apply the selected room upgrade and extras to the reservation
+    console.log("Applying changes:", {
+      selectedRoomUpgrade,
+      selectedExtras,
+    })
   }
 
   return (
-    <>
-      <div className="p-6 space-y-6">
-        {/* Hotel Image Section */}
-        <div
-          className="h-64 bg-cover bg-center bg-no-repeat rounded-lg relative"
-          style={{
-            backgroundImage: `url('/images/hotel-aerial-view.png')`,
-          }}
-        >
-          <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-          <div className="absolute bottom-4 left-4 text-white">
-            <h1 className="text-2xl font-bold">{reservation.name}</h1>
-            <p className="text-lg opacity-90">{reservation.locator}</p>
-          </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h6">Room Upgrade</Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {roomUpgrades.map((upgrade) => (
+                <TableRow key={upgrade.id}>
+                  <TableCell>{upgrade.name}</TableCell>
+                  <TableCell>{upgrade.description}</TableCell>
+                  <TableCell>${upgrade.price}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color={selectedRoomUpgrade?.id === upgrade.id ? "success" : "primary"}
+                      onClick={() => handleRoomUpgradeSelect(upgrade)}
+                    >
+                      {selectedRoomUpgrade?.id === upgrade.id ? "Selected" : "Select"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography variant="h6">Attributes</Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Value</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {attributes.map((attribute) => (
+                <TableRow key={attribute.id}>
+                  <TableCell>{attribute.name}</TableCell>
+                  <TableCell>{attribute.value}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography variant="h6">CYR Map (Placeholder)</Typography>
+        <div>
+          {/* Placeholder for CYR Map component */}
+          <Typography>CYR Map will be displayed here.</Typography>
         </div>
+      </Grid>
 
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Top Section - Configuration and Reservation Info */}
-          <div className="space-y-6">
-            {/* Configuration Section */}
-            <Card className="border-0 shadow-none">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">
-                  {t("configuration")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-6">
-                  {/* View Mode Toggle */}
-                  <div className="flex items-center gap-3">
-                    <Label className="text-sm font-medium text-gray-600 whitespace-nowrap">
-                      {t("viewAs")}
-                    </Label>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant={viewMode === "list" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setViewMode("list")}
-                        className="px-3"
-                      >
-                        Lista
-                      </Button>
-                      <Button
-                        variant={viewMode === "blocks" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setViewMode("blocks")}
-                        className="px-3"
-                      >
-                        Bloques
-                      </Button>
-                    </div>
-                  </div>
+      <Grid item xs={12}>
+        <Typography variant="h6">Extras</Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {extras.map((extra) => (
+                <TableRow key={extra.id}>
+                  <TableCell>{extra.name}</TableCell>
+                  <TableCell>{extra.description}</TableCell>
+                  <TableCell>${extra.price}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color={selectedExtras.includes(extra.id) ? "success" : "primary"}
+                      onClick={() => handleExtraSelect(extra.id)}
+                    >
+                      {selectedExtras.includes(extra.id) ? "Selected" : "Select"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
 
-                  {/* Segment Selector */}
-                  <div className="flex items-center gap-3">
-                    <Label className="text-sm font-medium text-gray-600 whitespace-nowrap">
-                      {t("currentLanguage") === "es" ? "Segmento:" : "Segment:"}
-                    </Label>
-                    <Select value={selectedSegment} onValueChange={setSelectedSegment}>
-                      <SelectTrigger className="w-40">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {segments.map((segment) => (
-                          <SelectItem key={segment.id} value={segment.id}>
-                            {segment.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Agent Selector */}
-                  <div className="flex items-center gap-3">
-                    <Label className="text-sm font-medium text-gray-600 whitespace-nowrap">
-                      {t("currentLanguage") === "es" ? "Agente:" : "Agent:"}
-                    </Label>
-                    <Select value={selectedAgent} onValueChange={setSelectedAgent}>
-                      <SelectTrigger className="w-40">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {agents.map((agent) => (
-                          <SelectItem key={agent.id} value={agent.id}>
-                            {agent.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Reservation Info Section */}
-            <Card className="border-0 shadow-none">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">
-                  {t("currentLanguage") === "es" ? "Información de tu reserva" : "Your reservation information"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Reservation Code */}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-gray-500" />
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t("currentLanguage") === "es" ? "Código de reserva" : "Reservation code"}
-                      </Label>
-                    </div>
-                    <p className="font-semibold text-lg pl-6">{reservation.locator}</p>
-                  </div>
-
-                  {/* Stay Dates */}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-gray-500" />
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t("currentLanguage") === "es" ? "Fechas de estancia" : "Stay dates"}
-                      </Label>
-                    </div>
-                    <p className="font-semibold text-lg pl-6">
-                      {reservation.checkIn} - {reservation.checkOut}
-                    </p>
-                  </div>
-
-                  {/* Room Type */}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Bed className="h-4 w-4 text-gray-500" />
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t("currentLanguage") === "es" ? "Tipo habitación" : "Room type"}
-                      </Label>
-                    </div>
-                    <div className="pl-6">
-                      <Select value={selectedRoomType} onValueChange={setSelectedRoomType}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roomTypes.map((room) => (
-                            <SelectItem key={room.id} value={room.id}>
-                              {room.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Separator />
-
-          {/* Bottom Section - Tables and Price Summary */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Tables Section */}
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    {t("currentLanguage") === "es" ? "Servicios Disponibles" : "Available Services"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-                    <p className="text-sm">
-                      {t("currentLanguage") === "es"
-                        ? "Aquí se mostrarán las tablas de servicios y extras disponibles"
-                        : "Here will be displayed the tables of available services and extras"}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Price Summary Section */}
-            <div className="lg:col-span-1">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                    <CreditCard className="h-5 w-5" />
-                    {t("currentLanguage") === "es" ? "Resumen de Precios" : "Price Summary"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        {t("currentLanguage") === "es" ? "Habitación base" : "Base room"}
-                      </span>
-                      <span className="font-medium">€250.00</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        {t("currentLanguage") === "es" ? "Servicios extras" : "Extra services"}
-                      </span>
-                      <span className="font-medium">€78.90</span>
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between items-center text-lg font-semibold">
-                      <span>{t("currentLanguage") === "es" ? "Total" : "Total"}</span>
-                      <span>€328.90</span>
-                    </div>
-                  </div>
-
-                  <Button className="w-full mt-4" onClick={handleConfirmBooking}>
-                    {t("currentLanguage") === "es" ? "Confirmar Reserva" : "Confirm Booking"}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Commission Reason Modal */}
-      <Dialog open={isCommissionModalOpen} onOpenChange={setIsCommissionModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t("currentLanguage") === "es" ? "Motivo de la Comisión" : "Commission Reason"}</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="commission-reason">
-                {t("currentLanguage") === "es"
-                  ? "Selecciona el motivo por el cual se cobrará la comisión:"
-                  : "Select the reason why commission will be charged:"}
-              </Label>
-              <Select value={selectedCommissionReason} onValueChange={setSelectedCommissionReason}>
-                <SelectTrigger id="commission-reason">
-                  <SelectValue
-                    placeholder={t("currentLanguage") === "es" ? "Seleccionar motivo..." : "Select reason..."}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {commissionReasons.map((reason) => (
-                    <SelectItem key={reason.id} value={reason.id}>
-                      {reason.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={handleCommissionCancel}>
-              {t("currentLanguage") === "es" ? "Cancelar" : "Cancel"}
-            </Button>
-            <Button onClick={handleCommissionConfirm} disabled={!selectedCommissionReason}>
-              {t("currentLanguage") === "es" ? "Confirmar" : "Confirm"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+      <Grid item xs={12}>
+        <Button variant="contained" color="primary" onClick={handleApplyChanges}>
+          Apply Changes
+        </Button>
+      </Grid>
+    </Grid>
   )
 }
+
+export default ReservationDetailsTab
