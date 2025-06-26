@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { AppHeader } from "@/components/app-header"
 import BandsTable from "@/components/bands-table"
 import BandFormDialog from "@/components/band-form-dialog"
 import { useToast } from "@/hooks/use-toast"
@@ -95,19 +96,22 @@ export default function AddonsBandsPage() {
   }
 
   return (
-    <div className="p-6 md:p-8 w-full h-full">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t("addonsBands")}</h1>
-        <Button onClick={handleCreateBand}>
-          <Plus className="h-4 w-4 mr-2" /> {t("addBand")}
-        </Button>
-      </div>
+    <div className="w-full h-full">
+      <AppHeader title={t("addonsBands")}>
+        <div className="flex justify-end">
+          <Button onClick={handleCreateBand}>
+            <Plus className="h-4 w-4 mr-2" /> {t("addBand")}
+          </Button>
+        </div>
+      </AppHeader>
+      <div className="p-6 md:p-8">
 
       <Card className="border-none shadow-sm">
         <BandsTable bands={bands} onEdit={handleEditBand} onDelete={handleDeleteBand} />
       </Card>
 
       <BandFormDialog open={isFormOpen} onOpenChange={setIsFormOpen} band={editingBand} onSave={handleSaveBand} />
+      </div>
     </div>
   )
 }
