@@ -10,8 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useLanguage } from "@/contexts/language-context"
+import { FrontDeskHeader } from "@/components/front-desk-header"
 import ReservationDetailsTab from "@/components/reservation-details-tab"
 
 // Helper function to generate dates within the next 15 days
@@ -297,54 +297,14 @@ export default function FrontDeskUpsellPage() {
 
       {/* Tab Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="flex items-center border-b">
-          <SidebarTrigger className="ml-4 mr-2" />
-          <TabsList className="flex-1 justify-start rounded-none border-none bg-transparent p-0 h-auto">
-            <TabsTrigger
-              value="front-desk-upsell"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:bg-transparent px-8 py-4"
-              disabled={isInReservationMode}
-            >
-              {t("frontDeskUpsell")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="dashboard"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:bg-transparent px-8 py-4"
-              disabled
-            >
-              {t("dashboard")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="gestion-solicitudes"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:bg-transparent px-8 py-4"
-              disabled
-            >
-              {t("gestionSolicitudes")}
-            </TabsTrigger>
-
-            {/* Dynamic reservation tabs */}
-            {openTabs.map((tab) => (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:bg-transparent px-4 py-4 group relative"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="truncate max-w-32">{tab.reservation.name}</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleCloseTab(tab.id)
-                    }}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded-full p-1"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        <FrontDeskHeader
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          openTabs={openTabs}
+          onCloseTab={handleCloseTab}
+          isInReservationMode={isInReservationMode}
+          t={t}
+        />
 
         <TabsContent value="front-desk-upsell" className="mt-0">
           <div className="p-6">

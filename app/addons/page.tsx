@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { AppHeader } from "@/components/app-header"
 import AddonCategoryList from "@/components/addon-category-list"
 import AddonCardGrid from "@/components/addon-card-grid"
 import AddonFormSheet from "@/components/addon-form-sheet"
@@ -119,13 +120,15 @@ export default function AddonsPage() {
   }
 
   return (
-    <div className="p-6 md:p-8 w-full h-full">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t("addonsManagement")}</h1>
-        <Button onClick={handleCreateAddon}>
-          <Plus className="h-4 w-4 mr-2" /> {t("createAddon")}
-        </Button>
-      </div>
+    <div className="w-full h-full">
+      <AppHeader title={t("addonsManagement")}>
+        <div className="flex justify-end">
+          <Button onClick={handleCreateAddon}>
+            <Plus className="h-4 w-4 mr-2" /> {t("createAddon")}
+          </Button>
+        </div>
+      </AppHeader>
+      <div className="p-6 md:p-8">
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-1">
@@ -143,6 +146,7 @@ export default function AddonsPage() {
         onSave={handleSaveAddon}
         onDelete={handleDeleteAddon}
       />
+      </div>
     </div>
   )
 }
