@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useLanguage } from "@/contexts/language-context"
 import { AppHeader } from "@/components/app-header"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,10 +13,31 @@ import { ManagementTab } from "@/components/sales-analytics/management-tab"
 import { CommissionTab } from "@/components/sales-analytics/commission-tab"
 
 export default function AnaliticaVentasPage() {
+  const router = useRouter()
+  const { currentLanguage } = useLanguage()
   const [activeTab, setActiveTab] = useState("revenue")
   const [dateRange, setDateRange] = useState("this-month")
   const [selectedAgent, setSelectedAgent] = useState("all")
   const [selectedProduct, setSelectedProduct] = useState("all")
+
+  useEffect(() => {
+    // Always redirect to the English route name
+    if (currentLanguage === "es") {
+      router.replace("/ventas/sales-analytics")
+    }
+  }, [router, currentLanguage])
+
+  // Show loading state while redirecting
+  if (currentLanguage === "es") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Redirigiendo...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col h-screen">

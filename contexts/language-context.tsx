@@ -22,7 +22,7 @@ const translations = {
     callCenter: "Call Center",
     frontDeskUpsell: "Front Desk Upsell",
     gestionSolicitudesVentas: "Gestión Solicitudes",
-    analiticaVentas: "Analítica Ventas",
+    analiticaVentas: "Analítica de Ventas",
     usuariosYComisiones: "Usuarios y Comisiones",
     hotelverseBeach: "Hotelverse Beach",
     hotel: "Hotel",
@@ -346,7 +346,8 @@ const translations = {
     basicAddonsPackage: "Paquete básico de addons para habitaciones estándar",
     enhancedAddonsPackage: "Paquete mejorado de addons para habitaciones premium con servicios adicionales",
     comprehensiveAddonsPackage: "Paquete completo de addons para suites de lujo con beneficios exclusivos",
-    specializedAddonsPackage: "Paquete especializado de addons para viajeros de negocios con servicios relacionados al trabajo",
+    specializedAddonsPackage:
+      "Paquete especializado de addons para viajeros de negocios con servicios relacionados al trabajo",
     familyFriendlyAddonsPackage: "Paquete de addons familiar con actividades y servicios para niños",
 
     // Success messages with dynamic content
@@ -369,6 +370,22 @@ const translations = {
     email: "email",
     emails: "emails",
     hasLink: "Tiene enlace",
+
+    // Sales analytics
+    analiticaVentas: "Analítica de Ventas",
+    revenue: "Ingresos",
+    management: "Gestión",
+    commission: "Comisión",
+    today: "Hoy",
+    thisWeek: "Esta Semana",
+    thisMonth: "Este Mes",
+    lastMonth: "Mes Pasado",
+    thisYear: "Este Año",
+    allAgents: "Todos los Agentes",
+    allProducts: "Todos los Productos",
+    product: "Producto",
+    roomNumber: "Número de Habitación",
+    extras: "Extras",
   },
   en: {
     // Sidebar translations
@@ -727,6 +744,22 @@ const translations = {
     email: "email",
     emails: "emails",
     hasLink: "Has link",
+
+    // Sales analytics
+    analiticaVentas: "Sales Analytics",
+    revenue: "Revenue",
+    management: "Management",
+    commission: "Commission",
+    today: "Today",
+    thisWeek: "This Week",
+    thisMonth: "This Month",
+    lastMonth: "Last Month",
+    thisYear: "This Year",
+    allAgents: "All Agents",
+    allProducts: "All Products",
+    product: "Product",
+    roomNumber: "Room Number",
+    extras: "Extras",
   },
 }
 

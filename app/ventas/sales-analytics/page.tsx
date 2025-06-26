@@ -9,8 +9,10 @@ import { CalendarDays, Users, BarChart3 } from "lucide-react"
 import { RevenueTab } from "@/components/sales-analytics/revenue-tab"
 import { ManagementTab } from "@/components/sales-analytics/management-tab"
 import { CommissionTab } from "@/components/sales-analytics/commission-tab"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function SalesAnalyticsPage() {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("revenue")
   const [dateRange, setDateRange] = useState("this-month")
   const [selectedAgent, setSelectedAgent] = useState("all")
@@ -18,7 +20,7 @@ export default function SalesAnalyticsPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <AppHeader title="Sales Analytics" />
+      <AppHeader title={t("analiticaVentas")} />
 
       <div className="flex-1 p-6 space-y-6">
         {/* Filters Section */}
@@ -33,24 +35,24 @@ export default function SalesAnalyticsPage() {
                     <SelectValue placeholder="Pick a date" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="today">Today</SelectItem>
-                    <SelectItem value="this-week">This Week</SelectItem>
-                    <SelectItem value="this-month">This Month</SelectItem>
-                    <SelectItem value="last-month">Last Month</SelectItem>
-                    <SelectItem value="this-year">This Year</SelectItem>
+                    <SelectItem value="today">{t("today")}</SelectItem>
+                    <SelectItem value="this-week">{t("thisWeek")}</SelectItem>
+                    <SelectItem value="this-month">{t("thisMonth")}</SelectItem>
+                    <SelectItem value="last-month">{t("lastMonth")}</SelectItem>
+                    <SelectItem value="this-year">{t("thisYear")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Agent</span>
+                <span className="text-sm font-medium">{t("agent")}</span>
                 <Select value={selectedAgent} onValueChange={setSelectedAgent}>
                   <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder="All Agents" />
+                    <SelectValue placeholder={t("allAgents")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Agents</SelectItem>
+                    <SelectItem value="all">{t("allAgents")}</SelectItem>
                     <SelectItem value="agent1">Agent 1</SelectItem>
                     <SelectItem value="agent2">Agent 2</SelectItem>
                     <SelectItem value="agent3">Agent 3</SelectItem>
@@ -61,17 +63,17 @@ export default function SalesAnalyticsPage() {
 
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Product</span>
+                <span className="text-sm font-medium">{t("product")}</span>
                 <Select value={selectedProduct} onValueChange={setSelectedProduct}>
                   <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder="All Products" />
+                    <SelectValue placeholder={t("allProducts")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Products</SelectItem>
+                    <SelectItem value="all">{t("allProducts")}</SelectItem>
                     <SelectItem value="upsell">Upsell</SelectItem>
                     <SelectItem value="abs">ABS</SelectItem>
-                    <SelectItem value="room-number">Room Number</SelectItem>
-                    <SelectItem value="extras">Extras</SelectItem>
+                    <SelectItem value="room-number">{t("roomNumber")}</SelectItem>
+                    <SelectItem value="extras">{t("extras")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -83,13 +85,13 @@ export default function SalesAnalyticsPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="revenue" className="text-base font-medium">
-              Revenue
+              {t("revenue")}
             </TabsTrigger>
             <TabsTrigger value="management" className="text-base font-medium">
-              Management
+              {t("management")}
             </TabsTrigger>
             <TabsTrigger value="commission" className="text-base font-medium">
-              Commission
+              {t("commission")}
             </TabsTrigger>
           </TabsList>
 
