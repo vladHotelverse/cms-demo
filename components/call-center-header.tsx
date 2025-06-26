@@ -21,14 +21,16 @@ export function CallCenterHeader({
   return (
     <div className={cn("flex items-center border-b bg-background h-[61px] px-4", className)}>
       <SidebarTrigger className="mr-4" />
-      <TabsList className="h-10">
-        <TabsTrigger value="call-center">
-          {t("callCenter")}
-        </TabsTrigger>
-        <TabsTrigger value="dashboard" disabled>
-          {t("dashboard")}
-        </TabsTrigger>
-      </TabsList>
+      <Tabs value={activeTab} onValueChange={onTabChange}>
+        <TabsList className="h-10">
+          <TabsTrigger value="call-center">
+            {t("callCenter")}
+          </TabsTrigger>
+          <TabsTrigger value="dashboard" disabled>
+            {t("dashboard")}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
     </div>
   )
 } 
