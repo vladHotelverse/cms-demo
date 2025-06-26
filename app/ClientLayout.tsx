@@ -2,7 +2,7 @@
 import type React from "react"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/app-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/contexts/language-context"
@@ -23,11 +23,18 @@ export default function ClientLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
-            <SidebarProvider>
+            <SidebarProvider defaultOpen={!isReservationPage}>
               <div className="flex h-screen w-full overflow-hidden">
-                {/* Conditionally render sidebar - hide it on reservation pages when in reservation mode */}
-                {!isReservationPage && <AppSidebar />}
-                <main className="flex-1 overflow-auto">{children}</main>
+                <AppSidebar />
+                <main className="flex-1 overflow-auto">
+                  {/* Add sidebar trigger for reservation pages */}
+                  {isReservationPage && (
+                    <div className="fixed top-4 left-4 z-50">
+                      <SidebarTrigger className="bg-white shadow-md border hover:bg-gray-50" />
+                    </div>
+                  )}
+                  {children}
+                </main>
               </div>
             </SidebarProvider>
           </ThemeProvider>
