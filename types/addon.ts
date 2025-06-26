@@ -1,5 +1,10 @@
-export interface Addon {
-  id: string
+import { BaseEntity } from './common'
+
+/**
+ * @deprecated Use types from lib/validations/addon.ts instead
+ * This interface is kept for backward compatibility
+ */
+export interface Addon extends BaseEntity {
   name: string
   description: string
   type: "extra" | "experience"
@@ -16,3 +21,12 @@ export interface Addon {
     }
   }
 }
+
+// Re-export the new types for convenience
+export type { 
+  Addon as AddonNew,
+  CreateAddonData,
+  UpdateAddonData,
+  AddonFormData,
+  AddonTranslation
+} from '../lib/validations/addon'
