@@ -100,4 +100,3 @@ export const FormSection: React.FC<FormSectionProps> = ({
  * FormSection with memo for performance optimization
  */
 export default React.memo(FormSection)
-

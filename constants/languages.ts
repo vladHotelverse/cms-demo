@@ -45,4 +45,3 @@ export const getLanguageOptions = () => {
 export const getPrimaryLanguages = (): Language[] => {
   return SUPPORTED_LANGUAGES.filter(lang => ['es', 'en', 'fr', 'de'].includes(lang.id))
 }
-

@@ -142,4 +142,3 @@ export const MinimalErrorFallback: React.FC<ErrorFallbackProps> = ({
 }
 
 export default ErrorFallback
-

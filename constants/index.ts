@@ -56,4 +56,3 @@ export const UI_CONFIG = {
     easing: 'ease-in-out'
   }
 } as const
-

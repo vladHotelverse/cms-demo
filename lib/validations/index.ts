@@ -71,4 +71,3 @@ export const validateData = <T>(
     errors: result.error.errors.map(err => err.message)
   }
 }
-

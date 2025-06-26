@@ -162,4 +162,3 @@ export const partition = <T>(
   
   return [truthy, falsy]
 }
-
