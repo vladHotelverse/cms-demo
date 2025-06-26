@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -47,10 +47,15 @@ const getInitialBands = (t: (key: string) => string): Band[] => [
 
 export default function AddonsBandsPage() {
   const { toast } = useToast()
-  const { t } = useLanguage()
+  const { t, currentLanguage } = useLanguage()
   const [bands, setBands] = useState<Band[]>(getInitialBands(t))
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingBand, setEditingBand] = useState<Band | null>(null)
+
+  // Update sample bands when language changes
+  useEffect(() => {
+    setBands(getInitialBands(t))
+  }, [currentLanguage, t])
 
   const handleCreateBand = () => {
     setEditingBand(null)
