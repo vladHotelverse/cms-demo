@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useLanguage } from "@/contexts/language-context"
 import EnhancedServicesTables from "./enhanced-services-tables"
+import EnhancedTableView from "./enhanced-table-view"
 
 interface ReservationData {
   id: string
@@ -75,7 +76,7 @@ export default function ReservationDetailsTab({
   const [selectedRoomType, setSelectedRoomType] = useState("deluxe")
   const [selectedSegment, setSelectedSegment] = useState("premium")
   const [selectedAgent, setSelectedAgent] = useState("agent1")
-  const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks")
+  const [viewMode, setViewMode] = useState<"list" | "blocks">("list")
   const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false)
   const [selectedCommissionReason, setSelectedCommissionReason] = useState("")
   const [cartItems, setCartItems] = useState<any[]>([])
@@ -271,11 +272,15 @@ export default function ReservationDetailsTab({
 
           <Separator />
 
-          {/* Bottom Section - Enhanced Tables and Price Summary */}
+          {/* Bottom Section - Dynamic View Based on Toggle */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Enhanced Services Tables */}
+            {/* Services Tables - Dynamic View */}
             <div className="lg:col-span-2">
-              <EnhancedServicesTables onAddToCart={handleAddToCart} onSelectRoom={handleSelectRoom} />
+              {viewMode === "list" ? (
+                <EnhancedTableView onAddToCart={handleAddToCart} onSelectRoom={handleSelectRoom} />
+              ) : (
+                <EnhancedServicesTables onAddToCart={handleAddToCart} onSelectRoom={handleSelectRoom} />
+              )}
             </div>
 
             {/* Price Summary Section */}
