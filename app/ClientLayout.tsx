@@ -29,8 +29,8 @@ export default function ClientLayout({
                 <main className="flex-1 overflow-auto">
                   {/* Add sidebar trigger for reservation pages */}
                   {isReservationPage && (
-                    <div className="fixed top-4 left-4 z-50">
-                      <SidebarTrigger className="bg-white shadow-md border hover:bg-gray-50" />
+                    <div className="fixed top-20 left-4 z-50">
+                      <SidebarTrigger className="bg-white shadow-lg border hover:bg-gray-50 rounded-md" />
                     </div>
                   )}
                   {children}
