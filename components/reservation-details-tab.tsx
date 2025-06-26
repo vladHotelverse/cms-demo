@@ -478,10 +478,7 @@ export default function ReservationDetailsTab({
                           <TableCell>{room.commission}</TableCell>
                           <TableCell>{room.features}</TableCell>
                           <TableCell>
-                            <Button
-                              size="sm"
-                              className="bg-amber-100 hover:bg-amber-200 text-amber-800 border-amber-300"
-                            >
+                            <Button size="sm" variant="secondary">
                               Select Room
                             </Button>
                           </TableCell>
@@ -529,10 +526,7 @@ export default function ReservationDetailsTab({
                             <TableCell>{item.commission}</TableCell>
                             <TableCell>{item.description}</TableCell>
                             <TableCell>
-                              <Button
-                                size="sm"
-                                className="bg-amber-100 hover:bg-amber-200 text-amber-800 border-amber-300"
-                              >
+                              <Button size="sm" variant="secondary">
                                 Add to cart
                               </Button>
                             </TableCell>
@@ -617,10 +611,7 @@ export default function ReservationDetailsTab({
                           <TableCell>{extra.total}</TableCell>
                           <TableCell>{extra.commission}</TableCell>
                           <TableCell>
-                            <Button
-                              size="sm"
-                              className="bg-amber-100 hover:bg-amber-200 text-amber-800 border-amber-300"
-                            >
+                            <Button size="sm" variant="secondary">
                               Add to cart
                             </Button>
                           </TableCell>
