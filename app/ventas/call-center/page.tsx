@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CallCenterHeader } from "@/components/call-center-header"
 import { useLanguage } from "@/contexts/language-context"
 
 // Sample hotels data - in a real app this would come from user permissions
@@ -28,6 +29,7 @@ const segments = [
 export default function CallCenterPage() {
   const [selectedHotel, setSelectedHotel] = useState<string>("")
   const [selectedSegment, setSelectedSegment] = useState<string>("")
+  const [activeTab, setActiveTab] = useState("call-center")
   const { t } = useLanguage()
 
   const handleStart = () => {
@@ -54,22 +56,12 @@ export default function CallCenterPage() {
   return (
     <div className="w-full h-full">
       {/* Tab Navigation */}
-      <Tabs defaultValue="call-center" className="w-full">
-        <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
-          <TabsTrigger
-            value="call-center"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:bg-transparent px-8 py-4"
-          >
-            {t("callCenter")}
-          </TabsTrigger>
-          <TabsTrigger
-            value="dashboard"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:bg-transparent px-8 py-4"
-            disabled
-          >
-            {t("dashboard")}
-          </TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <CallCenterHeader
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          t={t}
+        />
 
         <TabsContent value="call-center" className="mt-0">
           <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-8">

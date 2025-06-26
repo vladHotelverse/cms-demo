@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { AppHeader } from "@/components/app-header"
 import AddonCategoryList from "@/components/addon-category-list"
 import ExtraAddonCardGrid from "@/components/extra-addon-card-grid"
 import AddonPricingSheet from "@/components/addon-pricing-sheet"
@@ -190,12 +191,10 @@ export default function AddonsPricingPage() {
   }
 
   return (
-    <div className="p-6 md:p-8 w-full h-full">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t("addonsPricing")}</h1>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div className="w-full h-full">
+      <AppHeader title={t("addonsPricing")} />
+      <div className="p-6 md:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-1">
           <AddonCategoryList selectedCategoryId={selectedCategoryId} onSelectCategory={setSelectedCategoryId} />
         </div>
@@ -217,6 +216,7 @@ export default function AddonsPricingPage() {
           }
         />
       )}
+      </div>
     </div>
   )
 }

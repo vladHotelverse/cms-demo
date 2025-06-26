@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Trash, Plus, X } from "lucide-react"
 import { ImageIcon } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useLanguage } from "@/contexts/language-context"
 import type { Addon } from "@/types/addon"
 
 // Sample categories
@@ -59,6 +60,7 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
   const [activeTab, setActiveTab] = useState("general")
   const [selectedLanguage, setSelectedLanguage] = useState("es")
   const { toast } = useToast()
+  const { t } = useLanguage()
 
   // Reset form when addon changes
   useEffect(() => {
@@ -128,8 +130,8 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
     // Validate required fields
     if (!formData.name || !formData.description || !formData.type || !formData.categoryId) {
       toast({
-        title: "Missing required fields",
-        description: "Please fill in all required fields",
+        title: t("missingRequiredFields"),
+        description: t("fillAllRequiredFields"),
         variant: "destructive",
       })
       return
@@ -138,8 +140,8 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
     // Validate type-specific fields
     if (formData.type === "experience" && !formData.link) {
       toast({
-        title: "Missing link",
-        description: "Please provide a link for the experience",
+        title: t("missingLink"),
+        description: t("provideLinkForExperience"),
         variant: "destructive",
       })
       return
@@ -147,8 +149,8 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
 
     if (formData.type === "extra" && (!formData.emails || formData.emails.length === 0 || !formData.emails[0])) {
       toast({
-        title: "Missing email",
-        description: "Please provide at least one notification email",
+        title: t("missingEmail"),
+        description: t("provideNotificationEmail"),
         variant: "destructive",
       })
       return
@@ -158,8 +160,8 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
     onSave(formData as Addon)
 
     toast({
-      title: addon ? "Addon updated" : "Addon created",
-      description: `Successfully ${addon ? "updated" : "created"} addon "${formData.name}"`,
+      title: addon ? t("addonUpdated") : t("addonCreated"),
+      description: `${addon ? t("successfullyUpdatedAddon") : t("successfullyCreatedAddon")} "${formData.name}"`,
     })
   }
 
@@ -167,8 +169,8 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
     if (addon?.id) {
       onDelete(addon.id)
       toast({
-        title: "Addon deleted",
-        description: `Successfully deleted addon "${addon.name}"`,
+        title: t("addonDeleted"),
+        description: `${t("successfullyDeletedAddon")} "${addon.name}"`,
       })
     }
   }
@@ -177,49 +179,49 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-md md:max-w-lg w-full p-0 flex flex-col">
         <SheetHeader className="p-6 border-b">
-          <SheetTitle>{addon ? "Edit Addon" : "Create Addon"}</SheetTitle>
+          <SheetTitle>{addon ? `${t("edit")} ${t("addon")}` : `${t("create")} ${t("addon")}`}</SheetTitle>
         </SheetHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
           <TabsList className="grid grid-cols-3 px-6 pt-4">
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="translations">Translations</TabsTrigger>
-            <TabsTrigger value="media">Media</TabsTrigger>
+            <TabsTrigger value="general">{t("general")}</TabsTrigger>
+            <TabsTrigger value="translations">{t("translations")}</TabsTrigger>
+            <TabsTrigger value="media">{t("media")}</TabsTrigger>
           </TabsList>
 
           <ScrollArea className="flex-1">
             <TabsContent value="general" className="p-6 space-y-4 min-h-[400px]">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">{t("name")}</Label>
                 <Input
                   id="name"
                   value={formData.name || ""}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="Addon name"
+                  placeholder={t("addonName")}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t("description")}</Label>
                 <Textarea
                   id="description"
                   value={formData.description || ""}
                   onChange={(e) => handleInputChange("description", e.target.value)}
-                  placeholder="Addon description"
+                  placeholder={t("addonDescription")}
                   rows={3}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Type</Label>
+                  <Label htmlFor="type">{t("type")}</Label>
                   <Select value={formData.type || "extra"} onValueChange={(value) => handleInputChange("type", value)}>
                     <SelectTrigger id="type">
-                      <SelectValue placeholder="Select type" />
+                      <SelectValue placeholder={t("selectType")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="extra">Extra</SelectItem>
-                      <SelectItem value="experience">Experience</SelectItem>
+                      <SelectItem value="extra">{t("extra")}</SelectItem>
+                      <SelectItem value="experience">{t("experience")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

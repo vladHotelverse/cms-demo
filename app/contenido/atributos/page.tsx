@@ -1,6 +1,7 @@
 "use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
+import { AppHeader } from "@/components/app-header"
 import EquipmentCategoryManager from "@/components/equipment-category-manager"
 import TranslationManager from "@/components/translation-manager"
 import { useLanguage } from "@/contexts/language-context"
@@ -9,12 +10,10 @@ export default function AtributosPage() {
   const { t } = useLanguage()
 
   return (
-    <div className="w-full h-full p-6 md:p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t("atributosManagement")}</h1>
-      </div>
-
-      <Tabs defaultValue="categories" className="w-full">
+    <div className="w-full h-full">
+      <AppHeader title={t("atributosManagement")} />
+      <div className="p-6 md:p-8">
+        <Tabs defaultValue="categories" className="w-full">
         <TabsList className="w-full max-w-md mb-6">
           <TabsTrigger value="categories" className="flex-1">
             {t("equipmentCategories")}
@@ -36,6 +35,7 @@ export default function AtributosPage() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   )
 }

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { AppHeader } from "@/components/app-header"
 import BandsTable from "@/components/bands-table"
 import BandFormDialog from "@/components/band-form-dialog"
 import { useToast } from "@/hooks/use-toast"
@@ -16,41 +17,46 @@ interface Band {
   description: string
 }
 
-// Sample initial data
-const initialBands: Band[] = [
+// Sample initial data - using translation keys for demo purposes
+const getInitialBands = (t: (key: string) => string): Band[] => [
   {
     id: "1",
-    name: "Standard",
-    description: "Basic addons package for standard rooms",
+    name: t("standard"),
+    description: t("basicAddonsPackage"),
   },
   {
     id: "2",
-    name: "Premium",
-    description: "Enhanced addons package for premium rooms with additional services",
+    name: t("premium"),
+    description: t("enhancedAddonsPackage"),
   },
   {
     id: "3",
-    name: "Luxury",
-    description: "Comprehensive addons package for luxury suites with exclusive benefits",
+    name: t("luxury"),
+    description: t("comprehensiveAddonsPackage"),
   },
   {
     id: "4",
-    name: "Business",
-    description: "Specialized addons package for business travelers with work-related services",
+    name: t("business"),
+    description: t("specializedAddonsPackage"),
   },
   {
     id: "5",
-    name: "Family",
-    description: "Family-friendly addons package with activities and services for children",
+    name: t("family"),
+    description: t("familyFriendlyAddonsPackage"),
   },
 ]
 
 export default function AddonsBandsPage() {
-  const [bands, setBands] = useState<Band[]>(initialBands)
+  const { toast } = useToast()
+  const { t, currentLanguage } = useLanguage()
+  const [bands, setBands] = useState<Band[]>(getInitialBands(t))
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingBand, setEditingBand] = useState<Band | null>(null)
-  const { toast } = useToast()
-  const { t } = useLanguage()
+
+  // Update sample bands when language changes
+  useEffect(() => {
+    setBands(getInitialBands(t))
+  }, [currentLanguage, t])
 
   const handleCreateBand = () => {
     setEditingBand(null)
@@ -67,8 +73,8 @@ export default function AddonsBandsPage() {
       // Update existing band
       setBands(bands.map((b) => (b.id === editingBand.id ? { ...b, ...band } : b)))
       toast({
-        title: "Band updated",
-        description: `Successfully updated band "${band.name}"`,
+        title: t("bandUpdated"),
+        description: `${t("successfullyUpdatedBand")} "${band.name}"`,
       })
     } else {
       // Create new band with generated ID
@@ -78,8 +84,8 @@ export default function AddonsBandsPage() {
       } as Band
       setBands([...bands, newBand])
       toast({
-        title: "Band created",
-        description: `Successfully created band "${band.name}"`,
+        title: t("bandCreated"),
+        description: `${t("successfullyCreatedBand")} "${band.name}"`,
       })
     }
     setIsFormOpen(false)
@@ -89,25 +95,28 @@ export default function AddonsBandsPage() {
     const bandToDelete = bands.find((band) => band.id === id)
     setBands(bands.filter((band) => band.id !== id))
     toast({
-      title: "Band deleted",
-      description: `Successfully deleted band "${bandToDelete?.name}"`,
+      title: t("bandDeleted"),
+      description: `${t("successfullyDeletedBand")} "${bandToDelete?.name}"`,
     })
   }
 
   return (
-    <div className="p-6 md:p-8 w-full h-full">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t("addonsBands")}</h1>
-        <Button onClick={handleCreateBand}>
-          <Plus className="h-4 w-4 mr-2" /> {t("addBand")}
-        </Button>
-      </div>
+    <div className="w-full h-full">
+      <AppHeader title={t("addonsBands")}>
+        <div className="flex justify-end">
+          <Button onClick={handleCreateBand}>
+            <Plus className="h-4 w-4 mr-2" /> {t("addBand")}
+          </Button>
+        </div>
+      </AppHeader>
+      <div className="p-6 md:p-8">
 
       <Card className="border-none shadow-sm">
         <BandsTable bands={bands} onEdit={handleEditBand} onDelete={handleDeleteBand} />
       </Card>
 
       <BandFormDialog open={isFormOpen} onOpenChange={setIsFormOpen} band={editingBand} onSave={handleSaveBand} />
+      </div>
     </div>
   )
 }
