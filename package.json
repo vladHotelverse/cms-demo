@@ -5,7 +5,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "biome lint . --apply-unsafe --max-diagnostics=0 --json --skip-unfixable",
+    "format": "biome format --write .",
     "start": "next start"
   },
   "dependencies": {
