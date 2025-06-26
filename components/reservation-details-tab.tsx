@@ -85,7 +85,7 @@ export default function ReservationDetailsTab({
 
   const handleCommissionConfirm = () => {
     if (!selectedCommissionReason) {
-      onShowAlert("error", t("currentLanguage") === "es" ? "Por favor selecciona un motivo" : "Please select a reason")
+      onShowAlert("error", t("pleaseSelectReason"))
       return
     }
 
@@ -98,7 +98,7 @@ export default function ReservationDetailsTab({
 
     onShowAlert(
       "success",
-      t("currentLanguage") === "es" ? "Reserva confirmada exitosamente" : "Booking confirmed successfully",
+      t("bookingConfirmedSuccessfully"),
     )
 
     // Optionally close the tab after successful booking
@@ -136,7 +136,7 @@ export default function ReservationDetailsTab({
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold">
-                  {t("currentLanguage") === "es" ? "Configuración" : "Configuration"}
+                  {t("configuration")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -144,7 +144,7 @@ export default function ReservationDetailsTab({
                   {/* View Mode Toggle */}
                   <div className="flex items-center gap-3">
                     <Label className="text-sm font-medium text-gray-600 whitespace-nowrap">
-                      {t("currentLanguage") === "es" ? "Ver como:" : "View as:"}
+                      {t("viewAs")}
                     </Label>
                     <div className="flex items-center gap-1">
                       <Button
