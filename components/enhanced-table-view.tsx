@@ -30,7 +30,6 @@ const roomUpgrades = [
     rating: 4.8,
     image: "/hotel-room-ocean-view.png",
     highlights: ["Most Popular", "Best Value"],
-    icon: "🏨",
   },
   {
     id: 2,
@@ -45,7 +44,6 @@ const roomUpgrades = [
     rating: 4.9,
     image: "/luxury-hotel-suite.png",
     highlights: ["Premium Choice"],
-    icon: "👑",
   },
   {
     id: 3,
@@ -60,7 +58,6 @@ const roomUpgrades = [
     rating: 5.0,
     image: "/king-suite-sea-view.png",
     highlights: ["Exclusive"],
-    icon: "⭐",
   },
   {
     id: 4,
@@ -75,7 +72,6 @@ const roomUpgrades = [
     rating: 5.0,
     image: "/presidential-suite.png",
     highlights: ["Ultimate Experience"],
-    icon: "💎",
   },
 ]
 
@@ -92,7 +88,6 @@ const attributes = {
         commission: "0,10€ - 0,15€",
         description: "Bed size 135x200",
         popularity: 65,
-        icon: "🛏️",
       },
       {
         name: "Queen Size Bed",
@@ -101,7 +96,6 @@ const attributes = {
         commission: "0,17€ - 0,20€",
         description: "Bed size 150x200",
         popularity: 85,
-        icon: "👑",
       },
       {
         name: "King Size Bed",
@@ -110,7 +104,6 @@ const attributes = {
         commission: "0,25€ - 0,40€",
         description: "Bed size 180x200",
         popularity: 75,
-        icon: "🏰",
       },
       {
         name: "Extra King Size Bed",
@@ -119,7 +112,6 @@ const attributes = {
         commission: "0,45€ - 0,50€",
         description: "Bed size 200x200",
         popularity: 45,
-        icon: "💎",
       },
     ],
   },
@@ -134,7 +126,6 @@ const attributes = {
         commission: "0,10€ - 0,15€",
         description: "Close to hotel Main Pool",
         popularity: 90,
-        icon: "🏊",
       },
       {
         name: "In Main Building",
@@ -143,7 +134,6 @@ const attributes = {
         commission: "0,17€ - 0,20€",
         description: "Near Hotel Entrance",
         popularity: 70,
-        icon: "🏢",
       },
       {
         name: "Corner Room",
@@ -152,7 +142,6 @@ const attributes = {
         commission: "0,25€ - 0,40€",
         description: "Extra Balcony Size",
         popularity: 60,
-        icon: "📐",
       },
       {
         name: "Quiet Area",
@@ -161,7 +150,6 @@ const attributes = {
         commission: "0,45€ - 0,50€",
         description: "For Business Guests",
         popularity: 55,
-        icon: "🤫",
       },
       {
         name: "Direct Pool Access",
@@ -170,7 +158,6 @@ const attributes = {
         commission: "0,55€ - 0,65€",
         description: "Swim-out",
         popularity: 80,
-        icon: "🏊‍♂️",
       },
     ],
   },
@@ -185,7 +172,6 @@ const attributes = {
         commission: "0,10€ - 0,15€",
         description: "Lower floor",
         popularity: 40,
-        icon: "⬇️",
       },
       {
         name: "Intermediate Floor",
@@ -194,7 +180,6 @@ const attributes = {
         commission: "0,17€ - 0,20€",
         description: "Floors 1 - 3",
         popularity: 75,
-        icon: "🏢",
       },
       {
         name: "Higher Floors",
@@ -203,7 +188,6 @@ const attributes = {
         commission: "0,25€ - 0,40€",
         description: "Floors 4-6",
         popularity: 85,
-        icon: "⬆️",
       },
       {
         name: "Rooftop",
@@ -212,7 +196,6 @@ const attributes = {
         commission: "0,45€ - 0,50€",
         description: "Floor 7",
         popularity: 95,
-        icon: "🏔️",
       },
     ],
   },
@@ -227,7 +210,6 @@ const extras = [
     units: 1,
     total: "5€ - 7€",
     commission: "0,25€ - 0,50€",
-    icon: "⏰",
     description: "Check in before 3 PM",
     popularity: 80,
     category: "Convenience",
@@ -239,7 +221,6 @@ const extras = [
     units: 2,
     total: "70€ - 90€",
     commission: "3,50€ - 5€",
-    icon: "🧘‍♀️",
     description: "Relaxing spa experience",
     popularity: 95,
     category: "Wellness",
@@ -251,7 +232,6 @@ const extras = [
     units: 1,
     total: "100€ - 140€",
     commission: "5,50€ - 6,50€",
-    icon: "🍽️",
     description: "Premium dining experience",
     popularity: 70,
     category: "Dining",
@@ -263,7 +243,6 @@ const extras = [
     units: 1,
     total: "4€ - 8€",
     commission: "0,25€ - 0,50€",
-    icon: "🏖️",
     description: "Reserved poolside seating",
     popularity: 60,
     category: "Recreation",
@@ -275,7 +254,6 @@ const extras = [
     units: 1,
     total: "5€ - 7€",
     commission: "0,25€ - 0,50€",
-    icon: "🕐",
     description: "Check out after 12 PM",
     popularity: 85,
     category: "Convenience",
@@ -340,19 +318,19 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
       <div className="space-y-8">
         {/* Room Upgrade Enhanced Table */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-3">
+          <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b px-4 py-3">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
               <Crown className="h-6 w-6 text-blue-600" />
               Room Upgrades
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
                 {roomUpgrades.length} options
               </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-4">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                <TableHeader className="h-10">
                   <TableRow className="bg-gray-50/50">
                     <TableHead className="w-12"></TableHead>
                     <TableHead className="min-w-[200px]">
@@ -383,16 +361,16 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                       }`}
                       onClick={() => toggleRoomSelection(room.id)}
                     >
-                      <TableCell className="text-center">
+                      <TableCell className="text-center px-3 py-2">
                         <div className="flex flex-col items-center gap-2">
-                          <Avatar className="h-10 w-10">
+                          <Avatar className="h-8 w-8">
                             <AvatarImage src={room.image || "/placeholder.svg"} alt={room.type} />
-                            <AvatarFallback className="text-lg">{room.icon}</AvatarFallback>
+                            <AvatarFallback className="text-lg">RM</AvatarFallback>
                           </Avatar>
                           {selectedRooms.has(room.id) && <Check className="h-4 w-4 text-blue-600" />}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="px-3 py-2">
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-gray-900">{room.type}</span>
@@ -400,14 +378,14 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                               <Badge
                                 key={index}
                                 variant={highlight === "Most Popular" ? "default" : "secondary"}
-                                className="text-xs"
+                                className="text-xs px-1.5 py-0.5"
                               >
                                 {highlight}
                               </Badge>
                             ))}
                           </div>
-                          <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="text-xs">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
                               {room.category}
                             </Badge>
                             <div className="flex items-center gap-1">
@@ -426,28 +404,31 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center px-3 py-2">
                         <div className="flex flex-col items-center gap-1">
-                          <Progress value={room.popularity} className="w-16 h-2" />
+                          <Progress value={room.popularity} className="w-12 h-2" />
                           <span className={`text-xs font-medium ${getPopularityColor(room.popularity)}`}>
                             {room.popularity}%
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right font-medium">{room.priceRange}</TableCell>
-                      <TableCell className="text-right font-semibold text-lg">{room.totalPrice}</TableCell>
-                      <TableCell className="text-right font-medium text-green-600">{room.commission}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-right font-medium px-3 py-2">{room.priceRange}</TableCell>
+                      <TableCell className="text-right font-semibold text-lg px-3 py-2">{room.totalPrice}</TableCell>
+                      <TableCell className="text-right font-medium text-green-600 px-3 py-2">
+                        {room.commission}
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
                         <div className="space-y-1">
                           {room.features.split(", ").map((feature, index) => (
-                            <Badge key={index} variant="outline" className="text-xs mr-1">
+                            <Badge key={index} variant="outline" className="text-xs px-1.5 py-0.5 mr-1">
                               {feature}
                             </Badge>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center px-3 py-2">
                         <Button
+                          size="sm"
                           onClick={(e) => {
                             e.stopPropagation()
                             onSelectRoom(room)
@@ -471,19 +452,19 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
 
         {/* Attributes Enhanced Table */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border-b">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-3">
+          <CardHeader className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border-b px-4 py-3">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
               <Building2 className="h-6 w-6 text-green-600" />
               Room Attributes
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
                 {Object.values(attributes).reduce((acc, cat) => acc + cat.items.length, 0)} options
               </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-4">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                <TableHeader className="h-10">
                   <TableRow className="bg-gray-50/50">
                     <TableHead className="w-12"></TableHead>
                     <TableHead className="w-32">Category</TableHead>
@@ -509,16 +490,15 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           }`}
                           onClick={() => toggleAttributeSelection(itemKey)}
                         >
-                          <TableCell className="text-center">
+                          <TableCell className="text-center px-3 py-2">
                             <div className="flex flex-col items-center gap-2">
-                              <div className="text-lg">{item.icon}</div>
                               {isSelected && <Check className="h-4 w-4 text-green-600" />}
                             </div>
                           </TableCell>
                           {index === 0 && (
                             <TableCell
                               rowSpan={data.items.length}
-                              className={`text-center font-semibold border-r ${data.color} align-middle`}
+                              className={`text-center font-semibold border-r ${data.color} align-middle px-3 py-2`}
                             >
                               <div className="flex flex-col items-center gap-2">
                                 <data.icon className="h-5 w-5" />
@@ -526,29 +506,31 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                               </div>
                             </TableCell>
                           )}
-                          <TableCell>
+                          <TableCell className="px-3 py-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{item.name}</span>
                               {item.popularity >= 80 && (
-                                <Badge variant="secondary" className="text-xs">
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                                   Popular
                                 </Badge>
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="text-center">
+                          <TableCell className="text-center px-3 py-2">
                             <div className="flex flex-col items-center gap-1">
-                              <Progress value={item.popularity} className="w-16 h-2" />
+                              <Progress value={item.popularity} className="w-12 h-2" />
                               <span className={`text-xs font-medium ${getPopularityColor(item.popularity)}`}>
                                 {item.popularity}%
                               </span>
                             </div>
                           </TableCell>
-                          <TableCell className="text-right font-medium">{item.price}</TableCell>
-                          <TableCell className="text-right font-semibold">{item.total}</TableCell>
-                          <TableCell className="text-right font-medium text-green-600">{item.commission}</TableCell>
-                          <TableCell className="text-gray-600">{item.description}</TableCell>
-                          <TableCell className="text-center">
+                          <TableCell className="text-right font-medium px-3 py-2">{item.price}</TableCell>
+                          <TableCell className="text-right font-semibold px-3 py-2">{item.total}</TableCell>
+                          <TableCell className="text-right font-medium text-green-600 px-3 py-2">
+                            {item.commission}
+                          </TableCell>
+                          <TableCell className="text-gray-600 px-3 py-2">{item.description}</TableCell>
+                          <TableCell className="text-center px-3 py-2">
                             <Button
                               size="sm"
                               onClick={(e) => {
@@ -574,8 +556,8 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
 
         {/* CYR Map */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-purple-50 via-pink-50 to-rose-50 border-b">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-3">
+          <CardHeader className="bg-gradient-to-r from-purple-50 via-pink-50 to-rose-50 border-b px-4 py-3">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
               <MapPin className="h-6 w-6 text-purple-600" />
               Resort Map
             </CardTitle>
@@ -608,19 +590,19 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
 
         {/* Extras Enhanced Table */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 border-b">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-3">
+          <CardHeader className="bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 border-b px-4 py-3">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
               <Zap className="h-6 w-6 text-amber-600" />
               Extra Services
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
                 {extras.length} services
               </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-4">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                <TableHeader className="h-10">
                   <TableRow className="bg-gray-50/50">
                     <TableHead className="w-12"></TableHead>
                     <TableHead className="min-w-[180px]">Service</TableHead>
@@ -644,18 +626,17 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                         }`}
                         onClick={() => toggleExtraSelection(extra.name)}
                       >
-                        <TableCell className="text-center">
+                        <TableCell className="text-center px-3 py-2">
                           <div className="flex flex-col items-center gap-2">
-                            <div className="text-lg">{extra.icon}</div>
                             {isSelected && <Check className="h-4 w-4 text-amber-600" />}
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="px-3 py-2">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <span className="font-semibold">{extra.name}</span>
                               {extra.popularity >= 80 && (
-                                <Badge variant="secondary" className="text-xs">
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                                   Popular
                                 </Badge>
                               )}
@@ -663,26 +644,26 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                             <p className="text-xs text-gray-600">{extra.description}</p>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center">
-                          <Badge variant="outline" className="text-xs">
+                        <TableCell className="text-center px-3 py-2">
+                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
                             {extra.category}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-center px-3 py-2">
                           <div className="flex flex-col items-center gap-1">
-                            <Progress value={extra.popularity} className="w-16 h-2" />
+                            <Progress value={extra.popularity} className="w-12 h-2" />
                             <span className={`text-xs font-medium ${getPopularityColor(extra.popularity)}`}>
                               {extra.popularity}%
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right px-3 py-2">
                           <div className="space-y-1">
                             <div className="font-medium">{extra.price}</div>
                             <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">{extra.priceType}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-center px-3 py-2">
                           {extra.name === "Spa Treatment" || extra.name === "Dinner Package" ? (
                             <div className="flex items-center justify-center gap-2">
                               <Button
@@ -692,7 +673,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                                   e.stopPropagation()
                                   updateQuantity(extra.name, -1)
                                 }}
-                                className="h-8 w-8 p-0"
+                                className="h-7 w-7 p-0"
                               >
                                 <Minus className="h-4 w-4" />
                               </Button>
@@ -706,7 +687,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                                   e.stopPropagation()
                                   updateQuantity(extra.name, 1)
                                 }}
-                                className="h-8 w-8 p-0"
+                                className="h-7 w-7 p-0"
                               >
                                 <Plus className="h-4 w-4" />
                               </Button>
@@ -732,10 +713,13 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                             <span className="font-medium">{extra.units}</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-semibold">{extra.total}</TableCell>
-                        <TableCell className="text-right font-medium text-green-600">{extra.commission}</TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-right font-semibold px-3 py-2">{extra.total}</TableCell>
+                        <TableCell className="text-right font-medium text-green-600 px-3 py-2">
+                          {extra.commission}
+                        </TableCell>
+                        <TableCell className="text-center px-3 py-2">
                           <Button
+                            size="sm"
                             onClick={(e) => {
                               e.stopPropagation()
                               onAddToCart(extra)
