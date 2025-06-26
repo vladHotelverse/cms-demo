@@ -1,15 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { Calendar, User, Bed, CreditCard, Plus, Minus, CalendarDays } from "lucide-react"
+import { Calendar, User, Bed, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useLanguage } from "@/contexts/language-context"
+import EnhancedServicesTables from "./enhanced-services-tables"
 
 interface ReservationData {
   id: string
@@ -66,181 +66,6 @@ const commissionReasons = [
   { id: "loyalty_program", name: "Loyalty Program Benefits" },
 ]
 
-// Room upgrade data
-const roomUpgrades = [
-  {
-    id: 1,
-    type: "Room Type 01 (link)",
-    priceRange: "20€ - 30€",
-    totalPrice: "100€ - 150€",
-    commission: "10€ - 15€",
-    features: "Double Size Bed, Terrace, Pool View",
-  },
-  {
-    id: 2,
-    type: "Room Type 02 (link)",
-    priceRange: "25€ - 35€",
-    totalPrice: "125€ - 175€",
-    commission: "15€ - 20€",
-    features: "Queen Size Bed, Terrace, Sea Side View",
-  },
-  {
-    id: 3,
-    type: "Room Type 03 (link)",
-    priceRange: "50€ - 60€",
-    totalPrice: "250€ - 300€",
-    commission: "22€ - 30€",
-    features: "King Size Bed, Terrace, Sea View",
-  },
-  {
-    id: 4,
-    type: "Room Type 04 (link)",
-    priceRange: "70€ - 80€",
-    totalPrice: "350€ - 400€",
-    commission: "35€ - 40€",
-    features: "King Size Bed, Two-Story Terrace, Sea View",
-  },
-]
-
-// Attributes data
-const attributes = {
-  "Bed Type": [
-    {
-      name: "Double Size Bed",
-      price: "2€ - 3€",
-      total: "10€ - 15€",
-      commission: "0,10€ - 0,15€",
-      description: "Bed size 135x200",
-    },
-    {
-      name: "Queen Size Bed",
-      price: "3,50€ - 4€",
-      total: "17,50€ - 20€",
-      commission: "0,17€ - 0,20€",
-      description: "Bed size 150x200",
-    },
-    {
-      name: "King Size Bed",
-      price: "5€ - 7€",
-      total: "25€ - 35€",
-      commission: "0,25€ - 0,40€",
-      description: "Bed size 180x200",
-    },
-    {
-      name: "Extra King Size Bed",
-      price: "8€ - 10€",
-      total: "40€ - 50€",
-      commission: "0,45€ - 0,50€",
-      description: "Bed size 200x200",
-    },
-  ],
-  Location: [
-    {
-      name: "Close to Main Pool",
-      price: "2€ - 3€",
-      total: "10€ - 15€",
-      commission: "0,10€ - 0,15€",
-      description: "Close to hotel Main Pool",
-    },
-    {
-      name: "In Main Building",
-      price: "3,50€ - 4€",
-      total: "17,50€ - 20€",
-      commission: "0,17€ - 0,20€",
-      description: "Near Hotel Entrance",
-    },
-    {
-      name: "Corner Room",
-      price: "5€ - 7€",
-      total: "25€ - 35€",
-      commission: "0,25€ - 0,40€",
-      description: "Extra Balcony Size",
-    },
-    {
-      name: "Quiet Area",
-      price: "8€ - 10€",
-      total: "40€ - 50€",
-      commission: "0,45€ - 0,50€",
-      description: "For Business Guests",
-    },
-    {
-      name: "Direct Pool Access",
-      price: "9€ - 12€",
-      total: "45€ - 60€",
-      commission: "0,55€ - 0,65€",
-      description: "Swim-out",
-    },
-  ],
-  Floor: [
-    {
-      name: "Lower Floor",
-      price: "2€ - 3€",
-      total: "10€ - 15€",
-      commission: "0,10€ - 0,15€",
-      description: "Lower floor",
-    },
-    {
-      name: "Intermediate Floor",
-      price: "3,50€ - 4€",
-      total: "17,50€ - 20€",
-      commission: "0,17€ - 0,20€",
-      description: "Floors 1 - 3",
-    },
-    {
-      name: "Higher Floors",
-      price: "5€ - 7€",
-      total: "25€ - 35€",
-      commission: "0,25€ - 0,40€",
-      description: "Floors 4-6",
-    },
-    { name: "Rooftop", price: "8€ - 10€", total: "40€ - 50€", commission: "0,45€ - 0,50€", description: "Floor 7" },
-  ],
-}
-
-// Extras data
-const extras = [
-  {
-    name: "Early Check In (link)",
-    price: "5€ - 7€",
-    priceType: "per stay",
-    units: 1,
-    total: "5€ - 7€",
-    commission: "0,25€ - 0,50€",
-  },
-  {
-    name: "Spa (link)",
-    price: "35€ - 45€",
-    priceType: "per treatment",
-    units: 2,
-    total: "70€ - 90€",
-    commission: "3,50€ - 5€",
-  },
-  {
-    name: "Dinner (link)",
-    price: "50€ - 70€",
-    priceType: "per person/date",
-    units: 1,
-    total: "100€ - 140€",
-    commission: "5,50€ - 6,50€",
-  },
-  {
-    name: "Pool Bed (link)",
-    price: "2€ - 4€",
-    priceType: "per day",
-    units: 1,
-    total: "4€ - 8€",
-    commission: "0,25€ - 0,50€",
-  },
-  {
-    name: "Late Check Out (link)",
-    price: "5€ - 7€",
-    priceType: "per stay",
-    units: 1,
-    total: "5€ - 7€",
-    commission: "0,25€ - 0,50€",
-  },
-]
-
 export default function ReservationDetailsTab({
   reservation,
   onShowAlert,
@@ -253,11 +78,7 @@ export default function ReservationDetailsTab({
   const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks")
   const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false)
   const [selectedCommissionReason, setSelectedCommissionReason] = useState("")
-  const [extraQuantities, setExtraQuantities] = useState<{ [key: string]: number }>({
-    "Spa (link)": 2,
-    "Dinner (link)": 1,
-    "Pool Bed (link)": 1,
-  })
+  const [cartItems, setCartItems] = useState<any[]>([])
   const { t } = useLanguage()
 
   const handleConfirmBooking = () => {
@@ -287,11 +108,13 @@ export default function ReservationDetailsTab({
     setSelectedCommissionReason("")
   }
 
-  const updateQuantity = (itemName: string, change: number) => {
-    setExtraQuantities((prev) => ({
-      ...prev,
-      [itemName]: Math.max(1, (prev[itemName] || 1) + change),
-    }))
+  const handleAddToCart = (item: any) => {
+    setCartItems((prev) => [...prev, item])
+    onShowAlert("success", `${item.name} added to cart`)
+  }
+
+  const handleSelectRoom = (room: any) => {
+    onShowAlert("success", `${room.type} selected`)
   }
 
   return (
@@ -448,184 +271,16 @@ export default function ReservationDetailsTab({
 
           <Separator />
 
-          {/* Bottom Section - Tables and Price Summary */}
+          {/* Bottom Section - Enhanced Tables and Price Summary */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Tables Section */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Room Upgrade Table */}
-              <Card>
-                <CardHeader className="bg-gray-100 border-b">
-                  <CardTitle className="text-lg font-semibold text-center">Room Upgrade</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Room Type</TableHead>
-                        <TableHead>Price/Night</TableHead>
-                        <TableHead>Total Price</TableHead>
-                        <TableHead>Commission</TableHead>
-                        <TableHead>Features</TableHead>
-                        <TableHead></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {roomUpgrades.map((room) => (
-                        <TableRow key={room.id}>
-                          <TableCell className="font-medium">{room.type}</TableCell>
-                          <TableCell>{room.priceRange}</TableCell>
-                          <TableCell>{room.totalPrice}</TableCell>
-                          <TableCell>{room.commission}</TableCell>
-                          <TableCell>{room.features}</TableCell>
-                          <TableCell>
-                            <Button size="sm" variant="secondary">
-                              Select Room
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-
-              {/* Attributes Table */}
-              <Card>
-                <CardHeader className="bg-gray-100 border-b">
-                  <CardTitle className="text-lg font-semibold text-center">Attributes</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Attribute Type</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Price/Night</TableHead>
-                        <TableHead>Total Price</TableHead>
-                        <TableHead>Commission</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {Object.entries(attributes).map(([category, items]) =>
-                        items.map((item, index) => (
-                          <TableRow key={`${category}-${index}`}>
-                            {index === 0 && (
-                              <TableCell
-                                rowSpan={items.length}
-                                className="font-medium border-r bg-gray-50 text-center align-middle"
-                                style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-                              >
-                                {category}
-                              </TableCell>
-                            )}
-                            <TableCell className="font-medium">{item.name}</TableCell>
-                            <TableCell>{item.price}</TableCell>
-                            <TableCell>{item.total}</TableCell>
-                            <TableCell>{item.commission}</TableCell>
-                            <TableCell>{item.description}</TableCell>
-                            <TableCell>
-                              <Button size="sm" variant="secondary">
-                                Add to cart
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        )),
-                      )}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-
-              {/* CYR Map */}
-              <Card>
-                <CardHeader className="bg-gray-100 border-b">
-                  <CardTitle className="text-lg font-semibold text-center">CYR Map</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden">
-                    <img
-                      src="/images/hotel-aerial-view.png"
-                      alt="Hotel aerial view map"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Extras Table */}
-              <Card>
-                <CardHeader className="bg-gray-100 border-b">
-                  <CardTitle className="text-lg font-semibold text-center">Extras</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Extra</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Price Type</TableHead>
-                        <TableHead>Units</TableHead>
-                        <TableHead>Total Price</TableHead>
-                        <TableHead>Commission</TableHead>
-                        <TableHead></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {extras.map((extra, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{extra.name}</TableCell>
-                          <TableCell>{extra.price}</TableCell>
-                          <TableCell>{extra.priceType}</TableCell>
-                          <TableCell>
-                            {extra.name === "Spa (link)" || extra.name === "Dinner (link)" ? (
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => updateQuantity(extra.name, -1)}
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="w-8 text-center">{extraQuantities[extra.name] || extra.units}</span>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => updateQuantity(extra.name, 1)}
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <Plus className="h-4 w-4" />
-                                </Button>
-                                {extra.name === "Dinner (link)" && (
-                                  <Button size="sm" variant="outline" className="ml-2">
-                                    <CalendarDays className="h-4 w-4" />
-                                  </Button>
-                                )}
-                              </div>
-                            ) : (
-                              <span>{extra.units}</span>
-                            )}
-                          </TableCell>
-                          <TableCell>{extra.total}</TableCell>
-                          <TableCell>{extra.commission}</TableCell>
-                          <TableCell>
-                            <Button size="sm" variant="secondary">
-                              Add to cart
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
+            {/* Enhanced Services Tables */}
+            <div className="lg:col-span-2">
+              <EnhancedServicesTables onAddToCart={handleAddToCart} onSelectRoom={handleSelectRoom} />
             </div>
 
             {/* Price Summary Section */}
             <div className="lg:col-span-1">
-              <Card>
+              <Card className="sticky top-6">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
                     <CreditCard className="h-5 w-5" />
@@ -646,10 +301,16 @@ export default function ReservationDetailsTab({
                       </span>
                       <span className="font-medium">€78.90</span>
                     </div>
+                    {cartItems.length > 0 && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Cart items ({cartItems.length})</span>
+                        <span className="font-medium">€45.00</span>
+                      </div>
+                    )}
                     <Separator />
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span>{t("currentLanguage") === "es" ? "Total" : "Total"}</span>
-                      <span>€328.90</span>
+                      <span>€{cartItems.length > 0 ? "373.90" : "328.90"}</span>
                     </div>
                   </div>
 
