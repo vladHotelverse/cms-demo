@@ -71,14 +71,6 @@ const weeklyData = [
   { week: "Week 4", accepted: 96, pending: 41, cancelled: 9 },
 ]
 
-const chartConfig = {
-  accepted: { label: "Accepted", color: "hsl(220 70% 50%)" },
-  pending: { label: "Pending", color: "hsl(160 60% 45%)" },
-  cancelled: { label: "Cancelled", color: "hsl(0 70% 50%)" },
-  unmanaged: { label: "Unmanaged", color: "hsl(30 70% 50%)" },
-  other: { label: "Other", color: "hsl(270 60% 50%)" },
-}
-
 // Helper function to create pie chart paths
 const createPieSlice = (centerX: number, centerY: number, radius: number, startAngle: number, endAngle: number) => {
   const start = polarToCartesian(centerX, centerY, radius, endAngle)
@@ -97,9 +89,9 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
 
 export function ManagementTab() {
   return (
-    <div className="space-y-8">
-      {/* Enhanced KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+      {/* Enhanced KPI Cards - Responsive Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         {kpiData.map((kpi, index) => {
           const Icon = kpi.icon
           return (
@@ -108,30 +100,30 @@ export function ManagementTab() {
               className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <div className={`absolute inset-0 ${kpi.bgColor} opacity-5 group-hover:opacity-10 transition-opacity`} />
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <div className="flex items-start justify-between">
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
-                        <Icon className={`h-5 w-5 ${kpi.color}`} />
+                      <div className={`p-1.5 sm:p-2 rounded-lg ${kpi.bgColor}`}>
+                        <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${kpi.color}`} />
                       </div>
-                      <p className="text-sm font-medium text-muted-foreground">{kpi.title}</p>
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">{kpi.title}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-3xl font-bold tracking-tight">{kpi.value}</p>
-                      <div className="flex items-center gap-2">
+                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">{kpi.value}</p>
+                      <div className="flex items-center gap-1 sm:gap-2">
                         {kpi.trend === "up" ? (
-                          <ArrowUpRight className="h-4 w-4 text-green-500" />
+                          <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
                         ) : (
-                          <ArrowDownRight className="h-4 w-4 text-red-500" />
+                          <ArrowDownRight className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
                         )}
                         <Badge
                           variant={kpi.trend === "up" ? "default" : "destructive"}
-                          className="text-xs font-semibold"
+                          className="text-xs font-semibold px-1.5 py-0.5"
                         >
                           {kpi.change}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">{kpi.description}</span>
+                        <span className="text-xs text-muted-foreground hidden sm:inline">{kpi.description}</span>
                       </div>
                     </div>
                   </div>
@@ -142,23 +134,24 @@ export function ManagementTab() {
         })}
       </div>
 
-      {/* Management Overview */}
-      <div className="space-y-6">
-        {/* Pie Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Management Overview - Responsive Layout */}
+      <div className="space-y-4 sm:space-y-6">
+        {/* Pie Charts Row - Responsive Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Room Management Pie Chart */}
           <Card className="border-0 shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                Room Management Distribution
+            <CardHeader className="text-center p-4 sm:p-6">
+              <CardTitle className="flex items-center justify-center gap-2 text-base sm:text-lg">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-blue-500"></div>
+                <span className="hidden sm:inline">Room Management Distribution</span>
+                <span className="sm:hidden">Room Management</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="min-h-[300px]">
-                <div className="w-full h-[300px] flex items-center justify-center">
-                  <svg viewBox="0 0 400 300" className="w-full h-full">
-                    {/* Pie Chart */}
+            <CardContent className="p-2 sm:p-4 lg:p-6">
+              <ChartContainer config={{}} className="w-full">
+                <div className="w-full aspect-square max-w-[400px] mx-auto">
+                  <svg viewBox="0 0 400 300" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                    {/* Responsive Pie Chart */}
                     <g transform="translate(200, 150)">
                       {roomManagementData.map((item, index) => {
                         let startAngle = 0
@@ -174,14 +167,15 @@ export function ManagementTab() {
                               fill={item.color}
                               stroke="white"
                               strokeWidth="2"
+                              className="hover:opacity-80 transition-opacity cursor-pointer"
                             />
-                            {/* Percentage labels */}
+                            {/* Responsive percentage labels */}
                             <text
                               x={Math.cos((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
                               y={Math.sin((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
                               textAnchor="middle"
                               dominantBaseline="middle"
-                              className="fill-white text-xs font-semibold"
+                              className="fill-white text-xs sm:text-sm font-semibold"
                             >
                               {item.value}%
                             </text>
@@ -192,14 +186,17 @@ export function ManagementTab() {
                   </svg>
                 </div>
               </ChartContainer>
-              <div className="grid grid-cols-2 gap-2 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
                 {roomManagementData.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between text-sm p-2 rounded-lg bg-muted/30">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between text-xs sm:text-sm p-2 rounded-lg bg-muted/30"
+                  >
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full" style={{ backgroundColor: item.color }} />
                       <span className="font-medium">{item.name}</span>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                       {item.count}
                     </Badge>
                   </div>
@@ -210,17 +207,18 @@ export function ManagementTab() {
 
           {/* Extras Management Pie Chart */}
           <Card className="border-0 shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                Extras Management Distribution
+            <CardHeader className="text-center p-4 sm:p-6">
+              <CardTitle className="flex items-center justify-center gap-2 text-base sm:text-lg">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-purple-500"></div>
+                <span className="hidden sm:inline">Extras Management Distribution</span>
+                <span className="sm:hidden">Extras Management</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="min-h-[300px]">
-                <div className="w-full h-[300px] flex items-center justify-center">
-                  <svg viewBox="0 0 400 300" className="w-full h-full">
-                    {/* Pie Chart */}
+            <CardContent className="p-2 sm:p-4 lg:p-6">
+              <ChartContainer config={{}} className="w-full">
+                <div className="w-full aspect-square max-w-[400px] mx-auto">
+                  <svg viewBox="0 0 400 300" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                    {/* Responsive Pie Chart */}
                     <g transform="translate(200, 150)">
                       {extrasManagementData.map((item, index) => {
                         let startAngle = 0
@@ -236,14 +234,15 @@ export function ManagementTab() {
                               fill={item.color}
                               stroke="white"
                               strokeWidth="2"
+                              className="hover:opacity-80 transition-opacity cursor-pointer"
                             />
-                            {/* Percentage labels */}
+                            {/* Responsive percentage labels */}
                             <text
                               x={Math.cos((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
                               y={Math.sin((((startAngle + endAngle) / 2 - 90) * Math.PI) / 180) * 50}
                               textAnchor="middle"
                               dominantBaseline="middle"
-                              className="fill-white text-xs font-semibold"
+                              className="fill-white text-xs sm:text-sm font-semibold"
                             >
                               {item.value}%
                             </text>
@@ -254,14 +253,17 @@ export function ManagementTab() {
                   </svg>
                 </div>
               </ChartContainer>
-              <div className="grid grid-cols-2 gap-2 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
                 {extrasManagementData.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between text-sm p-2 rounded-lg bg-muted/30">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between text-xs sm:text-sm p-2 rounded-lg bg-muted/30"
+                  >
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full" style={{ backgroundColor: item.color }} />
                       <span className="font-medium">{item.name}</span>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                       {item.count}
                     </Badge>
                   </div>
@@ -271,22 +273,20 @@ export function ManagementTab() {
           </Card>
         </div>
 
-        {/* Weekly Trend Chart */}
+        {/* Weekly Trend Chart - Responsive */}
         <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-primary" />
-              Weekly Request Trend
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              <span className="hidden sm:inline">Weekly Request Trend</span>
+              <span className="sm:hidden">Weekly Trend</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="min-h-[350px]">
-              <div className="w-full h-[350px]">
-                <svg viewBox="0 0 800 350" className="w-full h-full">
-                  {/* Chart Background */}
-                  <rect width="800" height="350" fill="transparent" />
-
-                  {/* Grid */}
+          <CardContent className="p-2 sm:p-4 lg:p-6">
+            <ChartContainer config={{}} className="w-full">
+              <div className="w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-[2/1] min-h-[300px] sm:min-h-[350px]">
+                <svg viewBox="0 0 800 350" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                  {/* Responsive Grid */}
                   <defs>
                     <pattern id="grid3" width="40" height="35" patternUnits="userSpaceOnUse">
                       <path
@@ -300,11 +300,11 @@ export function ManagementTab() {
                   </defs>
                   <rect width="800" height="350" fill="url(#grid3)" />
 
-                  {/* Axes */}
+                  {/* Responsive Axes */}
                   <line x1="80" y1="300" x2="720" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
                   <line x1="80" y1="50" x2="80" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
 
-                  {/* Bars */}
+                  {/* Responsive Bars */}
                   {weeklyData.map((data, index) => {
                     const x = 120 + index * 140
                     const barWidth = 30
@@ -320,6 +320,7 @@ export function ManagementTab() {
                           height={data.accepted * scale}
                           fill="hsl(220 70% 50%)"
                           rx="2"
+                          className="hover:opacity-80 transition-opacity cursor-pointer"
                         />
 
                         {/* Pending bars */}
@@ -330,6 +331,7 @@ export function ManagementTab() {
                           height={data.pending * scale}
                           fill="hsl(160 60% 45%)"
                           rx="2"
+                          className="hover:opacity-80 transition-opacity cursor-pointer"
                         />
 
                         {/* Cancelled bars */}
@@ -340,23 +342,25 @@ export function ManagementTab() {
                           height={data.cancelled * scale}
                           fill="hsl(0 70% 50%)"
                           rx="2"
+                          className="hover:opacity-80 transition-opacity cursor-pointer"
                         />
 
-                        {/* Week label */}
+                        {/* Responsive week labels */}
                         <text
                           x={x + 50}
                           y="320"
                           textAnchor="middle"
-                          className="fill-current text-sm"
+                          className="fill-current text-xs sm:text-sm"
                           fill="hsl(var(--foreground))"
                         >
-                          {data.week}
+                          <tspan className="hidden sm:inline">{data.week}</tspan>
+                          <tspan className="sm:hidden">W{index + 1}</tspan>
                         </text>
                       </g>
                     )
                   })}
 
-                  {/* Y-axis labels */}
+                  {/* Responsive Y-axis labels */}
                   {[0, 20, 40, 60, 80, 100].map((value, index) => (
                     <g key={index}>
                       <text
@@ -371,8 +375,8 @@ export function ManagementTab() {
                     </g>
                   ))}
 
-                  {/* Legend */}
-                  <g transform="translate(500, 30)">
+                  {/* Responsive Legend */}
+                  <g transform="translate(450, 30)" className="hidden sm:block">
                     <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2" />
                     <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
                       Accepted
@@ -388,20 +392,38 @@ export function ManagementTab() {
                       Cancelled
                     </text>
                   </g>
+
+                  {/* Mobile Legend */}
+                  <g transform="translate(100, 30)" className="sm:hidden">
+                    <rect x="0" y="0" width="8" height="8" fill="hsl(220 70% 50%)" rx="1" />
+                    <text x="12" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Accept
+                    </text>
+
+                    <rect x="0" y="15" width="8" height="8" fill="hsl(160 60% 45%)" rx="1" />
+                    <text x="12" y="22" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Pending
+                    </text>
+
+                    <rect x="0" y="30" width="8" height="8" fill="hsl(0 70% 50%)" rx="1" />
+                    <text x="12" y="37" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Cancel
+                    </text>
+                  </g>
                 </svg>
               </div>
             </ChartContainer>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              <div className="text-center p-3 rounded-lg bg-blue-50">
-                <div className="text-2xl font-bold text-blue-600">351</div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
+              <div className="text-center p-2 sm:p-3 rounded-lg bg-blue-50">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">351</div>
                 <div className="text-xs text-muted-foreground">Total Accepted</div>
               </div>
-              <div className="text-center p-3 rounded-lg bg-green-50">
-                <div className="text-2xl font-bold text-green-600">176</div>
+              <div className="text-center p-2 sm:p-3 rounded-lg bg-green-50">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">176</div>
                 <div className="text-xs text-muted-foreground">Total Pending</div>
               </div>
-              <div className="text-center p-3 rounded-lg bg-red-50">
-                <div className="text-2xl font-bold text-red-600">42</div>
+              <div className="text-center p-2 sm:p-3 rounded-lg bg-red-50">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600">42</div>
                 <div className="text-xs text-muted-foreground">Total Cancelled</div>
               </div>
             </div>
