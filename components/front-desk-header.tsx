@@ -65,15 +65,24 @@ export function FrontDeskHeader({
             >
               <div className="flex items-center gap-2">
                 <span className="truncate max-w-32">{tab.reservation.name}</span>
-                <button
+                <span
                   onClick={(e) => {
                     e.stopPropagation()
                     onCloseTab(tab.id)
                   }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded-full p-1"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      onCloseTab(tab.id)
+                    }
+                  }}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded-full p-1 cursor-pointer"
                 >
                   <X className="h-3 w-3" />
-                </button>
+                </span>
               </div>
             </TabsTrigger>
           ))}
