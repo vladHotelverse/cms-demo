@@ -5,49 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { ChartContainer } from "@/components/ui/chart"
 import { TrendingUp, DollarSign, Users, Target, Award, ArrowUpRight, ArrowDownRight, BarChart3 } from "lucide-react"
-
-const kpiData = [
-  {
-    title: "Total Requests",
-    value: "2,847",
-    change: "+12.5%",
-    trend: "up",
-    icon: Users,
-    description: "vs last month",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-  },
-  {
-    title: "Total Revenue",
-    value: "$45,892",
-    change: "+8.2%",
-    trend: "up",
-    icon: DollarSign,
-    description: "vs last month",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-  },
-  {
-    title: "Average/Request",
-    value: "$161.20",
-    change: "-2.1%",
-    trend: "down",
-    icon: Target,
-    description: "vs last month",
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
-  },
-  {
-    title: "Total Upgrades",
-    value: "1,234",
-    change: "+15.3%",
-    trend: "up",
-    icon: Award,
-    description: "vs last month",
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-  },
-]
+import { useLanguage } from "@/contexts/language-context"
 
 const monthlyData = [
   { month: "Jan", upsell: 250, abs: 180, roomNumber: 120, extras: 200, total: 750 },
@@ -66,6 +24,50 @@ const trendData = [
 ]
 
 export function RevenueTab() {
+  const { t } = useLanguage()
+  
+  const kpiData = [
+    {
+      title: t("totalRequests"),
+      value: "2,847",
+      change: "+12.5%",
+      trend: "up",
+      icon: Users,
+      description: t("vsLastMonth"),
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      title: t("totalRevenue"),
+      value: "$45,892",
+      change: "+8.2%",
+      trend: "up",
+      icon: DollarSign,
+      description: t("vsLastMonth"),
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      title: t("averageRequest"),
+      value: "$161.20",
+      change: "-2.1%",
+      trend: "down",
+      icon: Target,
+      description: t("vsLastMonth"),
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+    },
+    {
+      title: t("totalUpgrades"),
+      value: "1,234",
+      change: "+15.3%",
+      trend: "up",
+      icon: Award,
+      description: t("vsLastMonth"),
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+    },
+  ]
   return (
     <div className="space-y-4 sm:space-y-6 lg:space-y-8">
       {/* Enhanced KPI Cards - Responsive Grid */}
@@ -117,13 +119,13 @@ export function RevenueTab() {
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-muted-foreground">
-              Revenue Goal
+              {t('revenueGoal')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
             <div className="text-center">
               <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary mb-2">85%</div>
-              <p className="text-xs sm:text-sm text-muted-foreground">Target Achievement</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t('targetAchievement')}</p>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
@@ -138,13 +140,13 @@ export function RevenueTab() {
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-muted-foreground">
-              Upsell Goal
+              {t('upsellGoal')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
             <div className="text-center">
               <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary mb-2">92%</div>
-              <p className="text-xs sm:text-sm text-muted-foreground">Target Achievement</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t('targetAchievement')}</p>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
