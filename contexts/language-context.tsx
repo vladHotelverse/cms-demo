@@ -181,6 +181,8 @@ const translations = {
     luxury: "Lujo",
     business: "Negocios",
     family: "Familia",
+    unknown: "Desconocido",
+    calendarExceptions: "Excepciones del Calendario",
 
     // Form labels and placeholders
     name: "Nombre",
@@ -604,6 +606,8 @@ const translations = {
     luxury: "Luxury",
     business: "Business",
     family: "Family",
+    unknown: "Unknown",
+    calendarExceptions: "Calendar Exceptions",
 
     // Form labels and placeholders
     name: "Name",

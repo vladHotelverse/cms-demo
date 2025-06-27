@@ -10,31 +10,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card } from "@/components/ui/card"
-
-// Sample item types
-const itemTypes = [
-  { id: "1", name: "Cleaning", color: "bg-blue-500" },
-  { id: "2", name: "Maintenance", color: "bg-amber-500" },
-  { id: "3", name: "Inspection", color: "bg-green-500" },
-  { id: "4", name: "Special Event", color: "bg-purple-500" },
-  { id: "5", name: "Staff Meeting", color: "bg-rose-500" },
-]
-
-// Months of the year
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
+import { useLanguage } from "@/contexts/language-context"
 
 type Exception = {
   id: string
@@ -45,6 +21,32 @@ type Exception = {
 }
 
 export default function ExceptionsManager() {
+  const { t } = useLanguage()
+  
+  // Sample item types
+  const itemTypes = [
+    { id: "1", name: t("cleaning"), color: "bg-blue-500" },
+    { id: "2", name: t("maintenance"), color: "bg-amber-500" },
+    { id: "3", name: t("inspection"), color: "bg-green-500" },
+    { id: "4", name: t("specialEvent"), color: "bg-purple-500" },
+    { id: "5", name: t("staffMeeting"), color: "bg-rose-500" },
+  ]
+
+  // Months of the year
+  const months = [
+    t("january"),
+    t("february"),
+    t("march"),
+    t("april"),
+    t("may"),
+    t("june"),
+    t("july"),
+    t("august"),
+    t("september"),
+    t("october"),
+    t("november"),
+    t("december"),
+  ]
   const [exceptions, setExceptions] = useState<Exception[]>([
     {
       id: "1",
@@ -140,13 +142,13 @@ export default function ExceptionsManager() {
 
   // Get name for an item type
   const getItemName = (typeId: string) => {
-    return itemTypes.find((t) => t.id === typeId)?.name || "Unknown"
+    return itemTypes.find((item) => item.id === typeId)?.name || t("unknown")
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-medium">Calendar Exceptions</h2>
+        <h2 className="text-lg font-medium">{t("calendarExceptions")}</h2>
         <div className="flex space-x-2">
           <Button variant="outline" onClick={handleCancel} disabled={!hasChanges}>
             <X className="h-4 w-4 mr-2" /> Cancel
