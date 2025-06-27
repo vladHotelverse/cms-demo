@@ -171,6 +171,17 @@ const translations = {
     bandName: "Nombre de la banda",
     bandDescription: "Descripción de la banda",
 
+    // Sample business data
+    hotelPlayaDelCarmen: "Hotel Playa del Carmen",
+    hotelCancunBeach: "Hotel Cancún Beach", 
+    hotelRivieraMaya: "Hotel Riviera Maya",
+    hotelTulumParadise: "Hotel Tulum Paradise",
+    standard: "Estándar",
+    premium: "Premium",
+    luxury: "Lujo",
+    business: "Negocios",
+    family: "Familia",
+
     // Form labels and placeholders
     name: "Nombre",
     description: "Descripción",
@@ -582,6 +593,17 @@ const translations = {
     addBand: "Add Band",
     bandName: "Band name",
     bandDescription: "Band description",
+
+    // Sample business data
+    hotelPlayaDelCarmen: "Hotel Playa del Carmen",
+    hotelCancunBeach: "Hotel Cancún Beach", 
+    hotelRivieraMaya: "Hotel Riviera Maya",
+    hotelTulumParadise: "Hotel Tulum Paradise",
+    standard: "Standard",
+    premium: "Premium",
+    luxury: "Luxury",
+    business: "Business",
+    family: "Family",
 
     // Form labels and placeholders
     name: "Name",

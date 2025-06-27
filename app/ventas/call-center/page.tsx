@@ -9,28 +9,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CallCenterHeader } from "@/components/call-center-header"
 import { useLanguage } from "@/contexts/language-context"
 
-// Sample hotels data - in a real app this would come from user permissions
-const availableHotels = [
-  { id: "1", name: "Hotel Playa del Carmen" },
-  { id: "2", name: "Hotel Cancún Beach" },
-  { id: "3", name: "Hotel Riviera Maya" },
-  { id: "4", name: "Hotel Tulum Paradise" },
-]
-
-// Sample segments data
-const segments = [
-  { id: "standard", name: "Standard" },
-  { id: "premium", name: "Premium" },
-  { id: "luxury", name: "Luxury" },
-  { id: "business", name: "Business" },
-  { id: "family", name: "Family" },
-]
-
 export default function CallCenterPage() {
+  const { t } = useLanguage()
+  
+  // Sample hotels data - in a real app this would come from user permissions
+  const availableHotels = [
+    { id: "1", name: t("hotelPlayaDelCarmen") },
+    { id: "2", name: t("hotelCancunBeach") },
+    { id: "3", name: t("hotelRivieraMaya") },
+    { id: "4", name: t("hotelTulumParadise") },
+  ]
+
+  // Sample segments data
+  const segments = [
+    { id: "standard", name: t("standard") },
+    { id: "premium", name: t("premium") },
+    { id: "luxury", name: t("luxury") },
+    { id: "business", name: t("business") },
+    { id: "family", name: t("family") },
+  ]
   const [selectedHotel, setSelectedHotel] = useState<string>("")
   const [selectedSegment, setSelectedSegment] = useState<string>("")
   const [activeTab, setActiveTab] = useState("call-center")
-  const { t } = useLanguage()
 
   const handleStart = () => {
     if (!selectedHotel) {
