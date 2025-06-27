@@ -62,7 +62,7 @@ const menuItemsStructure: NavItem[] = [
     icon: BookOpen,
     href: "#",
     disabled: false,
-    defaultOpen: false,
+    defaultOpen: true,
     children: [
       { titleKey: "callCenter", icon: Phone, href: "/ventas/call-center", disabled: false },
       { titleKey: "frontDeskUpsell", icon: Users, href: "/ventas/front-desk-upsell", disabled: false },
@@ -172,7 +172,7 @@ export default function AppSidebar() {
         return (
           <SidebarGroupLabel
             key={translatedTitle}
-            className="px-2 pt-4 pb-2 text-xs font-semibold text-muted-foreground/70"
+            className="px-3 pt-6 pb-2 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider"
           >
             {translatedTitle}
           </SidebarGroupLabel>
@@ -187,15 +187,16 @@ export default function AppSidebar() {
       if (item.children && item.children.length > 0) {
         const isOpen = openStates[translatedTitle]
         return (
-          <SidebarMenuItem key={translatedTitle} className="group/collapsible-item">
+          <SidebarMenuItem key={translatedTitle} className="group/collapsible-item mb-1">
             <Collapsible open={isOpen} onOpenChange={() => toggleCollapsible(item.titleKey)}>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   variant="ghost"
                   className={cn(
-                    "w-full justify-between",
-                    (isActive || isParentActive) && !item.disabled && "bg-muted font-medium",
-                    item.disabled && "opacity-50 cursor-not-allowed",
+                    "w-full justify-between h-10 px-3 mx-2 rounded-lg transition-all duration-200",
+                    "hover:bg-accent/50 hover:text-accent-foreground",
+                    (isActive || isParentActive) && !item.disabled && "bg-accent text-accent-foreground font-medium",
+                    item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
                   )}
                   disabled={item.disabled}
                   isActive={isActive || isParentActive}
@@ -204,15 +205,20 @@ export default function AppSidebar() {
                     if (item.disabled) e.preventDefault()
                   }}
                 >
-                  <div className="flex items-center gap-2">
-                    <item.icon className="h-4 w-4" />
-                    <span>{translatedTitle}</span>
+                  <div className="flex items-center gap-3">
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span className="text-sm font-medium">{translatedTitle}</span>
                   </div>
-                  {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  {isOpen ? (
+                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                  )}
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>{renderNavItems(item.children, true)}</SidebarMenuSub>
+              <CollapsibleContent className="relative">
+                <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
+                <SidebarMenuSub className="ml-6 mt-1 space-y-1">{renderNavItems(item.children, true)}</SidebarMenuSub>
               </CollapsibleContent>
             </Collapsible>
           </SidebarMenuItem>
@@ -223,8 +229,10 @@ export default function AppSidebar() {
         asChild: !item.disabled,
         isActive: isActive,
         className: cn(
-          item.disabled && "opacity-50 cursor-not-allowed",
-          isActive && !item.disabled && "bg-muted font-medium",
+          "h-10 px-3 mx-2 rounded-lg transition-all duration-200",
+          "hover:bg-accent/50 hover:text-accent-foreground",
+          item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
+          isActive && !item.disabled && "bg-accent text-accent-foreground font-medium",
         ),
         disabled: item.disabled,
         tooltip: translatedTitle,
@@ -232,8 +240,8 @@ export default function AppSidebar() {
 
       const buttonContent = (
         <>
-          <item.icon className="h-4 w-4" />
-          <span>{translatedTitle}</span>
+          <item.icon className="h-4 w-4 shrink-0" />
+          <span className="text-sm font-medium">{translatedTitle}</span>
         </>
       )
 
@@ -243,15 +251,21 @@ export default function AppSidebar() {
             <SidebarMenuSubButton
               {...commonButtonProps}
               href={item.disabled ? undefined : item.href}
+              className={cn(
+                commonButtonProps.className,
+                "h-9 pl-3 pr-3 ml-0 mr-2 rounded-md",
+                "hover:bg-accent/30",
+                isActive && !item.disabled && "bg-accent/60 text-accent-foreground font-medium",
+              )}
               onClick={(e) => {
                 if (item.disabled && item.href === "#") e.preventDefault()
                 if (item.disabled && item.href !== "#" && item.href !== undefined) e.preventDefault()
               }}
             >
               {item.disabled ? (
-                <div className="flex items-center gap-2 w-full">{buttonContent}</div>
+                <div className="flex items-center gap-3 w-full">{buttonContent}</div>
               ) : (
-                <Link href={item.href || "#"} className="flex items-center gap-2 w-full">
+                <Link href={item.href || "#"} className="flex items-center gap-3 w-full">
                   {buttonContent}
                 </Link>
               )}
@@ -261,7 +275,7 @@ export default function AppSidebar() {
       }
 
       return (
-        <SidebarMenuItem key={translatedTitle}>
+        <SidebarMenuItem key={translatedTitle} className="mb-1">
           <SidebarMenuButton
             {...commonButtonProps}
             href={item.disabled ? undefined : item.href}
@@ -271,9 +285,9 @@ export default function AppSidebar() {
             }}
           >
             {item.disabled ? (
-              <div className="flex items-center gap-2 w-full">{buttonContent}</div>
+              <div className="flex items-center gap-3 w-full">{buttonContent}</div>
             ) : (
-              <Link href={item.href || "#"} className="flex items-center gap-2 w-full">
+              <Link href={item.href || "#"} className="flex items-center gap-3 w-full">
                 {buttonContent}
               </Link>
             )}
@@ -293,21 +307,21 @@ export default function AppSidebar() {
   }))
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b py-3 px-4">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center h-8 w-8 bg-foreground text-background rounded-md font-bold text-xl">
+    <Sidebar className="border-r">
+      <SidebarHeader className="border-b py-4 px-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center h-9 w-9 bg-foreground text-background rounded-lg font-bold text-lg">
             H
           </div>
           <div>
-            <span className="font-semibold text-sm block">Hotelverse</span>
+            <span className="font-semibold text-base block">Hotelverse</span>
             <span className="text-xs text-muted-foreground block">CMS</span>
           </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarMenu>{renderNavItems(currentMenuItems)}</SidebarMenu>
+      <SidebarContent className="py-2">
+        <SidebarMenu className="space-y-1">{renderNavItems(currentMenuItems)}</SidebarMenu>
       </SidebarContent>
 
       <SidebarFooter className="border-t p-4">
@@ -317,11 +331,14 @@ export default function AppSidebar() {
             size="icon"
             onClick={toggleLanguage}
             title={`Switch to ${currentLanguage === "es" ? "English" : "Spanish"}`}
+            className="h-9 w-9 rounded-lg hover:bg-accent/50 transition-colors duration-200"
           >
             <Languages className="h-4 w-4" />
             <span className="sr-only">Switch Language</span>
           </Button>
-          <span className="text-xs font-medium">{currentLanguage.toUpperCase()}</span>
+          <span className="text-xs font-medium px-2 py-1 bg-muted rounded text-muted-foreground">
+            {currentLanguage.toUpperCase()}
+          </span>
           <ModeToggle />
         </div>
       </SidebarFooter>

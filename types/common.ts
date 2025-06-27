@@ -197,4 +197,3 @@ export type NonEmptyArray<T> = [T, ...T[]]
  * Branded type for type safety
  */
 export type Brand<T, B> = T & { __brand: B }
-

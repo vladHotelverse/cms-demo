@@ -33,4 +33,3 @@ export const getAddonCategoryOptions = () => {
     label: category.name
   }))
 }
-

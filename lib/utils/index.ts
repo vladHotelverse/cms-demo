@@ -171,4 +171,3 @@ export const slugify = (text: string): string => {
     .trim()
     .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
 }
-

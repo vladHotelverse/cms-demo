@@ -141,4 +141,3 @@ export const getInitials = (name: string, maxLength: number = 2): string => {
     .slice(0, maxLength)
     .join('')
 }
-

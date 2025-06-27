@@ -52,49 +52,49 @@ Enhanced TypeScript definitions for better type safety.
 
 ### 1. Centralized Constants
 **Before:**
-```typescript
+\`\`\`typescript
 // Scattered throughout components
 const addonCategories = [
   { id: "1", name: "Wellness & Spa" },
   // ...
 ]
-```
+\`\`\`
 
 **After:**
-```typescript
+\`\`\`typescript
 // Centralized in constants/addon-categories.ts
 import { ADDON_CATEGORIES, getAddonCategoryOptions } from '@/constants'
-```
+\`\`\`
 
 ### 2. Type-Safe Validation
 **Before:**
-```typescript
+\`\`\`typescript
 // Manual validation with potential runtime errors
 if (!formData.name || formData.name.length < 2) {
   setError("Name is required")
 }
-```
+\`\`\`
 
 **After:**
-```typescript
+\`\`\`typescript
 // Zod schema validation with TypeScript integration
 import { validateAddonForm } from '@/lib/validations/addon'
 const result = validateAddonForm(formData)
-```
+\`\`\`
 
 ### 3. Reusable Form Components
 **Before:**
-```typescript
+\`\`\`typescript
 // Repeated form field markup
 <div className="space-y-2">
   <Label htmlFor="name">Name *</Label>
   <Input id="name" value={name} onChange={handleChange} />
   {error && <p className="text-red-500">{error}</p>}
 </div>
-```
+\`\`\`
 
 **After:**
-```typescript
+\`\`\`typescript
 // Reusable component with consistent behavior
 <FormField
   type="text"
@@ -105,33 +105,33 @@ const result = validateAddonForm(formData)
   error={error}
   required
 />
-```
+\`\`\`
 
 ### 4. Error Boundaries
 **Before:**
-```typescript
+\`\`\`typescript
 // No error handling - crashes could break the entire app
-```
+\`\`\`
 
 **After:**
-```typescript
+\`\`\`typescript
 // Graceful error handling with user-friendly fallbacks
 <ErrorBoundary fallback={MinimalErrorFallback}>
   <YourComponent />
 </ErrorBoundary>
-```
+\`\`\`
 
 ### 5. Enhanced Utilities
 **Before:**
-```typescript
+\`\`\`typescript
 // Basic utility functions
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-```
+\`\`\`
 
 **After:**
-```typescript
+\`\`\`typescript
 // Comprehensive utility library
 import { 
   formatCurrency, 
@@ -139,12 +139,12 @@ import {
   groupBy, 
   deepClone 
 } from '@/lib/utils'
-```
+\`\`\`
 
 ## 📋 Implementation Examples
 
 ### Using New Form Components
-```typescript
+\`\`\`typescript
 import { FormField, FormSection, FormActions } from '@/components/forms'
 import { ADDON_CATEGORIES, getAddonCategoryOptions } from '@/constants'
 import { validateAddonForm } from '@/lib/validations/addon'
@@ -179,10 +179,10 @@ const MyForm = () => {
     </FormSection>
   )
 }
-```
+\`\`\`
 
 ### Using Validation Schemas
-```typescript
+\`\`\`typescript
 import { validateAddonForm, type AddonFormData } from '@/lib/validations/addon'
 
 const handleSubmit = (data: AddonFormData) => {
@@ -198,10 +198,10 @@ const handleSubmit = (data: AddonFormData) => {
   // Data is now type-safe and validated
   saveAddon(result.data)
 }
-```
+\`\`\`
 
 ### Using Error Boundaries
-```typescript
+\`\`\`typescript
 import { ErrorBoundary, MinimalErrorFallback } from '@/components/error-boundary'
 
 const App = () => {
@@ -217,23 +217,23 @@ const App = () => {
     </ErrorBoundary>
   )
 }
-```
+\`\`\`
 
 ## 🔧 Migration Guide
 
 ### For Existing Components
 
 1. **Replace hard-coded constants:**
-   ```typescript
+   \`\`\`typescript
    // Old
    const categories = [{ id: "1", name: "Wellness & Spa" }]
    
    // New
    import { ADDON_CATEGORIES } from '@/constants'
-   ```
+   \`\`\`
 
 2. **Use new form components:**
-   ```typescript
+   \`\`\`typescript
    // Old
    <div className="space-y-2">
      <Label>Name</Label>
@@ -248,30 +248,30 @@ const App = () => {
      value={name}
      onChange={handleChange}
    />
-   ```
+   \`\`\`
 
 3. **Add validation:**
-   ```typescript
+   \`\`\`typescript
    // Old
    if (!name) setError("Name required")
    
    // New
    const result = validateAddonForm(formData)
    if (!result.success) setErrors(result.error.errors)
-   ```
+   \`\`\`
 
 4. **Wrap with error boundaries:**
-   ```typescript
+   \`\`\`typescript
    // Add to component trees
    <ErrorBoundary>
      <YourComponent />
    </ErrorBoundary>
-   ```
+   \`\`\`
 
 ## 🎨 Code Style Guidelines
 
 ### Import Organization
-```typescript
+\`\`\`typescript
 // 1. React imports
 import React from 'react'
 import { useState, useEffect } from 'react'
@@ -292,10 +292,10 @@ import { ADDON_CATEGORIES } from '@/constants'
 
 // 6. Types
 import type { Addon } from '@/types/addon'
-```
+\`\`\`
 
 ### Component Structure
-```typescript
+\`\`\`typescript
 /**
  * Component documentation with JSDoc
  */
@@ -325,7 +325,7 @@ const Component: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
 
 // Memoize for performance
 export default React.memo(Component)
-```
+\`\`\`
 
 ## 📊 Benefits
 
@@ -366,4 +366,3 @@ All improvements maintain backward compatibility:
 ---
 
 *This improvement initiative establishes a solid foundation for scalable, maintainable code while preserving the existing functionality and enabling smooth incremental adoption.*
-

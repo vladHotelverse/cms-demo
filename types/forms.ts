@@ -185,4 +185,3 @@ export interface AdvancedFormConfig extends FormConfig {
   layout?: 'single-column' | 'two-column' | 'grid'
   spacing?: 'compact' | 'normal' | 'relaxed'
 }
-

@@ -5,8 +5,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "biome lint . --skip-unfixable",
     "format": "biome format --write .",
+    "lint": "biome lint . --skip-unfixable",
     "start": "next start"
   },
   "dependencies": {
@@ -58,13 +58,13 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "latest",
-    "zod": "^3.24.1"
+    "zod": "latest"
   },
   "devDependencies": {
+    "@biomejs/biome": "latest",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@biomejs/biome": "latest",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"

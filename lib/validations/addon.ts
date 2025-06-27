@@ -83,4 +83,3 @@ export const validateCreateAddon = (data: unknown) => {
 export const validateUpdateAddon = (data: unknown) => {
   return updateAddonSchema.safeParse(data)
 }
-

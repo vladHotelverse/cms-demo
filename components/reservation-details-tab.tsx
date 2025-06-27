@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useLanguage } from "@/contexts/language-context"
+import EnhancedServicesTables from "./enhanced-services-tables"
+import EnhancedTableView from "./enhanced-table-view"
 
 interface ReservationData {
   id: string
@@ -74,9 +76,10 @@ export default function ReservationDetailsTab({
   const [selectedRoomType, setSelectedRoomType] = useState("deluxe")
   const [selectedSegment, setSelectedSegment] = useState("premium")
   const [selectedAgent, setSelectedAgent] = useState("agent1")
-  const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks")
+  const [viewMode, setViewMode] = useState<"list" | "blocks">("list")
   const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false)
   const [selectedCommissionReason, setSelectedCommissionReason] = useState("")
+  const [cartItems, setCartItems] = useState<any[]>([])
   const { t } = useLanguage()
 
   const handleConfirmBooking = () => {
@@ -89,19 +92,13 @@ export default function ReservationDetailsTab({
       return
     }
 
-    // Here you would handle the booking confirmation with the selected commission reason
     console.log("Booking confirmed with commission reason:", selectedCommissionReason)
 
-    // Close modal and show success
     setIsCommissionModalOpen(false)
     setSelectedCommissionReason("")
 
-    onShowAlert(
-      "success",
-      t("bookingConfirmedSuccessfully"),
-    )
+    onShowAlert("success", t("bookingConfirmedSuccessfully"))
 
-    // Optionally close the tab after successful booking
     setTimeout(() => {
       onCloseTab()
     }, 2000)
@@ -110,6 +107,15 @@ export default function ReservationDetailsTab({
   const handleCommissionCancel = () => {
     setIsCommissionModalOpen(false)
     setSelectedCommissionReason("")
+  }
+
+  const handleAddToCart = (item: any) => {
+    setCartItems((prev) => [...prev, item])
+    onShowAlert("success", `${item.name} added to cart`)
+  }
+
+  const handleSelectRoom = (room: any) => {
+    onShowAlert("success", `${room.type} selected`)
   }
 
   return (
@@ -135,17 +141,13 @@ export default function ReservationDetailsTab({
             {/* Configuration Section */}
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">
-                  {t("configuration")}
-                </CardTitle>
+                <CardTitle className="text-lg font-semibold">{t("configuration")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-6">
                   {/* View Mode Toggle */}
                   <div className="flex items-center gap-3">
-                    <Label className="text-sm font-medium text-gray-600 whitespace-nowrap">
-                      {t("viewAs")}
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600 whitespace-nowrap">{t("viewAs")}</Label>
                     <div className="flex items-center gap-1">
                       <Button
                         variant={viewMode === "list" ? "default" : "outline"}
@@ -270,31 +272,20 @@ export default function ReservationDetailsTab({
 
           <Separator />
 
-          {/* Bottom Section - Tables and Price Summary */}
+          {/* Bottom Section - Dynamic View Based on Toggle */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Tables Section */}
+            {/* Services Tables - Dynamic View */}
             <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    {t("currentLanguage") === "es" ? "Servicios Disponibles" : "Available Services"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-                    <p className="text-sm">
-                      {t("currentLanguage") === "es"
-                        ? "Aquí se mostrarán las tablas de servicios y extras disponibles"
-                        : "Here will be displayed the tables of available services and extras"}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              {viewMode === "list" ? (
+                <EnhancedTableView onAddToCart={handleAddToCart} onSelectRoom={handleSelectRoom} />
+              ) : (
+                <EnhancedServicesTables onAddToCart={handleAddToCart} onSelectRoom={handleSelectRoom} />
+              )}
             </div>
 
             {/* Price Summary Section */}
             <div className="lg:col-span-1">
-              <Card>
+              <Card className="sticky top-6">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
                     <CreditCard className="h-5 w-5" />
@@ -315,10 +306,16 @@ export default function ReservationDetailsTab({
                       </span>
                       <span className="font-medium">€78.90</span>
                     </div>
+                    {cartItems.length > 0 && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Cart items ({cartItems.length})</span>
+                        <span className="font-medium">€45.00</span>
+                      </div>
+                    )}
                     <Separator />
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span>{t("currentLanguage") === "es" ? "Total" : "Total"}</span>
-                      <span>€328.90</span>
+                      <span>€{cartItems.length > 0 ? "373.90" : "328.90"}</span>
                     </div>
                   </div>
 
