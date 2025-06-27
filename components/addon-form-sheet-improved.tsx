@@ -128,7 +128,8 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
       translations: {
         ...prev.translations,
         [language]: {
-          ...prev.translations?.[language],
+          name: prev.translations?.[language]?.name || '',
+          description: prev.translations?.[language]?.description || '',
           [field]: value
         }
       }
@@ -281,8 +282,8 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
                     error={errors.type}
                     required
                     options={[
-                      { value: "extra", label: "Extra" },
-                      { value: "experience", label: "Experience" }
+                      { value: "extra", label: t('extra') },
+                      { value: "experience", label: t('experience') }
                     ]}
                   />
 
