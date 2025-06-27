@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { useLanguage } from "@/contexts/language-context"
 
 interface Band {
   id: string
@@ -23,6 +24,7 @@ interface BandFormDialogProps {
 }
 
 export default function BandFormDialog({ open, onOpenChange, band, onSave }: BandFormDialogProps) {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState<Partial<Band>>({
     name: "",
     description: "",
@@ -56,28 +58,28 @@ export default function BandFormDialog({ open, onOpenChange, band, onSave }: Ban
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{band ? "Edit Band" : "Add Band"}</DialogTitle>
+          <DialogTitle>{band ? t('editBand') : t('addBand')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t('name')}</Label>
             <Input
               id="name"
               value={formData.name || ""}
               onChange={(e) => handleInputChange("name", e.target.value)}
-              placeholder="Band name"
+              placeholder={t('bandName')}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t('description')}</Label>
             <Textarea
               id="description"
               value={formData.description || ""}
               onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Band description"
+              placeholder={t('bandDescription')}
               rows={4}
               required
             />
@@ -85,9 +87,9 @@ export default function BandFormDialog({ open, onOpenChange, band, onSave }: Ban
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
-            <Button type="submit">{band ? "Update" : "Create"}</Button>
+            <Button type="submit">{band ? t('update') : t('create')}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

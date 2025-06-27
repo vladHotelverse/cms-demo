@@ -15,6 +15,7 @@ import { ADDON_CATEGORIES, SUPPORTED_LANGUAGES, getAddonCategoryOptions, getLang
 import { ErrorBoundary, MinimalErrorFallback } from "@/components/error-boundary"
 import { FormField, FormSection, FormActions } from "@/components/forms"
 import { validateAddonForm, type AddonFormData } from "@/lib/validations/addon"
+import { useLanguage } from "@/contexts/language-context"
 import type { Addon } from "@/types/addon"
 
 interface AddonFormSheetProps {
@@ -51,6 +52,7 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({})
   
   const { toast } = useToast()
+  const { t } = useLanguage()
 
   // Reset form when addon changes or sheet opens/closes
   useEffect(() => {
@@ -126,7 +128,8 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
       translations: {
         ...prev.translations,
         [language]: {
-          ...prev.translations?.[language],
+          name: prev.translations?.[language]?.name || '',
+          description: prev.translations?.[language]?.description || '',
           [field]: value
         }
       }
@@ -158,8 +161,8 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
   const handleSave = useCallback(async () => {
     if (!validateForm()) {
       toast({
-        title: "Validation Error",
-        description: "Please fix the errors before saving.",
+        title: t('validationError'),
+        description: t('fixErrorsBeforeSaving'),
         variant: "destructive"
       })
       return
@@ -178,15 +181,15 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
       await onSave(addonData)
       
       toast({
-        title: "Success",
-        description: `Addon ${addon ? 'updated' : 'created'} successfully.`
+        title: t('success'),
+        description: addon ? t('addonUpdatedSuccessfully') : t('addonCreatedSuccessfully')
       })
       
       onOpenChange(false)
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to save addon. Please try again.",
+        title: t('error'),
+        description: t('failedToSaveAddon'),
         variant: "destructive"
       })
     } finally {
@@ -206,15 +209,15 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
       await onDelete(addon.id)
       
       toast({
-        title: "Success",
-        description: "Addon deleted successfully."
+        title: t('success'),
+        description: t('addonDeletedSuccessfully')
       })
       
       onOpenChange(false)
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to delete addon. Please try again.",
+        title: t('error'),
+        description: t('failedToDeleteAddon'),
         variant: "destructive"
       })
     } finally {
@@ -232,74 +235,74 @@ const AddonFormSheetImproved: React.FC<AddonFormSheetProps> = ({
         <SheetContent className="w-full sm:max-w-2xl">
           <SheetHeader>
             <SheetTitle>
-              {addon ? 'Edit Addon' : 'Create New Addon'}
+              {addon ? t('editAddon') : t('createNewAddon')}
             </SheetTitle>
           </SheetHeader>
 
           <ScrollArea className="h-[calc(100vh-120px)] pr-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="general">General</TabsTrigger>
-                <TabsTrigger value="translations">Translations</TabsTrigger>
+                <TabsTrigger value="general">{t('general')}</TabsTrigger>
+                <TabsTrigger value="translations">{t('translations')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="general" className="space-y-6 mt-6">
                 <FormSection
-                  title="Basic Information"
-                  description="Configure the basic addon details"
+                  title={t('basicInformation')}
+                  description={t('configureBasicAddonDetails')}
                 >
                   <FormField
                     type="text"
                     name="name"
-                    label="Name"
+                    label={t('name')}
                     value={formData.name || ""}
                     onChange={(value) => handleFieldChange('name', value)}
                     error={errors.name}
                     required
-                    placeholder="Enter addon name"
+                    placeholder={t('enterAddonName')}
                   />
 
                   <FormField
                     type="textarea"
                     name="description"
-                    label="Description"
+                    label={t('description')}
                     value={formData.description || ""}
                     onChange={(value) => handleFieldChange('description', value)}
                     error={errors.description}
-                    placeholder="Enter addon description"
+                    placeholder={t('enterAddonDescription')}
                     rows={3}
                   />
 
                   <FormField
                     type="select"
                     name="type"
-                    label="Type"
+                    label={t('type')}
                     value={formData.type || "extra"}
                     onChange={(value) => handleFieldChange('type', value as 'extra' | 'experience')}
                     error={errors.type}
                     required
                     options={[
-                      { value: "extra", label: "Extra" },
-                      { value: "experience", label: "Experience" }
+                      { value: "extra", label: t('extra') },
+                      { value: "experience", label: t('experience') }
                     ]}
                   />
 
                   <FormField
                     type="select"
                     name="categoryId"
-                    label="Category"
+                    label={t('category')}
                     value={formData.categoryId || ""}
                     onChange={(value) => handleFieldChange('categoryId', value)}
                     error={errors.categoryId}
                     required
                     options={getAddonCategoryOptions()}
-                    placeholder="Select a category"
+                    placeholder={t('selectACategory')}
                   />
 
                   <FormField
                     type="url"
                     name="image"
-                    label="Image URL"
+                    label={t('imageUrl')}
                     value={formData.image || ""}
                     onChange={(value) => handleFieldChange('image', value)}
                     error={errors.image}
