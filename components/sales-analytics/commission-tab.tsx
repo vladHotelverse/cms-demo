@@ -291,27 +291,33 @@ export function CommissionTab() {
                 <svg viewBox="0 0 800 400" className="w-full h-full">
                   {/* Chart Background */}
                   <rect width="800" height="400" fill="transparent" />
-                  
+
                   {/* Grid */}
                   <defs>
                     <pattern id="grid4" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--muted))" strokeWidth="0.5" opacity="0.3"/>
+                      <path
+                        d="M 40 0 L 0 0 0 40"
+                        fill="none"
+                        stroke="hsl(var(--muted))"
+                        strokeWidth="0.5"
+                        opacity="0.3"
+                      />
                     </pattern>
                   </defs>
                   <rect width="800" height="400" fill="url(#grid4)" />
-                  
+
                   {/* Axes */}
-                  <line x1="150" y1="50" x2="150" y2="350" stroke="hsl(var(--border))" strokeWidth="1"/>
-                  <line x1="150" y1="350" x2="750" y2="350" stroke="hsl(var(--border))" strokeWidth="1"/>
-                  
+                  <line x1="150" y1="50" x2="150" y2="350" stroke="hsl(var(--border))" strokeWidth="1" />
+                  <line x1="150" y1="350" x2="750" y2="350" stroke="hsl(var(--border))" strokeWidth="1" />
+
                   {/* Horizontal Stacked Bars */}
                   {agentPerformanceData.map((agent, index) => {
                     const y = 80 + index * 70
                     const barHeight = 40
                     const scale = 600 / 1000 // Scale to fit in 600px width
-                    
-                    let currentX = 150
-                    
+
+                    const currentX = 150
+
                     return (
                       <g key={index}>
                         {/* Upsell bar */}
@@ -323,40 +329,37 @@ export function CommissionTab() {
                           fill="hsl(220 70% 50%)"
                           rx="2"
                         />
-                        {(currentX += agent.upsell * scale)}
-                        
+
                         {/* ABS bar */}
                         <rect
-                          x={currentX}
+                          x={currentX + agent.upsell * scale}
                           y={y}
                           width={agent.abs * scale}
                           height={barHeight}
                           fill="hsl(160 60% 45%)"
                           rx="2"
                         />
-                        {(currentX += agent.abs * scale)}
-                        
+
                         {/* Room Number bar */}
                         <rect
-                          x={currentX}
+                          x={currentX + (agent.upsell + agent.abs) * scale}
                           y={y}
                           width={agent.roomNumber * scale}
                           height={barHeight}
                           fill="hsl(30 70% 50%)"
                           rx="2"
                         />
-                        {(currentX += agent.roomNumber * scale)}
-                        
+
                         {/* Extras bar */}
                         <rect
-                          x={currentX}
+                          x={currentX + (agent.upsell + agent.abs + agent.roomNumber) * scale}
                           y={y}
                           width={agent.extras * scale}
                           height={barHeight}
                           fill="hsl(270 60% 50%)"
                           rx="2"
                         />
-                        
+
                         {/* Agent name */}
                         <text
                           x="140"
@@ -366,12 +369,12 @@ export function CommissionTab() {
                           className="fill-current text-sm"
                           fill="hsl(var(--foreground))"
                         >
-                          {agent.agent.split(' ')[0]}
+                          {agent.agent.split(" ")[0]}
                         </text>
                       </g>
                     )
                   })}
-                  
+
                   {/* X-axis labels */}
                   {[0, 200, 400, 600, 800].map((value, index) => (
                     <g key={index}>
@@ -386,20 +389,28 @@ export function CommissionTab() {
                       </text>
                     </g>
                   ))}
-                  
+
                   {/* Legend */}
                   <g transform="translate(200, 20)">
-                    <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2"/>
-                    <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">Upsell</text>
-                    
-                    <rect x="80" y="0" width="12" height="12" fill="hsl(160 60% 45%)" rx="2"/>
-                    <text x="100" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">ABS</text>
-                    
-                    <rect x="140" y="0" width="12" height="12" fill="hsl(30 70% 50%)" rx="2"/>
-                    <text x="160" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">Room Number</text>
-                    
-                    <rect x="260" y="0" width="12" height="12" fill="hsl(270 60% 50%)" rx="2"/>
-                    <text x="280" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">Extras</text>
+                    <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2" />
+                    <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Upsell
+                    </text>
+
+                    <rect x="80" y="0" width="12" height="12" fill="hsl(160 60% 45%)" rx="2" />
+                    <text x="100" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      ABS
+                    </text>
+
+                    <rect x="140" y="0" width="12" height="12" fill="hsl(30 70% 50%)" rx="2" />
+                    <text x="160" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Room Number
+                    </text>
+
+                    <rect x="260" y="0" width="12" height="12" fill="hsl(270 60% 50%)" rx="2" />
+                    <text x="280" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Extras
+                    </text>
                   </g>
                 </svg>
               </div>
@@ -421,19 +432,25 @@ export function CommissionTab() {
                 <svg viewBox="0 0 800 350" className="w-full h-full">
                   {/* Chart Background */}
                   <rect width="800" height="350" fill="transparent" />
-                  
+
                   {/* Grid */}
                   <defs>
                     <pattern id="grid5" width="40" height="35" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 35" fill="none" stroke="hsl(var(--muted))" strokeWidth="0.5" opacity="0.3"/>
+                      <path
+                        d="M 40 0 L 0 0 0 35"
+                        fill="none"
+                        stroke="hsl(var(--muted))"
+                        strokeWidth="0.5"
+                        opacity="0.3"
+                      />
                     </pattern>
                   </defs>
                   <rect width="800" height="350" fill="url(#grid5)" />
-                  
+
                   {/* Axes */}
-                  <line x1="80" y1="300" x2="720" y2="300" stroke="hsl(var(--border))" strokeWidth="1"/>
-                  <line x1="80" y1="50" x2="80" y2="300" stroke="hsl(var(--border))" strokeWidth="1"/>
-                  
+                  <line x1="80" y1="300" x2="720" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
+                  <line x1="80" y1="50" x2="80" y2="300" stroke="hsl(var(--border))" strokeWidth="1" />
+
                   {/* Commission line */}
                   <path
                     d={`M 80 ${300 - (6500 * 250) / 10000} 
@@ -446,7 +463,7 @@ export function CommissionTab() {
                     strokeWidth="3"
                     fill="none"
                   />
-                  
+
                   {/* Target line (dashed) */}
                   <path
                     d={`M 80 ${300 - (7000 * 250) / 10000} L ${80 + 640} ${300 - (7000 * 250) / 10000}`}
@@ -455,7 +472,7 @@ export function CommissionTab() {
                     strokeDasharray="5,5"
                     fill="none"
                   />
-                  
+
                   {/* Data points */}
                   {commissionTrendData.map((data, index) => (
                     <circle
@@ -468,7 +485,7 @@ export function CommissionTab() {
                       strokeWidth="2"
                     />
                   ))}
-                  
+
                   {/* X-axis labels */}
                   {commissionTrendData.map((data, index) => (
                     <text
@@ -482,6 +499,48 @@ export function CommissionTab() {
                       {data.month}
                     </text>
                   ))}
-                  
+
                   {/* Y-axis labels */}
-                  {[0, 2000, 4000, 6000, 8000, 10000].map((value,
+                  {[0, 2000, 4000, 6000, 8000, 10000].map((value, index) => (
+                    <g key={index}>
+                      <text
+                        x="70"
+                        y={300 - (value * 250) / 10000}
+                        textAnchor="end"
+                        className="fill-current text-xs"
+                        fill="hsl(var(--muted-foreground))"
+                      >
+                        ${value}
+                      </text>
+                    </g>
+                  ))}
+
+                  {/* Legend */}
+                  <g transform="translate(500, 30)">
+                    <line x1="0" y1="6" x2="20" y2="6" stroke="hsl(220 70% 50%)" strokeWidth="3" />
+                    <text x="25" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Commission
+                    </text>
+
+                    <line
+                      x1="0"
+                      y1="26"
+                      x2="20"
+                      y2="26"
+                      stroke="hsl(0 70% 50%)"
+                      strokeWidth="2"
+                      strokeDasharray="5,5"
+                    />
+                    <text x="25" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
+                      Target
+                    </text>
+                  </g>
+                </svg>
+              </div>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
