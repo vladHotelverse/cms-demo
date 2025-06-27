@@ -118,6 +118,33 @@ export default function ReservationDetailsTab({
     onShowAlert("success", `${room.type} selected`)
   }
 
+  // Calculate dynamic total price
+  const calculateTotal = () => {
+    const baseRoomPrice = 250.00
+    const extraServicesPrice = 78.90
+    
+    // Calculate cart items total (assuming each cart item has a price property)
+    const cartItemsTotal = cartItems.reduce((sum, item) => {
+      // If item has a numeric price property, use it; otherwise default to 15.00 per item
+      const itemPrice = typeof item.price === 'number' ? item.price : 
+                       typeof item.total === 'string' ? parseFloat(item.total.replace(/[€,]/g, '')) :
+                       15.00
+      return sum + itemPrice
+    }, 0)
+    
+    return (baseRoomPrice + extraServicesPrice + cartItemsTotal).toFixed(2)
+  }
+
+  // Calculate cart items total for display
+  const calculateCartItemsTotal = () => {
+    return cartItems.reduce((sum, item) => {
+      const itemPrice = typeof item.price === 'number' ? item.price : 
+                       typeof item.total === 'string' ? parseFloat(item.total.replace(/[€,]/g, '')) :
+                       15.00
+      return sum + itemPrice
+    }, 0).toFixed(2)
+  }
+
   return (
     <>
       <div className="p-6 space-y-6">
@@ -309,13 +336,13 @@ export default function ReservationDetailsTab({
                     {cartItems.length > 0 && (
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Cart items ({cartItems.length})</span>
-                        <span className="font-medium">€45.00</span>
+                        <span className="font-medium">€{calculateCartItemsTotal()}</span>
                       </div>
                     )}
                     <Separator />
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span>{t("currentLanguage") === "es" ? "Total" : "Total"}</span>
-                      <span>€{cartItems.length > 0 ? "373.90" : "328.90"}</span>
+                      <span>€{calculateTotal()}</span>
                     </div>
                   </div>
 

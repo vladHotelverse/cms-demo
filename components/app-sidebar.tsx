@@ -72,7 +72,7 @@ const menuItemsStructure: NavItem[] = [
         href: "/ventas/gestion-solicitudes",
         disabled: false,
       },
-      { titleKey: "analiticaVentas", icon: BarChart3, href: "/ventas/analitica-ventas", disabled: false },
+      { titleKey: "analiticaVentas", icon: BarChart3, href: "/ventas/sales-analytics", disabled: false },
       { titleKey: "usuariosYComisiones", icon: UserCheck, href: "/ventas/usuarios-comisiones", disabled: false },
     ],
   },
