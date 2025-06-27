@@ -134,6 +134,21 @@ const translations = {
     itemRemoved: "Elemento eliminado",
     pricingUpdated: "Precios actualizados",
 
+    // Error messages
+    somethingWentWrong: "Algo salió mal",
+    unexpectedErrorMessage: "Encontramos un error inesperado. Por favor intenta recargar la página o contacta soporte si el problema persiste.",
+    errorDetails: "Detalles del Error",
+    unexpectedErrorOccurred: "Ocurrió un error inesperado",
+    tryAgain: "Intentar de nuevo",
+    reloadPage: "Recargar página",
+    goHome: "Ir al inicio",
+    show: "Mostrar",
+    hide: "Ocultar",
+    technicalDetails: "Detalles técnicos",
+    errorStack: "Stack del error:",
+    componentStack: "Stack de componentes:",
+    error: "Error",
+
     // Form labels and placeholders
     name: "Nombre",
     description: "Descripción",
@@ -508,6 +523,21 @@ const translations = {
     itemAdded: "Item added",
     itemRemoved: "Item removed",
     pricingUpdated: "Pricing updated",
+
+    // Error messages
+    somethingWentWrong: "Something went wrong",
+    unexpectedErrorMessage: "We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.",
+    errorDetails: "Error Details",
+    unexpectedErrorOccurred: "An unexpected error occurred",
+    tryAgain: "Try Again",
+    reloadPage: "Reload Page",
+    goHome: "Go Home",
+    show: "Show",
+    hide: "Hide",
+    technicalDetails: "Technical Details",
+    errorStack: "Error Stack:",
+    componentStack: "Component Stack:",
+    error: "Error",
 
     // Form labels and placeholders
     name: "Name",

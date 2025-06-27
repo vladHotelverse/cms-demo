@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/contexts/language-context'
 
 interface ErrorFallbackProps {
   error: Error
@@ -25,6 +26,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
   errorInfo
 }) => {
   const router = useRouter()
+  const { t } = useLanguage()
   const [showDetails, setShowDetails] = React.useState(false)
 
   const handleGoHome = () => {
@@ -44,9 +46,9 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
           <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
             <AlertTriangle className="w-6 h-6 text-red-600" />
           </div>
-          <CardTitle className="text-xl">Something went wrong</CardTitle>
+          <CardTitle className="text-xl">{t('somethingWentWrong')}</CardTitle>
           <CardDescription>
-            We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.
+            {t('unexpectedErrorMessage')}
           </CardDescription>
         </CardHeader>
         
@@ -54,9 +56,9 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
           {/* Error message for users */}
           <Alert>
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Error Details</AlertTitle>
+            <AlertTitle>{t('errorDetails')}</AlertTitle>
             <AlertDescription>
-              {error.message || 'An unexpected error occurred'}
+              {error.message || t('unexpectedErrorOccurred')}
             </AlertDescription>
           </Alert>
 
@@ -64,14 +66,14 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
           <div className="flex flex-col sm:flex-row gap-2">
             <Button onClick={resetError} className="flex-1">
               <RefreshCw className="w-4 h-4 mr-2" />
-              Try Again
+              {t('tryAgain')}
             </Button>
             <Button variant="outline" onClick={handleReload} className="flex-1">
-              Reload Page
+              {t('reloadPage')}
             </Button>
             <Button variant="outline" onClick={handleGoHome} className="flex-1">
               <Home className="w-4 h-4 mr-2" />
-              Go Home
+              {t('goHome')}
             </Button>
           </div>
 
@@ -85,13 +87,13 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
                 className="w-full"
               >
                 <Bug className="w-4 h-4 mr-2" />
-                {showDetails ? 'Hide' : 'Show'} Technical Details
+                {showDetails ? t('hide') : t('show')} {t('technicalDetails')}
               </Button>
               
               {showDetails && (
                 <div className="space-y-2">
                   <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-md">
-                    <h4 className="font-semibold text-sm mb-2">Error Stack:</h4>
+                    <h4 className="font-semibold text-sm mb-2">{t('errorStack')}</h4>
                     <pre className="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
                       {error.stack}
                     </pre>
@@ -99,7 +101,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
                   
                   {errorInfo && (
                     <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-md">
-                      <h4 className="font-semibold text-sm mb-2">Component Stack:</h4>
+                      <h4 className="font-semibold text-sm mb-2">{t('componentStack')}</h4>
                       <pre className="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
                         {errorInfo.componentStack}
                       </pre>
@@ -122,19 +124,21 @@ export const MinimalErrorFallback: React.FC<ErrorFallbackProps> = ({
   error,
   resetError
 }) => {
+  const { t } = useLanguage()
+  
   return (
     <Alert className="m-4">
       <AlertTriangle className="h-4 w-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>{t('error')}</AlertTitle>
       <AlertDescription className="mt-2">
-        {error.message || 'Something went wrong'}
+        {error.message || t('somethingWentWrong')}
         <Button
           variant="outline"
           size="sm"
           onClick={resetError}
           className="ml-2"
         >
-          Try Again
+          {t('tryAgain')}
         </Button>
       </AlertDescription>
     </Alert>
