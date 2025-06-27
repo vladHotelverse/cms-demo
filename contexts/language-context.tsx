@@ -519,6 +519,18 @@ const translations = {
     product: "Producto",
     roomNumber: "Número de Habitación",
     extras: "Extras",
+    targetAchievement: "Logro del Objetivo",
+    teamEarnings: "Ganancias del Equipo",
+    totalTeamCommission: "Comisión Total del Equipo",
+    topPerformers: "Mejores Vendedores",
+    rank: "Rango",
+    totalSales: "Ventas Totales",
+    agentPerformanceBreakdown: "Desglose de Rendimiento de Agentes",
+    agentPerformance: "Rendimiento de Agentes",
+    up: "Arr",
+    extra: "Extra",
+    commissionTrendAnalysis: "Análisis de Tendencia de Comisiones",
+    commissionTrend: "Tendencia de Comisiones",
   },
   en: {
     // Sidebar translations
@@ -774,6 +786,8 @@ const translations = {
     extra: "Extra",
     commissionTrendAnalysis: "Commission Trend Analysis",
     commissionTrend: "Commission Trend",
+    targetAchievement: "Target Achievement",
+    commission: "Commission",
 
     // Form labels and placeholders
     name: "Name",

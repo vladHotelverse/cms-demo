@@ -129,7 +129,7 @@ export function RevenueTab() {
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
-                <span>Progress</span>
+                <span>{t('progress')}</span>
                 <span>$38,908 / $45,750</span>
               </div>
               <Progress value={85} className="h-2 sm:h-3" />
@@ -150,7 +150,7 @@ export function RevenueTab() {
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
-                <span>Progress</span>
+                <span>{t('progress')}</span>
                 <span>1,136 / 1,234</span>
               </div>
               <Progress value={92} className="h-2 sm:h-3" />
@@ -162,25 +162,25 @@ export function RevenueTab() {
       {/* Category Filter Badges - Responsive Wrapping */}
       <div className="flex flex-wrap gap-2 sm:gap-3">
         <Badge variant="default" className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium">
-          Room Upsells
+          {t('roomUpsells')}
         </Badge>
         <Badge
           variant="secondary"
           className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
-          ABS Services
+          {t('absServices')}
         </Badge>
         <Badge
           variant="secondary"
           className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
-          Room Assignments
+          {t('roomAssignments')}
         </Badge>
         <Badge
           variant="secondary"
           className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
-          Extra Services
+          {t('extraServices')}
         </Badge>
       </div>
 
@@ -191,8 +191,8 @@ export function RevenueTab() {
           <CardHeader className="p-4 sm:p-6">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              <span className="hidden sm:inline">Monthly Performance Breakdown</span>
-              <span className="sm:hidden">Monthly Performance</span>
+              <span className="hidden sm:inline">{t('monthlyPerformanceBreakdown')}</span>
+              <span className="sm:hidden">{t('monthlyPerformance')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2 sm:p-4 lg:p-6">
@@ -317,22 +317,22 @@ export function RevenueTab() {
                   <g transform="translate(450, 30)" className="hidden sm:block">
                     <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2" />
                     <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Upsell
+                      {t('upsell')}
                     </text>
 
                     <rect x="80" y="0" width="12" height="12" fill="hsl(160 60% 45%)" rx="2" />
                     <text x="100" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      ABS
+                      {t('abs')}
                     </text>
 
                     <rect x="0" y="20" width="12" height="12" fill="hsl(30 70% 50%)" rx="2" />
                     <text x="20" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Room Number
+                      {t('roomNumber')}
                     </text>
 
                     <rect x="80" y="20" width="12" height="12" fill="hsl(270 60% 50%)" rx="2" />
                     <text x="100" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Extras
+                      {t('extras')}
                     </text>
                   </g>
 
@@ -340,22 +340,22 @@ export function RevenueTab() {
                   <g transform="translate(100, 30)" className="sm:hidden">
                     <rect x="0" y="0" width="8" height="8" fill="hsl(220 70% 50%)" rx="1" />
                     <text x="12" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Upsell
+                      {t('upsell')}
                     </text>
 
                     <rect x="60" y="0" width="8" height="8" fill="hsl(160 60% 45%)" rx="1" />
                     <text x="72" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      ABS
+                      {t('abs')}
                     </text>
 
                     <rect x="0" y="15" width="8" height="8" fill="hsl(30 70% 50%)" rx="1" />
                     <text x="12" y="22" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Room
+                      {t('room')}
                     </text>
 
                     <rect x="60" y="15" width="8" height="8" fill="hsl(270 60% 50%)" rx="1" />
                     <text x="72" y="22" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Extras
+                      {t('extras')}
                     </text>
                   </g>
                 </svg>
@@ -369,8 +369,8 @@ export function RevenueTab() {
           <CardHeader className="p-4 sm:p-6">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              <span className="hidden sm:inline">Revenue vs Target Trend</span>
-              <span className="sm:hidden">Revenue Trend</span>
+              <span className="hidden sm:inline">{t('revenueVsTargetTrend')}</span>
+              <span className="sm:hidden">{t('revenueTrend')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2 sm:p-4 lg:p-6">
@@ -482,7 +482,7 @@ export function RevenueTab() {
                   <g transform="translate(500, 30)" className="hidden sm:block">
                     <line x1="0" y1="6" x2="20" y2="6" stroke="hsl(220 70% 50%)" strokeWidth="3" />
                     <text x="25" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Revenue
+                      {t('revenue')}
                     </text>
 
                     <line
@@ -495,7 +495,7 @@ export function RevenueTab() {
                       strokeDasharray="5,5"
                     />
                     <text x="25" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Target
+                      {t('target')}
                     </text>
                   </g>
 
@@ -503,7 +503,7 @@ export function RevenueTab() {
                   <g transform="translate(100, 30)" className="sm:hidden">
                     <line x1="0" y1="4" x2="15" y2="4" stroke="hsl(220 70% 50%)" strokeWidth="2" />
                     <text x="20" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Revenue
+                      {t('revenue')}
                     </text>
 
                     <line
@@ -516,7 +516,7 @@ export function RevenueTab() {
                       strokeDasharray="3,3"
                     />
                     <text x="20" y="21" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Target
+                      {t('target')}
                     </text>
                   </g>
                 </svg>

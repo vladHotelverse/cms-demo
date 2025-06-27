@@ -6,49 +6,7 @@ import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChartContainer } from "@/components/ui/chart"
 import { TrendingUp, DollarSign, Award, Users, Target, ArrowUpRight, ArrowDownRight, Crown } from "lucide-react"
-
-const kpiData = [
-  {
-    title: "Total Commission",
-    value: "$8,450",
-    change: "+22.1%",
-    trend: "up",
-    icon: DollarSign,
-    description: "vs last month",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-  },
-  {
-    title: "Total Upsells",
-    value: "$12,340",
-    change: "+18.5%",
-    trend: "up",
-    icon: Award,
-    description: "vs last month",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-  },
-  {
-    title: "Total Extras",
-    value: "$9,870",
-    change: "+15.2%",
-    trend: "up",
-    icon: Target,
-    description: "vs last month",
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-  },
-  {
-    title: "Total Upgrades",
-    value: "1,456",
-    change: "+12.8%",
-    trend: "up",
-    icon: Users,
-    description: "vs last month",
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
-  },
-]
+import { useLanguage } from "@/contexts/language-context"
 
 const agentPerformanceData = [
   {
@@ -107,6 +65,50 @@ const commissionTrendData = [
 ]
 
 export function CommissionTab() {
+  const { t } = useLanguage()
+  
+  const kpiData = [
+    {
+      title: t("totalCommission"),
+      value: "$8,450",
+      change: "+22.1%",
+      trend: "up",
+      icon: DollarSign,
+      description: t("vsLastMonth"),
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      title: t("totalUpsells"),
+      value: "$12,340",
+      change: "+18.5%",
+      trend: "up",
+      icon: Award,
+      description: t("vsLastMonth"),
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      title: t("totalExtras"),
+      value: "$9,870",
+      change: "+15.2%",
+      trend: "up",
+      icon: Target,
+      description: t("vsLastMonth"),
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+    },
+    {
+      title: t("totalUpgrades"),
+      value: "1,456",
+      change: "+12.8%",
+      trend: "up",
+      icon: Users,
+      description: t("vsLastMonth"),
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+    },
+  ]
   return (
     <div className="space-y-4 sm:space-y-6 lg:space-y-8">
       {/* Enhanced KPI Cards - Responsive Grid */}
@@ -158,13 +160,13 @@ export function CommissionTab() {
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center pb-2 p-4 sm:p-6">
             <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-muted-foreground">
-              Commission Goal
+              {t('commissionGoal')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
             <div className="text-center">
               <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary mb-2">78%</div>
-              <p className="text-xs sm:text-sm text-muted-foreground">Target Achievement</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t('targetAchievement')}</p>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
@@ -179,22 +181,22 @@ export function CommissionTab() {
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center pb-2 p-4 sm:p-6">
             <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-muted-foreground">
-              Team Earnings
+{t('teamEarnings')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
             <div className="text-center">
               <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-2">$45,892</div>
-              <p className="text-xs sm:text-sm text-muted-foreground">Total Team Commission</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">{t('totalTeamCommission')}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
                 <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">$12,340</div>
-                <p className="text-xs text-muted-foreground">This Month</p>
+                <p className="text-xs text-muted-foreground">{t('thisMonth')}</p>
               </div>
               <div>
                 <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">$33,552</div>
-                <p className="text-xs text-muted-foreground">YTD</p>
+                <p className="text-xs text-muted-foreground">{t('ytd')}</p>
               </div>
             </div>
           </CardContent>
@@ -206,7 +208,7 @@ export function CommissionTab() {
         <CardHeader className="p-4 sm:p-6">
           <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
             <Crown className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
-            Top Performers
+{t('topPerformers')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-2 sm:p-4 lg:p-6">
@@ -233,16 +235,16 @@ export function CommissionTab() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-xs sm:text-sm truncate">{agent.agent}</p>
-                      <p className="text-xs text-muted-foreground">Rank #{agent.rank}</p>
+                      <p className="text-xs text-muted-foreground">{t('rank')} #{agent.rank}</p>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span>Commission</span>
+                      <span>{t('commission')}</span>
                       <span className="font-semibold text-green-600">${agent.commission}</span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span>Total Sales</span>
+                      <span>{t('totalSales')}</span>
                       <span className="font-semibold">{agent.total}</span>
                     </div>
                     <Progress value={(agent.total / 1000) * 100} className="h-1.5 sm:h-2" />
@@ -257,25 +259,25 @@ export function CommissionTab() {
       {/* Category Filter Badges - Responsive Wrapping */}
       <div className="flex flex-wrap gap-2 sm:gap-3">
         <Badge variant="default" className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium">
-          Room Upsells
+{t('roomUpsells')}
         </Badge>
         <Badge
           variant="secondary"
           className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
-          ABS Services
+{t('absServices')}
         </Badge>
         <Badge
           variant="secondary"
           className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
-          Room Assignments
+{t('roomAssignments')}
         </Badge>
         <Badge
           variant="secondary"
           className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
-          Extra Services
+{t('extraServices')}
         </Badge>
       </div>
 
@@ -286,8 +288,8 @@ export function CommissionTab() {
           <CardHeader className="p-4 sm:p-6">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              <span className="hidden sm:inline">Agent Performance Breakdown</span>
-              <span className="sm:hidden">Agent Performance</span>
+              <span className="hidden sm:inline">{t('agentPerformanceBreakdown')}</span>
+              <span className="sm:hidden">{t('agentPerformance')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2 sm:p-4 lg:p-6">
@@ -401,22 +403,22 @@ export function CommissionTab() {
                   <g transform="translate(200, 20)" className="hidden sm:block">
                     <rect x="0" y="0" width="12" height="12" fill="hsl(220 70% 50%)" rx="2" />
                     <text x="20" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Upsell
+                      {t('upsell')}
                     </text>
 
                     <rect x="80" y="0" width="12" height="12" fill="hsl(160 60% 45%)" rx="2" />
                     <text x="100" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      ABS
+                      {t('abs')}
                     </text>
 
                     <rect x="140" y="0" width="12" height="12" fill="hsl(30 70% 50%)" rx="2" />
                     <text x="160" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Room Number
+                      {t('roomNumber')}
                     </text>
 
                     <rect x="260" y="0" width="12" height="12" fill="hsl(270 60% 50%)" rx="2" />
                     <text x="280" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Extras
+                      {t('extras')}
                     </text>
                   </g>
 
@@ -424,22 +426,22 @@ export function CommissionTab() {
                   <g transform="translate(200, 20)" className="sm:hidden">
                     <rect x="0" y="0" width="8" height="8" fill="hsl(220 70% 50%)" rx="1" />
                     <text x="12" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Up
+                      {t('up')}
                     </text>
 
                     <rect x="30" y="0" width="8" height="8" fill="hsl(160 60% 45%)" rx="1" />
                     <text x="42" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      ABS
+                      {t('abs')}
                     </text>
 
                     <rect x="0" y="12" width="8" height="8" fill="hsl(30 70% 50%)" rx="1" />
                     <text x="12" y="19" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Room
+                      {t('room')}
                     </text>
 
                     <rect x="30" y="12" width="8" height="8" fill="hsl(270 60% 50%)" rx="1" />
                     <text x="42" y="19" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Extra
+                      {t('extra')}
                     </text>
                   </g>
                 </svg>
@@ -453,8 +455,8 @@ export function CommissionTab() {
           <CardHeader className="p-4 sm:p-6">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              <span className="hidden sm:inline">Commission Trend Analysis</span>
-              <span className="sm:hidden">Commission Trend</span>
+              <span className="hidden sm:inline">{t('commissionTrendAnalysis')}</span>
+              <span className="sm:hidden">{t('commissionTrend')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2 sm:p-4 lg:p-6">
@@ -550,7 +552,7 @@ export function CommissionTab() {
                   <g transform="translate(500, 30)" className="hidden sm:block">
                     <line x1="0" y1="6" x2="20" y2="6" stroke="hsl(220 70% 50%)" strokeWidth="3" />
                     <text x="25" y="10" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Commission
+                      {t('commission')}
                     </text>
 
                     <line
@@ -563,7 +565,7 @@ export function CommissionTab() {
                       strokeDasharray="5,5"
                     />
                     <text x="25" y="30" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Target
+                      {t('target')}
                     </text>
                   </g>
 
@@ -571,7 +573,7 @@ export function CommissionTab() {
                   <g transform="translate(100, 30)" className="sm:hidden">
                     <line x1="0" y1="4" x2="15" y2="4" stroke="hsl(220 70% 50%)" strokeWidth="2" />
                     <text x="20" y="7" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Commission
+                      {t('commission')}
                     </text>
 
                     <line
@@ -584,7 +586,7 @@ export function CommissionTab() {
                       strokeDasharray="3,3"
                     />
                     <text x="20" y="21" className="fill-current text-xs" fill="hsl(var(--foreground))">
-                      Target
+                      {t('target')}
                     </text>
                   </g>
                 </svg>
