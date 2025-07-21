@@ -18,9 +18,11 @@ interface ReservationData {
   name: string
   email: string
   checkIn: string
-  checkOut: string
+  nights: string
+  roomType: string
   aci: string
   status: string
+  extras: string
   hasHotelverseRequest: boolean
 }
 
@@ -265,7 +267,7 @@ export default function ReservationDetailsTab({
                       </Label>
                     </div>
                     <p className="font-semibold text-lg pl-6">
-                      {reservation.checkIn} - {reservation.checkOut}
+                      {reservation.checkIn} ({reservation.nights})
                     </p>
                   </div>
 

@@ -15,63 +15,43 @@ interface EnhancedTableViewProps {
   onSelectRoom: (room: any) => void
 }
 
-// Enhanced room upgrade data with additional metadata
+// Enhanced room upgrade data
 const roomUpgrades = [
   {
     id: 1,
     type: "Deluxe Ocean View",
-    category: "Premium",
-    priceRange: "20€ - 30€",
-    totalPrice: "100€ - 150€",
-    commission: "10€ - 15€",
+    price: "25€",
     features: "Double Size Bed, Private Terrace, Pool View",
-    popularity: 85,
     availability: "Limited",
     rating: 4.8,
     image: "/hotel-room-ocean-view.png",
-    highlights: ["Most Popular", "Best Value"],
   },
   {
     id: 2,
     type: "Suite Sea Side",
-    category: "Luxury",
-    priceRange: "25€ - 35€",
-    totalPrice: "125€ - 175€",
-    commission: "15€ - 20€",
+    price: "30€",
     features: "Queen Size Bed, Large Terrace, Sea Side View",
-    popularity: 92,
     availability: "Available",
     rating: 4.9,
     image: "/luxury-hotel-suite.png",
-    highlights: ["Premium Choice"],
   },
   {
     id: 3,
     type: "King Suite Sea View",
-    category: "Luxury",
-    priceRange: "50€ - 60€",
-    totalPrice: "250€ - 300€",
-    commission: "22€ - 30€",
+    price: "55€",
     features: "King Size Bed, Premium Terrace, Direct Sea View",
-    popularity: 78,
     availability: "Available",
     rating: 5.0,
     image: "/king-suite-sea-view.png",
-    highlights: ["Exclusive"],
   },
   {
     id: 4,
     type: "Presidential Suite",
-    category: "Ultra Luxury",
-    priceRange: "70€ - 80€",
-    totalPrice: "350€ - 400€",
-    commission: "35€ - 40€",
+    price: "75€",
     features: "King Size Bed, Two-Story Terrace, Panoramic Sea View, Private Pool",
-    popularity: 95,
     availability: "Limited",
     rating: 5.0,
     image: "/presidential-suite.png",
-    highlights: ["Ultimate Experience"],
   },
 ]
 
@@ -79,184 +59,122 @@ const roomUpgrades = [
 const attributes = {
   "Bed Type": {
     icon: Building2,
-    color: "bg-blue-50 text-blue-700",
     items: [
       {
         name: "Double Size Bed",
-        price: "2€ - 3€",
-        total: "10€ - 15€",
-        commission: "0,10€ - 0,15€",
+        price: "2,50€",
         description: "Bed size 135x200",
-        popularity: 65,
       },
       {
         name: "Queen Size Bed",
-        price: "3,50€ - 4€",
-        total: "17,50€ - 20€",
-        commission: "0,17€ - 0,20€",
+        price: "3,75€",
         description: "Bed size 150x200",
-        popularity: 85,
       },
       {
         name: "King Size Bed",
-        price: "5€ - 7€",
-        total: "25€ - 35€",
-        commission: "0,25€ - 0,40€",
+        price: "6€",
         description: "Bed size 180x200",
-        popularity: 75,
       },
       {
         name: "Extra King Size Bed",
-        price: "8€ - 10€",
-        total: "40€ - 50€",
-        commission: "0,45€ - 0,50€",
+        price: "9€",
         description: "Bed size 200x200",
-        popularity: 45,
       },
     ],
   },
   Location: {
     icon: MapPin,
-    color: "bg-green-50 text-green-700",
     items: [
       {
         name: "Close to Main Pool",
-        price: "2€ - 3€",
-        total: "10€ - 15€",
-        commission: "0,10€ - 0,15€",
+        price: "2,50€",
         description: "Close to hotel Main Pool",
-        popularity: 90,
       },
       {
         name: "In Main Building",
-        price: "3,50€ - 4€",
-        total: "17,50€ - 20€",
-        commission: "0,17€ - 0,20€",
+        price: "3,75€",
         description: "Near Hotel Entrance",
-        popularity: 70,
       },
       {
         name: "Corner Room",
-        price: "5€ - 7€",
-        total: "25€ - 35€",
-        commission: "0,25€ - 0,40€",
+        price: "6€",
         description: "Extra Balcony Size",
-        popularity: 60,
       },
       {
         name: "Quiet Area",
-        price: "8€ - 10€",
-        total: "40€ - 50€",
-        commission: "0,45€ - 0,50€",
+        price: "9€",
         description: "For Business Guests",
-        popularity: 55,
       },
       {
         name: "Direct Pool Access",
-        price: "9€ - 12€",
-        total: "45€ - 60€",
-        commission: "0,55€ - 0,65€",
+        price: "10,50€",
         description: "Swim-out",
-        popularity: 80,
       },
     ],
   },
   Floor: {
     icon: Building2,
-    color: "bg-purple-50 text-purple-700",
     items: [
       {
         name: "Lower Floor",
-        price: "2€ - 3€",
-        total: "10€ - 15€",
-        commission: "0,10€ - 0,15€",
+        price: "2,50€",
         description: "Lower floor",
-        popularity: 40,
       },
       {
         name: "Intermediate Floor",
-        price: "3,50€ - 4€",
-        total: "17,50€ - 20€",
-        commission: "0,17€ - 0,20€",
+        price: "3,75€",
         description: "Floors 1 - 3",
-        popularity: 75,
       },
       {
         name: "Higher Floors",
-        price: "5€ - 7€",
-        total: "25€ - 35€",
-        commission: "0,25€ - 0,40€",
+        price: "6€",
         description: "Floors 4-6",
-        popularity: 85,
       },
       {
         name: "Rooftop",
-        price: "8€ - 10€",
-        total: "40€ - 50€",
-        commission: "0,45€ - 0,50€",
+        price: "9€",
         description: "Floor 7",
-        popularity: 95,
       },
     ],
   },
 }
 
-// Enhanced extras with better metadata
+// Enhanced extras
 const extras = [
   {
     name: "Early Check In",
-    price: "5€ - 7€",
+    price: "6€",
     priceType: "per stay",
     units: 1,
-    total: "5€ - 7€",
-    commission: "0,25€ - 0,50€",
     description: "Check in before 3 PM",
-    popularity: 80,
-    category: "Convenience",
   },
   {
     name: "Spa Treatment",
-    price: "35€ - 45€",
+    price: "40€",
     priceType: "per treatment",
     units: 2,
-    total: "70€ - 90€",
-    commission: "3,50€ - 5€",
     description: "Relaxing spa experience",
-    popularity: 95,
-    category: "Wellness",
   },
   {
     name: "Dinner Package",
-    price: "50€ - 70€",
+    price: "60€",
     priceType: "per person/date",
     units: 1,
-    total: "100€ - 140€",
-    commission: "5,50€ - 6,50€",
     description: "Premium dining experience",
-    popularity: 70,
-    category: "Dining",
   },
   {
     name: "Pool Bed Reservation",
-    price: "2€ - 4€",
+    price: "3€",
     priceType: "per day",
     units: 1,
-    total: "4€ - 8€",
-    commission: "0,25€ - 0,50€",
     description: "Reserved poolside seating",
-    popularity: 60,
-    category: "Recreation",
   },
   {
     name: "Late Check Out",
-    price: "5€ - 7€",
+    price: "6€",
     priceType: "per stay",
     units: 1,
-    total: "5€ - 7€",
-    commission: "0,25€ - 0,50€",
     description: "Check out after 12 PM",
-    popularity: 85,
-    category: "Convenience",
   },
 ]
 
@@ -339,12 +257,6 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                         Room Type
                       </div>
                     </TableHead>
-                    <TableHead className="text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <Zap className="h-4 w-4" />
-                        Popularity
-                      </div>
-                    </TableHead>
                     <TableHead className="text-right">Price/Night</TableHead>
                     <TableHead className="text-right">Total Price</TableHead>
                     <TableHead className="text-right">Commission</TableHead>
@@ -374,20 +286,8 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-gray-900">{room.type}</span>
-                            {room.highlights.map((highlight, index) => (
-                              <Badge
-                                key={index}
-                                variant={highlight === "Most Popular" ? "default" : "secondary"}
-                                className="text-xs px-1.5 py-0.5"
-                              >
-                                {highlight}
-                              </Badge>
-                            ))}
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                              {room.category}
-                            </Badge>
                             <div className="flex items-center gap-1">
                               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                               <span className="text-xs font-medium">{room.rating}</span>
@@ -404,19 +304,9 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center px-3 py-2">
-                        <div className="flex flex-col items-center gap-1">
-                          <Progress value={room.popularity} className="w-12 h-2" />
-                          <span className={`text-xs font-medium ${getPopularityColor(room.popularity)}`}>
-                            {room.popularity}%
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right font-medium px-3 py-2">{room.priceRange}</TableCell>
-                      <TableCell className="text-right font-semibold text-lg px-3 py-2">{room.totalPrice}</TableCell>
-                      <TableCell className="text-right font-medium text-green-600 px-3 py-2">
-                        {room.commission}
-                      </TableCell>
+                      <TableCell className="text-right font-medium px-3 py-2">{room.price}</TableCell>
+                      <TableCell className="text-right font-semibold text-lg px-3 py-2">{(parseFloat(room.price.replace('€', '')) * 5).toFixed(0)}€</TableCell>
+                      <TableCell className="text-right font-medium text-green-600 px-3 py-2">{(parseFloat(room.price.replace('€', '')) * 0.1).toFixed(1)}€</TableCell>
                       <TableCell className="px-3 py-2">
                         <div className="space-y-1">
                           {room.features.split(", ").map((feature, index) => (
@@ -467,9 +357,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                 <TableHeader className="h-10">
                   <TableRow className="bg-gray-50/50">
                     <TableHead className="w-12"></TableHead>
-                    <TableHead className="w-32">Category</TableHead>
                     <TableHead className="min-w-[180px]">Attribute</TableHead>
-                    <TableHead className="text-center">Popularity</TableHead>
                     <TableHead className="text-right">Price/Night</TableHead>
                     <TableHead className="text-right">Total Price</TableHead>
                     <TableHead className="text-right">Commission</TableHead>
@@ -495,40 +383,14 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                               {isSelected && <Check className="h-4 w-4 text-green-600" />}
                             </div>
                           </TableCell>
-                          {index === 0 && (
-                            <TableCell
-                              rowSpan={data.items.length}
-                              className={`text-center font-semibold border-r ${data.color} align-middle px-3 py-2`}
-                            >
-                              <div className="flex flex-col items-center gap-2">
-                                <data.icon className="h-5 w-5" />
-                                <span className="text-sm">{category}</span>
-                              </div>
-                            </TableCell>
-                          )}
                           <TableCell className="px-3 py-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{item.name}</span>
-                              {item.popularity >= 80 && (
-                                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
-                                  Popular
-                                </Badge>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-center px-3 py-2">
-                            <div className="flex flex-col items-center gap-1">
-                              <Progress value={item.popularity} className="w-12 h-2" />
-                              <span className={`text-xs font-medium ${getPopularityColor(item.popularity)}`}>
-                                {item.popularity}%
-                              </span>
                             </div>
                           </TableCell>
                           <TableCell className="text-right font-medium px-3 py-2">{item.price}</TableCell>
-                          <TableCell className="text-right font-semibold px-3 py-2">{item.total}</TableCell>
-                          <TableCell className="text-right font-medium text-green-600 px-3 py-2">
-                            {item.commission}
-                          </TableCell>
+                          <TableCell className="text-right font-semibold px-3 py-2">{(parseFloat(item.price.replace('€', '').replace(',', '.')) * 5).toFixed(0)}€</TableCell>
+                          <TableCell className="text-right font-medium text-green-600 px-3 py-2">{(parseFloat(item.price.replace('€', '').replace(',', '.')) * 0.1).toFixed(1)}€</TableCell>
                           <TableCell className="text-gray-600 px-3 py-2">{item.description}</TableCell>
                           <TableCell className="text-center px-3 py-2">
                             <Button
@@ -554,39 +416,6 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
           </CardContent>
         </Card>
 
-        {/* CYR Map */}
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-purple-50 via-pink-50 to-rose-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
-              <MapPin className="h-6 w-6 text-purple-600" />
-              Resort Map
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="relative w-full h-80 bg-gray-200 rounded-xl overflow-hidden shadow-inner">
-              <img
-                src="/images/hotel-aerial-view.png"
-                alt="Resort aerial view map"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-              <div className="absolute bottom-4 left-4 text-white">
-                <h3 className="font-semibold text-lg">Resort Overview</h3>
-                <p className="text-sm opacity-90">Interactive map coming soon</p>
-              </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="sm" variant="secondary" className="absolute top-4 right-4 bg-white/90 hover:bg-white">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>View full map</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Extras Enhanced Table */}
         <Card className="overflow-hidden">
@@ -606,8 +435,6 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                   <TableRow className="bg-gray-50/50">
                     <TableHead className="w-12"></TableHead>
                     <TableHead className="min-w-[180px]">Service</TableHead>
-                    <TableHead className="text-center">Category</TableHead>
-                    <TableHead className="text-center">Popularity</TableHead>
                     <TableHead className="text-right">Price</TableHead>
                     <TableHead className="text-center">Units</TableHead>
                     <TableHead className="text-right">Total Price</TableHead>
@@ -642,19 +469,6 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                               )}
                             </div>
                             <p className="text-xs text-gray-600">{extra.description}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center px-3 py-2">
-                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                            {extra.category}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center px-3 py-2">
-                          <div className="flex flex-col items-center gap-1">
-                            <Progress value={extra.popularity} className="w-12 h-2" />
-                            <span className={`text-xs font-medium ${getPopularityColor(extra.popularity)}`}>
-                              {extra.popularity}%
-                            </span>
                           </div>
                         </TableCell>
                         <TableCell className="text-right px-3 py-2">
@@ -713,10 +527,8 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                             <span className="font-medium">{extra.units}</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-semibold px-3 py-2">{extra.total}</TableCell>
-                        <TableCell className="text-right font-medium text-green-600 px-3 py-2">
-                          {extra.commission}
-                        </TableCell>
+                        <TableCell className="text-right font-semibold px-3 py-2">{(parseFloat(extra.price.replace('€', '')) * (extraQuantities[extra.name] || extra.units)).toFixed(0)}€</TableCell>
+                        <TableCell className="text-right font-medium text-green-600 px-3 py-2">{(parseFloat(extra.price.replace('€', '')) * 0.1 * (extraQuantities[extra.name] || extra.units)).toFixed(1)}€</TableCell>
                         <TableCell className="text-center px-3 py-2">
                           <Button
                             size="sm"
