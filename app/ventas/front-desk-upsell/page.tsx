@@ -57,10 +57,6 @@ export default function FrontDeskUpsellPage() {
   const [openTabs, setOpenTabs] = useState<OpenTab[]>([])
   const { t } = useLanguage()
   const [isInReservationMode, setIsInReservationMode] = useState(false)
-  const [summaryModal, setSummaryModal] = useState<{
-    isOpen: boolean
-    reservation: any | null
-  }>({ isOpen: false, reservation: null })
 
   // Generate reservations with proper translation handling
   const reservations = rawReservations.map(res => {
@@ -115,19 +111,29 @@ export default function FrontDeskUpsellPage() {
   }
 
   const handleExtrasButtonClick = (reservation: any) => {
-    setSummaryModal({ isOpen: true, reservation })
-  }
-
-  const closeSummaryModal = () => {
-    setSummaryModal({ isOpen: false, reservation: null })
-  }
-
-  const handleViewMoreFromSummary = () => {
-    if (summaryModal.reservation) {
-      handleReservationClick(summaryModal.reservation)
-      closeSummaryModal()
+    // Create a unique tab ID for the reservation summary
+    const summaryTabId = `summary_${reservation.id}`
+    
+    // Check if summary tab is already open
+    const existingTab = openTabs.find(tab => tab.id === summaryTabId)
+    if (existingTab) {
+      setActiveTab(summaryTabId)
+      return
     }
+
+    // Add the summary tab
+    const newTab: OpenTab = {
+      id: summaryTabId,
+      reservation: {
+        ...reservation,
+        nights: reservation.nights,
+        extras: reservation.extras
+      }
+    }
+    setOpenTabs([...openTabs, newTab])
+    setActiveTab(summaryTabId)
   }
+
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -340,25 +346,28 @@ export default function FrontDeskUpsellPage() {
         </TabsContent>
 
         {/* Dynamic reservation tabs content */}
-        {openTabs.map((tab) => (
-          <TabsContent key={tab.id} value={tab.id} className="mt-0">
-            <ReservationDetailsTab
-              reservation={tab.reservation}
-              onShowAlert={showAlert}
-              onCloseTab={() => handleCloseTab(tab.id)}
-              isInReservationMode={isInReservationMode}
-            />
-          </TabsContent>
-        ))}
-      </Tabs>
+        {openTabs
+          .filter(tab => !tab.id.startsWith('summary_'))
+          .map((tab) => (
+            <TabsContent key={tab.id} value={tab.id} className="mt-0">
+              <ReservationDetailsTab
+                reservation={tab.reservation}
+                onShowAlert={showAlert}
+                onCloseTab={() => handleCloseTab(tab.id)}
+                isInReservationMode={isInReservationMode}
+              />
+            </TabsContent>
+          ))}
 
-      {/* Reservation Summary Modal */}
-      <ReservationSummaryModal
-        isOpen={summaryModal.isOpen}
-        onClose={closeSummaryModal}
-        onViewMore={handleViewMoreFromSummary}
-        reservation={summaryModal.reservation}
-      />
+        {/* Render Summary Tabs */}
+        {openTabs
+          .filter(tab => tab.id.startsWith('summary_'))
+          .map(tab => (
+            <TabsContent key={tab.id} value={tab.id} className="mt-0">
+              <ReservationSummaryModal reservation={tab.reservation} />
+            </TabsContent>
+          ))}
+      </Tabs>
     </div>
   )
 }
