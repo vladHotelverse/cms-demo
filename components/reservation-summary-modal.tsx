@@ -381,69 +381,162 @@ export function ReservationSummaryModal({
             <div className="grid gap-4">
               <Card className="border-2 border-dashed hover:border-solid transition-all hover:shadow-sm">
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">Popular</Badge>
-                        <h4 className="font-semibold">Room Upgrade - Suite Vista Mar</h4>
+                  <div className="flex gap-4">
+                    <div className="grid grid-rows-3 gap-2">
+                      <div className="border border-gray-300 rounded p-1 text-center">
+                        <div className="font-bold">€120</div>
+                        <div className="text-xs text-muted-foreground uppercase">PER NIGHT</div>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Habitación más amplia con terraza privada y vistas panorámicas al mar
-                      </p>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="font-medium">+€120/noche</span>
-                        <span className="text-green-600">Comisión: €18</span>
+                      <div className="border border-blue-400 bg-blue-100 rounded p-1 text-center">
+                        <div className="font-bold">€120</div>
+                        <div className="text-xs text-muted-foreground uppercase">TOTAL</div>
+                      </div>
+                      <div className="border border-green-400 bg-green-100 rounded p-1 text-center">
+                        <div className="font-bold">€18</div>
+                        <div className="text-xs text-muted-foreground uppercase">COMISIÓN</div>
                       </div>
                     </div>
-                    <Button>
-                      Ofrecer
-                    </Button>
+                    <div className="flex-1 flex justify-between items-start">
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-semibold">Room Upgrade - Suite Vista Mar</h4>
+                          <p className="text-base text-muted-foreground">
+                            Habitación más amplia con terraza privada y vistas panorámicas al mar
+                          </p>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <div className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=120&h=80&fit=crop&crop=center" alt="Luxury hotel room" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=120&h=80&fit=crop&crop=center" alt="Hotel terrace with sea view" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=120&h=80&fit=crop&crop=center" alt="Ocean view from hotel" className="w-full h-full object-cover" />
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Badge variant="secondary" className="text-xs">
+                            Pool View
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Balcony
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Best Views
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" size="sm">
+                          Decline
+                        </Button>
+                        <Button size="sm">
+                          Accept
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="border-2 border-dashed hover:border-solid transition-all hover:shadow-sm">
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">Mejor valor</Badge>
-                        <h4 className="font-semibold">Pack Comodidad Total</h4>
+                  <div className="flex gap-4">
+                    <div className="grid grid-rows-3 gap-2">
+                      <div className="border border-gray-300 rounded p-1 text-center">
+                        <div className="font-bold">€42.5</div>
+                        <div className="text-xs text-muted-foreground uppercase">PER NIGHT</div>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Early check-in (12:00) + Late checkout (14:00) + Desayuno premium
-                      </p>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="font-medium">€85 total</span>
-                        <span className="text-green-600">Comisión: €12.75</span>
+                      <div className="border border-blue-400 bg-blue-100 rounded p-1 text-center">
+                        <div className="font-bold">€85</div>
+                        <div className="text-xs text-muted-foreground uppercase">TOTAL</div>
+                      </div>
+                      <div className="border border-green-400 bg-green-100 rounded p-1 text-center">
+                        <div className="font-bold">€12.75</div>
+                        <div className="text-xs text-muted-foreground uppercase">COMISIÓN</div>
                       </div>
                     </div>
-                    <Button>
-                      Ofrecer
-                    </Button>
+                    <div className="flex-1 flex justify-between items-start">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Planta Alta</h4>
+                        <p className="text-base text-muted-foreground">
+                          Habitación en planta superior con vistas elevadas y mayor privacidad
+                        </p>
+                        <div className="text-sm text-muted-foreground">
+                          • Ubicación en pisos 4-6 (vs 1-3 estándar)<br/>
+                          • Vistas panorámicas sin obstrucciones<br/>
+                          • Ambiente más tranquilo y exclusivo
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" size="sm">
+                          Decline
+                        </Button>
+                        <Button size="sm">
+                          Accept
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="border-2 border-dashed hover:border-solid transition-all hover:shadow-sm">
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">Premium</Badge>
-                        <h4 className="font-semibold">Experiencia Wellness</h4>
+                  <div className="flex gap-4">
+                    <div className="grid grid-rows-3 gap-2">
+                      <div className="border border-gray-300 rounded p-1 text-center">
+                        <div className="font-bold">€150</div>
+                        <div className="text-xs text-muted-foreground uppercase">PER PERSON</div>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Acceso ilimitado al spa + Masaje 60min + Clase yoga privada
-                      </p>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="font-medium">€150/persona</span>
-                        <span className="text-green-600">Comisión: €22.50</span>
+                      <div className="border border-blue-400 bg-blue-100 rounded p-1 text-center">
+                        <div className="font-bold">€150</div>
+                        <div className="text-xs text-muted-foreground uppercase">TOTAL</div>
+                      </div>
+                      <div className="border border-green-400 bg-green-100 rounded p-1 text-center">
+                        <div className="font-bold">€22.50</div>
+                        <div className="text-xs text-muted-foreground uppercase">COMISIÓN</div>
                       </div>
                     </div>
-                    <Button>
-                      Ofrecer
-                    </Button>
+                    <div className="flex-1 flex justify-between items-start">
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-semibold">Experiencia Wellness</h4>
+                          <p className="text-base text-muted-foreground">
+                            Acceso ilimitado al spa + Masaje 60min + Clase yoga privada
+                          </p>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <div className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=80&fit=crop&crop=center" alt="Luxury spa treatment room" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=80&fit=crop&crop=center" alt="Relaxing massage therapy" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1506629905607-21d4b4b3c8e5?w=120&h=80&fit=crop&crop=center" alt="Private yoga session" className="w-full h-full object-cover" />
+                          </div>
+                        </div>
+                        
+                        <div className="text-sm text-muted-foreground">
+                          • Spa abierto 6:00-22:00<br/>
+                          • Masaje relajante o deportivo a elegir<br/>
+                          • Yoga privado con instructor certificado
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" size="sm">
+                          Decline
+                        </Button>
+                        <Button size="sm">
+                          Accept
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
