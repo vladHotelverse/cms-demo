@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import { ChevronUp, ChevronDown, X, Settings, User } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle } from "lucide-react"
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { FrontDeskHeader } from "@/components/front-desk-header"
 import ReservationDetailsTab from "@/components/reservation-details-tab"
+import { ReservationSummaryModal } from "@/components/reservation-summary-modal"
 import { cn } from "@/lib/utils/index"
 import { useReservationStore } from "@/store/use-reservation-store"
 import type { Reservation } from "@/types/reservation"
@@ -57,6 +57,10 @@ export default function FrontDeskUpsellPage() {
   const [openTabs, setOpenTabs] = useState<OpenTab[]>([])
   const { t } = useLanguage()
   const [isInReservationMode, setIsInReservationMode] = useState(false)
+  const [summaryModal, setSummaryModal] = useState<{
+    isOpen: boolean
+    reservation: any | null
+  }>({ isOpen: false, reservation: null })
 
   // Generate reservations with proper translation handling
   const reservations = rawReservations.map(res => {
@@ -108,6 +112,21 @@ export default function FrontDeskUpsellPage() {
   const showAlert = (type: "success" | "error", message: string) => {
     setAlert({ type, message })
     setTimeout(() => setAlert(null), 4000)
+  }
+
+  const handleExtrasButtonClick = (reservation: any) => {
+    setSummaryModal({ isOpen: true, reservation })
+  }
+
+  const closeSummaryModal = () => {
+    setSummaryModal({ isOpen: false, reservation: null })
+  }
+
+  const handleViewMoreFromSummary = () => {
+    if (summaryModal.reservation) {
+      handleReservationClick(summaryModal.reservation)
+      closeSummaryModal()
+    }
   }
 
   const handleSort = (field: SortField) => {
@@ -262,8 +281,7 @@ export default function FrontDeskUpsellPage() {
                   {sortedReservations.map((reservation) => (
                     <TableRow
                       key={reservation.id}
-                      className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => handleReservationClick(reservation)}
+                      className="hover:bg-gray-50"
                     >
                       <TableCell className="font-mono text-sm">{reservation.locator}</TableCell>
                       <TableCell>
@@ -282,7 +300,7 @@ export default function FrontDeskUpsellPage() {
                         <Button
                           variant={reservation.extras.includes(t("reserved")) ? "ghost" : "default"}
                           size="sm"
-                          
+                          onClick={() => handleExtrasButtonClick(reservation)}
                         >
                           {reservation.extras}
                         </Button>
@@ -333,6 +351,14 @@ export default function FrontDeskUpsellPage() {
           </TabsContent>
         ))}
       </Tabs>
+
+      {/* Reservation Summary Modal */}
+      <ReservationSummaryModal
+        isOpen={summaryModal.isOpen}
+        onClose={closeSummaryModal}
+        onViewMore={handleViewMoreFromSummary}
+        reservation={summaryModal.reservation}
+      />
     </div>
   )
 }
