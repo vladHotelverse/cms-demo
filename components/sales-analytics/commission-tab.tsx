@@ -7,6 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChartContainer } from "@/components/ui/chart"
 import { TrendingUp, DollarSign, Award, Users, Target, ArrowUpRight, ArrowDownRight, Crown } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
+import { useSalesStore } from "@/store/use-sales-store"
+import { DataStateWrapper } from "@/components/ui/data-state-wrapper"
+import type { AgentPerformance, KPIData } from "@/types/sales"
 
 const agentPerformanceData = [
   {
