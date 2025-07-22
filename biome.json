@@ -1,8 +1,5 @@
 {
   "$schema": "./node_modules/@biomejs/biome/schemas/biome.schema.json",
-  "extends": [
-    "recommended"
-  ],
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
