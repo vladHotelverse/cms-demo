@@ -31,8 +31,10 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
         </div>
       </div>
 
-      {/* Items grouped by type */}
-      {Object.entries(items).map(([category, categoryItems]) => {
+      {/* Items grouped by type - Only show categories with items */}
+      {Object.entries(items)
+        .filter(([category, categoryItems]) => categoryItems.length > 0)
+        .map(([category, categoryItems]) => {
         const config = categoryConfig[category as keyof typeof categoryConfig]
         const Icon = config.icon
         
@@ -93,9 +95,11 @@ function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedI
       {/* Room (Service name) */}
       <div className="col-span-3">
         <div className="space-y-0.5">
-          <p className="font-medium text-sm text-foreground">{item.name}</p>
+          <p className="font-medium text-sm text-foreground">
+            {item.nameKey ? t(item.nameKey) : item.name}
+          </p>
           <p className="text-xs text-muted-foreground leading-tight">
-            {item.description}
+            {item.descriptionKey ? t(item.descriptionKey) : item.description}
           </p>
         </div>
       </div>

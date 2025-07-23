@@ -1,7 +1,6 @@
 import { Card } from "@/components/ui/card"
 import { Package2 } from "lucide-react"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
-import { requestedItemsData } from "@/data/reservation-items"
 
 interface RequestedItemsHeaderProps {
   reservation: {
@@ -13,7 +12,7 @@ interface RequestedItemsHeaderProps {
 }
 
 export function RequestedItemsHeader({ reservation }: RequestedItemsHeaderProps) {
-  const { calculateGrandTotal } = useReservationSummaryStore()
+  const { calculateGrandTotal, requestedItems } = useReservationSummaryStore()
   const total = calculateGrandTotal()
   const commission = total * 0.15
 
@@ -59,19 +58,19 @@ export function RequestedItemsHeader({ reservation }: RequestedItemsHeaderProps)
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
           <span className="text-sm font-medium">
-            {Object.values(requestedItemsData).flat().filter(item => item.status === 'confirmed').length} Confirmados
+            {Object.values(requestedItems).flat().filter(item => item.status === 'confirmed').length} Confirmados
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-amber-500" />
           <span className="text-sm font-medium">
-            {Object.values(requestedItemsData).flat().filter(item => item.status === 'pending_hotel').length} Pendiente Hotel
+            {Object.values(requestedItems).flat().filter(item => item.status === 'pending_hotel').length} Pendiente Hotel
           </span>
         </div>
         <div className="flex items-center gap-2 ml-auto">
           <Package2 className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            {Object.values(requestedItemsData).flat().length} servicios totales
+            {Object.values(requestedItems).flat().length} servicios totales
           </span>
         </div>
       </div>

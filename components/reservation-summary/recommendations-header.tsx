@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card"
 import { Star } from "lucide-react"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
-import { recommendationsData } from "@/data/recommendations"
+import { Recommendation } from "@/data/recommendations"
 
 interface RecommendationsHeaderProps {
   reservation: {
@@ -10,14 +10,18 @@ interface RecommendationsHeaderProps {
     checkIn: string
     roomType: string
   }
+  recommendations?: Recommendation[]
 }
 
-export function RecommendationsHeader({ reservation }: RecommendationsHeaderProps) {
+export function RecommendationsHeader({ reservation, recommendations }: RecommendationsHeaderProps) {
   const { t } = useReservationTranslations()
   
+  // Use provided recommendations or fallback to empty array
+  const items = recommendations || []
+  
   // Calculate total potential value and commission
-  const totalValue = recommendationsData.reduce((sum, item) => sum + item.total, 0)
-  const totalCommission = recommendationsData.reduce((sum, item) => sum + item.commission, 0)
+  const totalValue = items.reduce((sum, item) => sum + item.totalPrice, 0)
+  const totalCommission = items.reduce((sum, item) => sum + item.commission, 0)
 
   return (
     <div className="space-y-4">
@@ -53,7 +57,7 @@ export function RecommendationsHeader({ reservation }: RecommendationsHeaderProp
         <div className="flex items-center gap-2">
           <Star className="h-4 w-4 text-amber-500" />
           <span className="text-sm font-medium">
-            {recommendationsData.length} {t('recommendations').toLowerCase()}
+            {items.length} {t('recommendations').toLowerCase()}
           </span>
         </div>
         <div className="flex items-center gap-2 ml-auto">

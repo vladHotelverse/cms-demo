@@ -19,8 +19,8 @@ export const reservationSummaryTranslations = {
     minutesAgo: "hace {{minutes}} minutos",
     
     // Buttons
-    accept: "Accept",
-    decline: "Decline",
+    accept: "Aceptar",
+    decline: "Rechazar",
     offer: "Ofrecer",
     offerToGuest: "Ofrecer al Huésped",
     viewFullCatalog: "Ver catálogo completo",
@@ -30,12 +30,12 @@ export const reservationSummaryTranslations = {
     manageOrder: "Gestionar pedido",
     
     // Table Headers
-    supplements: "Supplements",
-    room: "Room",
-    type: "Type",
-    dates: "Dates",
-    status: "Status",
-    action: "Action",
+    supplements: "Suplementos",
+    room: "Habitación",
+    type: "Tipo",
+    dates: "Fechas",
+    status: "Estado",
+    action: "Acción",
     
     // Status
     pending: "Pendiente Hotel",
@@ -43,7 +43,7 @@ export const reservationSummaryTranslations = {
     
     // Categories
     extras: "Extras",
-    upsell: "Upsell",
+    upsell: "Mejora",
     attributes: "Atributos",
     
     // Price Labels
@@ -56,7 +56,7 @@ export const reservationSummaryTranslations = {
     
     // Recommendations
     roomUpgrade: {
-      title: "Room Upgrade - Suite Vista Mar",
+      title: "Mejora de Habitación - Suite Vista Mar",
       description: "Habitación más amplia con terraza privada y vistas panorámicas al mar",
       details: [
         "Superficie: 45m² vs 25m² estándar",
@@ -74,12 +74,12 @@ export const reservationSummaryTranslations = {
       ]
     },
     wellness: {
-      title: "Experiencia Wellness",
+      title: "Experiencia de Bienestar",
       description: "Acceso ilimitado al spa + Masaje 60min + Clase yoga privada",
       details: [
-        "Spa abierto 6:00-22:00",
+        "Spa abierto de 6:00 a 22:00",
         "Masaje relajante o deportivo a elegir",
-        "Yoga privado con instructor certificado"
+        "Sesión de yoga privada con instructor certificado"
       ]
     },
     
@@ -92,8 +92,75 @@ export const reservationSummaryTranslations = {
       privacy: "Privacidad",
       elevatedViews: "Vistas Elevadas",
       unlimitedSpa: "Spa Ilimitado",
-      massage60min: "Masaje 60min",
-      privateYoga: "Yoga Privado"
+      massage60min: "Masaje 60 minutos",
+      privateYoga: "Yoga Privado",
+      oceanView: "Vista al Mar",
+      premium: "Premium",
+      panoramicView: "Vista Panorámica",
+      terrace: "Terraza",
+      livingArea: "Zona de Estar",
+      privatePool: "Piscina Privada",
+      butler: "Servicio de Mayordomo",
+      luxury: "Lujo",
+      meetingRoom: "Sala de Reuniones",
+      businessCenter: "Centro de Negocios",
+      express: "Servicio Express",
+      champagne: "Champán",
+      rosePetals: "Pétalos de Rosa",
+      candleDinner: "Cena a la Luz de las Velas"
+    },
+
+    // Dynamic Items Translations - Flattened keys
+    extraEarlyCheckinName: "Check-in Temprano",
+    extraEarlyCheckinDescription: "Check-in desde las 12:00",
+    extraLateCheckoutName: "Check-out Tardío",
+    extraLateCheckoutDescription: "Check-out hasta las 14:00",
+    extraBabyCribName: "Cuna de Bebé",
+    extraBabyCribDescription: "Cuna para bebé con ropa de cama",
+    extraAirportTransferName: "Transfer Aeropuerto",
+    extraAirportTransferDescription: "Transporte privado desde/hacia el aeropuerto",
+    extraBusinessCenterName: "Centro de Negocios",
+    extraBusinessCenterDescription: "Acceso 24h a centro de negocios y servicios",
+
+    upsellRoomUpgradeName: "Mejora de Habitación",
+    upsellRoomUpgradeDescription: "Mejora a categoría superior con mejores vistas",
+    upsellRomanticPackageName: "Paquete Romántico",
+    upsellRomanticPackageDescription: "Botella de cava, pétalos de rosa, desayuno en habitación",
+    upsellExecutiveLoungeName: "Acceso Lounge Ejecutivo",
+    upsellExecutiveLoungeDescription: "Acceso exclusivo al lounge con desayuno y aperitivos",
+    upsellPremiumDiningName: "Paquete Gastronómico Premium",
+    upsellPremiumDiningDescription: "Cenas en restaurantes premium del hotel",
+
+    attributeQuietRoomName: "Habitación Silenciosa",
+    attributeQuietRoomDescription: "Alejada de ascensores y zonas comunes",
+    attributeUpperFloorName: "Planta Alta",
+    attributeUpperFloorDescription: "Plantas 8-12 con mejores vistas",
+    attributeNearSpaName: "Cerca del Spa",
+    attributeNearSpaDescription: "Acceso directo a zona wellness",
+    attributeOceanViewName: "Vista al Mar",
+    attributeOceanViewDescription: "Habitación con vista directa al océano",
+    attributeConnectingRoomsName: "Habitaciones Comunicadas",
+    attributeConnectingRoomsDescription: "Habitaciones conectadas para familias o grupos",
+
+    // Additional packages
+    businessPackage: {
+      title: "Paquete de Negocios",
+      description: "Servicios ejecutivos completos para viajeros de negocios",
+      details: [
+        "Acceso a sala de reuniones",
+        "Centro de negocios 24h",
+        "Servicio express de lavandería"
+      ]
+    },
+
+    romanticPackage: {
+      title: "Experiencia Romántica",
+      description: "Paquete especial para parejas con detalles únicos",
+      details: [
+        "Botella de champán de bienvenida",
+        "Decoración con pétalos de rosa",
+        "Cena romántica a la luz de las velas"
+      ]
     }
   },
   
@@ -191,7 +258,74 @@ export const reservationSummaryTranslations = {
       elevatedViews: "Elevated Views",
       unlimitedSpa: "Unlimited Spa",
       massage60min: "60min Massage",
-      privateYoga: "Private Yoga"
+      privateYoga: "Private Yoga",
+      oceanView: "Ocean View",
+      premium: "Premium",
+      panoramicView: "Panoramic View",
+      terrace: "Terrace",
+      livingArea: "Living Area",
+      privatePool: "Private Pool",
+      butler: "Butler Service",
+      luxury: "Luxury",
+      meetingRoom: "Meeting Room",
+      businessCenter: "Business Center",
+      express: "Express Service",
+      champagne: "Champagne",
+      rosePetals: "Rose Petals",
+      candleDinner: "Candlelight Dinner"
+    },
+
+    // Dynamic Items Translations - Flattened keys
+    extraEarlyCheckinName: "Early Check-in",
+    extraEarlyCheckinDescription: "Check-in from 12:00 PM",
+    extraLateCheckoutName: "Late Checkout",
+    extraLateCheckoutDescription: "Check-out until 2:00 PM",
+    extraBabyCribName: "Baby Crib",
+    extraBabyCribDescription: "Baby crib with bedding included",
+    extraAirportTransferName: "Airport Transfer",
+    extraAirportTransferDescription: "Private transportation to/from airport",
+    extraBusinessCenterName: "Business Center",
+    extraBusinessCenterDescription: "24h access to business center and services",
+
+    upsellRoomUpgradeName: "Room Upgrade",
+    upsellRoomUpgradeDescription: "Upgrade to higher category with better views",
+    upsellRomanticPackageName: "Romantic Package",
+    upsellRomanticPackageDescription: "Champagne bottle, rose petals, room service breakfast",
+    upsellExecutiveLoungeName: "Executive Lounge Access",
+    upsellExecutiveLoungeDescription: "Exclusive lounge access with breakfast and snacks",
+    upsellPremiumDiningName: "Premium Dining Package",
+    upsellPremiumDiningDescription: "Dining at hotel's premium restaurants",
+
+    attributeQuietRoomName: "Quiet Room",
+    attributeQuietRoomDescription: "Away from elevators and common areas",
+    attributeUpperFloorName: "Upper Floor",
+    attributeUpperFloorDescription: "Floors 8-12 with better views",
+    attributeNearSpaName: "Near Spa",
+    attributeNearSpaDescription: "Direct access to wellness area",
+    attributeOceanViewName: "Ocean View",
+    attributeOceanViewDescription: "Room with direct ocean view",
+    attributeConnectingRoomsName: "Connecting Rooms",
+    attributeConnectingRoomsDescription: "Connected rooms for families or groups",
+
+    // Additional packages
+    businessPackage: {
+      title: "Business Package",
+      description: "Complete executive services for business travelers",
+      details: [
+        "Meeting room access",
+        "24h business center",
+        "Express laundry service"
+      ]
+    },
+
+    romanticPackage: {
+      title: "Romantic Experience",
+      description: "Special package for couples with unique touches",
+      details: [
+        "Welcome champagne bottle",
+        "Rose petal decoration",
+        "Romantic candlelight dinner"
+      ]
     }
   }
 }

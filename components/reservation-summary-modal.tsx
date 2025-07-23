@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { RefreshCw, Settings2 } from "lucide-react"
@@ -11,6 +11,9 @@ import ReservationDetailsTab from "./reservation-details-tab"
 // Import data
 import { requestedItemsData } from "@/data/reservation-items"
 import { recommendationsData } from "@/data/recommendations"
+import { generateDynamicRecommendations, createReservationContext } from "@/data/dynamic-recommendations"
+import { generateLimitedReservationItems } from "@/data/limited-reservation-items"
+import { RoomType } from "@/data/room-type-config"
 
 // Import store
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
@@ -43,10 +46,28 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
   const { showDetailedView, requestedItems, setShowDetailedView } = useReservationSummaryStore()
   const hasItems = reservation.extras.includes(tLang("reserved"))
 
-  // Initialize store with data on mount
+  // Generate dynamic data based on reservation (memoized to prevent infinite re-renders)
+  const reservationContext = useMemo(() => createReservationContext(
+    reservation.roomType as RoomType,
+    parseInt(reservation.nights),
+    reservation.aci,
+    new Date(reservation.checkIn)
+  ), [reservation.roomType, reservation.nights, reservation.aci, reservation.checkIn])
+  
+  const dynamicRecommendations = useMemo(() => 
+    generateDynamicRecommendations(reservationContext), 
+    [reservationContext]
+  )
+  
+  const dynamicReservationItems = useMemo(() => 
+    generateLimitedReservationItems(reservationContext, reservation.extras),
+    [reservationContext, reservation.extras]
+  )
+
+  // Initialize store with dynamic data on mount
   useEffect(() => {
-    useReservationSummaryStore.setState({ requestedItems: requestedItemsData })
-  }, [])
+    useReservationSummaryStore.setState({ requestedItems: dynamicReservationItems })
+  }, [reservation.id, dynamicReservationItems])
 
   // For "Ya solicitado" case - Enhanced UI with requested items
   if (hasItems) {
@@ -54,7 +75,7 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
       <div className="p-6 max-w-7xl mx-auto">
         <div className="space-y-6">
           <RequestedItemsHeader reservation={reservation} />
-          <RequestedItemsTable items={requestedItems} />
+          <RequestedItemsTable items={dynamicReservationItems} />
           
           {/* Action Footer */}
           <div className="flex items-center justify-between p-6 bg-muted/20 rounded-lg border border-dashed">
@@ -86,10 +107,10 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
     return (
       <div className="p-6 max-w-7xl mx-auto">
         <div className="space-y-6">
-          <RecommendationsHeader reservation={reservation} />
+          <RecommendationsHeader reservation={reservation} recommendations={dynamicRecommendations} />
           
           <div className="space-y-4">
-            {recommendationsData.map((recommendation) => (
+            {dynamicRecommendations.map((recommendation) => (
               <RecommendationCard key={recommendation.id} recommendation={recommendation} />
             ))}
           </div>

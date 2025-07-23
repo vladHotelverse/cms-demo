@@ -1,7 +1,9 @@
 export interface RequestedItem {
   id: string
-  name: string
-  description: string
+  name?: string // For backward compatibility
+  description?: string // For backward compatibility
+  nameKey?: string // For i18n support
+  descriptionKey?: string // For i18n support
   price: number
   status: 'pending_hotel' | 'confirmed'
   includesHotels: boolean
