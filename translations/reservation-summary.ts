@@ -7,6 +7,8 @@ export const reservationSummaryTranslations = {
     
     // Labels
     locator: "Localizador",
+    guest: "Huésped",
+    checkIn: "Llegada",
     roomType: "Habitación",
     totalOrder: "Total Pedido",
     estimatedCommission: "Comisión Est.",
@@ -172,6 +174,8 @@ export const reservationSummaryTranslations = {
     
     // Labels
     locator: "Locator",
+    guest: "Guest",
+    checkIn: "Check-in",
     roomType: "Room",
     totalOrder: "Total Order",
     estimatedCommission: "Est. Commission",

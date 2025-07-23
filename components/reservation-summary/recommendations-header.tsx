@@ -25,25 +25,29 @@ export function RecommendationsHeader({ reservation, recommendations }: Recommen
 
   return (
     <div className="space-y-4">
+      <h1 className="text-3xl font-bold tracking-tight">{t('recommendedServices')}</h1>
+      
       <div className="flex items-start justify-between">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">{t('recommendedServices')}</h1>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <span className="text-xs font-medium text-muted-foreground/70">{t('locator')}:</span>
-              <span className="font-semibold text-foreground">{reservation.locator}</span>
+        <Card className="p-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('locator')}</span>
+              <p className="text-sm font-semibold">{reservation.locator}</p>
             </div>
-            <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />
-            <span className="font-medium">{reservation.name}</span>
-            <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />
-            <span>{reservation.checkIn}</span>
-            <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />
-            <div className="flex items-center gap-1">
-              <span className="text-xs font-medium text-muted-foreground/70">{t('roomType')}:</span>
-              <span className="font-semibold text-foreground">{reservation.roomType}</span>
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('guest')}</span>
+              <p className="text-sm font-semibold">{reservation.name}</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('checkIn')}</span>
+              <p className="text-sm font-semibold">{reservation.checkIn}</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('roomType')}</span>
+              <p className="text-sm font-semibold">{reservation.roomType}</p>
             </div>
           </div>
-        </div>
+        </Card>
         
         <Card className="px-4 py-3">
           <div className="text-center space-y-1">

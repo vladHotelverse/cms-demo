@@ -2,8 +2,8 @@ import { useLanguage } from '@/contexts/language-context'
 import { reservationSummaryTranslations } from '@/translations/reservation-summary'
 
 export function useReservationTranslations() {
-  const { locale } = useLanguage()
-  const translations = reservationSummaryTranslations[locale as keyof typeof reservationSummaryTranslations] || reservationSummaryTranslations.es
+  const { currentLanguage } = useLanguage()
+  const translations = reservationSummaryTranslations[currentLanguage as keyof typeof reservationSummaryTranslations] || reservationSummaryTranslations.en
   
   const t = (key: string, params?: Record<string, any>) => {
     const keys = key.split('.')

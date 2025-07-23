@@ -22,12 +22,12 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
       {/* Header */}
       <div className="bg-muted/10 border-b border-border">
         <div className="grid grid-cols-10 gap-4 px-4 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          <div className="col-span-1">Supplements</div>
-          <div className="col-span-3">Room</div>
-          <div className="col-span-1">Type</div>
-          <div className="col-span-2">Dates</div>
-          <div className="col-span-2">Status</div>
-          <div className="col-span-1 text-center">Action</div>
+          <div className="col-span-1">{t('supplements')}</div>
+          <div className="col-span-3">{t('room')}</div>
+          <div className="col-span-1">{t('type')}</div>
+          <div className="col-span-2">{t('dates')}</div>
+          <div className="col-span-2">{t('status')}</div>
+          <div className="col-span-1 text-center">{t('action')}</div>
         </div>
       </div>
 
@@ -134,7 +134,7 @@ function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedI
             size="icon"
             variant="ghost"
             className="h-6 w-6 text-red-500 hover:bg-red-50"
-            title="Rechazar"
+            title={t('decline')}
             onClick={onDelete}
           >
             <X className="h-3.5 w-3.5" />
@@ -144,7 +144,7 @@ function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedI
               size="icon"
               variant="ghost"
               className="h-6 w-6 text-green-600 hover:bg-green-50"
-              title="Confirmar"
+              title={t('accept')}
               onClick={() => onStatusUpdate('confirmed')}
             >
               <Check className="h-3.5 w-3.5" />
