@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { RefreshCw, Settings2 } from "lucide-react"
@@ -118,7 +118,11 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
           {/* Action Footer */}
           <div className="flex items-center justify-between p-6 bg-muted/20 rounded-lg border border-dashed">
             <div className="flex items-center gap-4">
-              <Button variant="outline" className="gap-2">
+              <Button 
+                variant="outline" 
+                className="gap-2"
+                onClick={() => setShowDetailedView(true)}
+              >
                 {t('viewFullCatalog')}
               </Button>
             </div>
