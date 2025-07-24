@@ -41,11 +41,12 @@ const roomTypes = [
 
 // Sample segments
 const segments = [
-  { id: "standard", name: "Standard" },
-  { id: "premium", name: "Premium" },
-  { id: "luxury", name: "Luxury" },
-  { id: "business", name: "Business" },
-  { id: "family", name: "Family" },
+  { id: "loyalty1", name: "Loyalty 1 (5%)" },
+  { id: "loyalty2", name: "Loyalty 2 (10%)" },
+  { id: "loyalty3", name: "Loyalty 3 (15%)" },
+  { id: "vip1", name: "VIP 1 (20%)" },
+  { id: "vip2", name: "VIP 2 (25%)" },
+  { id: "vip3", name: "VIP 3 (100%)" },
 ]
 
 // Sample agents
@@ -68,7 +69,7 @@ const commissionReasons = [
 
 export default function ReservationModal({ isOpen, onClose, reservation }: ReservationModalProps) {
   const [selectedRoomType, setSelectedRoomType] = useState("deluxe")
-  const [selectedSegment, setSelectedSegment] = useState("premium")
+  const [selectedSegment, setSelectedSegment] = useState("loyalty2")
   const [selectedAgent, setSelectedAgent] = useState("agent1")
   const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks")
   const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false)

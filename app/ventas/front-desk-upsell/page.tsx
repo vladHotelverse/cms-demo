@@ -3,13 +3,12 @@
 import type React from "react"
 
 import { useState, useEffect, useCallback } from "react"
-import { ChevronUp, ChevronDown, X, Settings, User } from "lucide-react"
+import { ChevronUp, ChevronDown, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { FrontDeskHeader } from "@/components/front-desk-header"
@@ -293,6 +292,11 @@ export default function FrontDeskUpsellPage() {
           onCloseTab={handleCloseTab}
           isInReservationMode={isInReservationMode}
           t={t}
+          agent={{
+            name: "Maria García",
+            role: t("frontDeskAgent"),
+            commission: parseFloat(totalCommission)
+          }}
         />
 
         <TabsContent value="front-desk-upsell" className="mt-0">
@@ -304,8 +308,8 @@ export default function FrontDeskUpsellPage() {
               </p>
             </div>
 
-            {/* Search Bar with User Info */}
-            <div className="mb-6 flex items-center justify-between w-full">
+            {/* Search Bar */}
+            <div className="mb-6">
               <div className={cn("max-w-xs w-full")}>
                 <Input
                   placeholder={t("searchPlaceholder")}
@@ -313,26 +317,6 @@ export default function FrontDeskUpsellPage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn("border-gray-300 min-w-xs")}
                 />
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src="/avatar-placeholder.png" alt="User" />
-                    <AvatarFallback className="bg-blue-100 text-blue-700">
-                      <User className="h-4 w-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm">
-                    <div className="font-medium text-gray-900">Maria García</div>
-                    <div className="text-gray-500">{t("frontDeskAgent")}</div>
-                    <div className="text-xs font-semibold text-green-600 mt-1">
-                      {t("commission")}: {totalCommission}€
-                    </div>
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
-                  <Settings className="h-4 w-4 text-gray-500" />
-                </Button>
               </div>
             </div>
 

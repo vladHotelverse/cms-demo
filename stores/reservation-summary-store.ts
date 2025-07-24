@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { RequestedItem, RequestedItemsData } from '@/data/reservation-items'
+import { RequestedItem, RequestedItemsData, requestedItemsData } from '@/data/reservation-items'
 import { Recommendation } from '@/data/recommendations'
 
 interface ReservationSummaryState {
@@ -21,6 +21,7 @@ interface ReservationSummaryState {
   calculateCategoryTotal: (items: RequestedItem[]) => number
   calculateGrandTotal: () => number
   calculateTotalCommission: (recommendations: Recommendation[]) => number
+  calculateActualCommission: () => number
 }
 
 export const useReservationSummaryStore = create<ReservationSummaryState>((set, get) => ({
@@ -29,11 +30,7 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
   setShowDetailedView: (show) => set({ showDetailedView: show }),
   
   // Requested items state
-  requestedItems: {
-    extras: [],
-    upsell: [],
-    atributos: []
-  },
+  requestedItems: requestedItemsData,
   
   updateItemStatus: (category, itemId, status) => set((state) => ({
     requestedItems: {
@@ -77,5 +74,13 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
   
   calculateTotalCommission: (recommendations) => {
     return recommendations.reduce((sum, rec) => sum + rec.commission, 0)
+  },
+  
+  calculateActualCommission: () => {
+    const state = get()
+    const allItems = Object.values(state.requestedItems).flat()
+    return allItems
+      .filter(item => item.agent !== 'Online' && item.commission)
+      .reduce((sum, item) => sum + (item.commission || 0), 0)
   }
 }))
