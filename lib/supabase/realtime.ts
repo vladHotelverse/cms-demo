@@ -44,7 +44,7 @@ export function subscribeToOrders(onOrderUpdate: (update: OrderUpdate) => void) 
       (payload) => {
         console.log('Order change received:', payload)
         onOrderUpdate({
-          id: payload.new?.id || payload.old?.id || '',
+          id: (payload.new as any)?.id || (payload.old as any)?.id || '',
           type: payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE',
           order: payload.new || payload.old
         })
@@ -80,7 +80,7 @@ export function subscribeToProposals(onProposalUpdate: (update: ProposalUpdate) 
       (payload) => {
         console.log('Proposal change received:', payload)
         onProposalUpdate({
-          id: payload.new?.id || payload.old?.id || '',
+          id: (payload.new as any)?.id || (payload.old as any)?.id || '',
           type: payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE',
           proposal: payload.new || payload.old
         })
