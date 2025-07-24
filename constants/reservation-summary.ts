@@ -1,19 +1,29 @@
 // Image URLs
 export const IMAGES = {
   roomUpgrade: {
-    main: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=120&h=80&fit=crop&crop=center',
-    terrace: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=120&h=80&fit=crop&crop=center',
-    oceanView: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=120&h=80&fit=crop&crop=center'
+    main: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop&crop=center',
+    terrace: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop&crop=center',
+    oceanView: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop&crop=center'
   },
   upperFloor: {
-    room: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=120&h=80&fit=crop&crop=center',
-    cityView: 'https://images.unsplash.com/photo-1561501900-3701fa6a0864?w=120&h=80&fit=crop&crop=center',
-    exclusive: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=120&h=80&fit=crop&crop=center'
+    room: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&h=600&fit=crop&crop=center',
+    cityView: 'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=800&h=600&fit=crop&crop=center',
+    exclusive: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&crop=center'
   },
   wellness: {
-    spa: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=120&h=80&fit=crop&crop=center',
-    massage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=80&fit=crop&crop=center',
-    yoga: 'https://images.unsplash.com/photo-1506629905607-21d4b4b3c8e5?w=120&h=80&fit=crop&crop=center'
+    spa: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800&h=600&fit=crop&crop=center',
+    massage: 'https://images.unsplash.com/photo-1596178060671-7a80dc8059ea?w=800&h=600&fit=crop&crop=center',
+    yoga: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?w=800&h=600&fit=crop&crop=center'
+  },
+  business: {
+    meetingRoom: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&crop=center',
+    businessCenter: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&h=600&fit=crop&crop=center',
+    workspace: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=600&fit=crop&crop=center'
+  },
+  romantic: {
+    dinner: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop&crop=center',
+    champagne: 'https://images.unsplash.com/photo-1558642891-54be180ea339?w=800&h=600&fit=crop&crop=center',
+    roses: 'https://images.unsplash.com/photo-1522936643032-5f3cde4cad06?w=800&h=600&fit=crop&crop=center'
   }
 } as const
 

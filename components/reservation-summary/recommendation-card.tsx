@@ -1,100 +1,123 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Recommendation } from "@/data/recommendations"
 import { PriceDisplay } from "./price-display"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
+import { type CarouselApi } from "@/components/ui/carousel"
+import { RecommendationImageCarousel } from "./recommendation-image-carousel"
+import { RecommendationActions } from "./recommendation-actions"
+import { RecommendationDetails } from "./recommendation-details"
 
 interface RecommendationCardProps {
   recommendation: Recommendation
 }
 
+// Constants for better maintainability
+const IMAGE_CONTAINER_WIDTH = "max-w-[260px]"
+const CARD_STYLES = "border-2 border-dashed hover:border-solid transition-all hover:shadow-sm"
+const DIALOG_MAX_WIDTH = "max-w-4xl"
+
 export function RecommendationCard({ recommendation }: RecommendationCardProps) {
   const { acceptRecommendation, declineRecommendation, acceptedRecommendations } = useReservationSummaryStore()
   const { t } = useReservationTranslations()
+  const [isImageEnlarged, setIsImageEnlarged] = useState(false)
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
   const isAccepted = acceptedRecommendations.includes(recommendation.id)
 
-  const handleAccept = () => {
-    acceptRecommendation(recommendation.id)
-  }
+  useEffect(() => {
+    if (!api) return
 
-  const handleDecline = () => {
+    const handleSelect = () => {
+      setCurrent(api.selectedScrollSnap())
+    }
+
+    handleSelect() // Set initial value
+    api.on("select", handleSelect)
+
+    return () => {
+      api.off("select", handleSelect)
+    }
+  }, [api])
+
+  const handleAccept = useCallback(() => {
+    acceptRecommendation(recommendation.id)
+  }, [acceptRecommendation, recommendation.id])
+
+  const handleDecline = useCallback(() => {
     declineRecommendation(recommendation.id)
-  }
+  }, [declineRecommendation, recommendation.id])
+
+  const handleImageClick = useCallback(() => {
+    setIsImageEnlarged(true)
+  }, [])
 
   return (
-    <Card className="border-2 border-dashed hover:border-solid transition-all hover:shadow-sm">
+    <Card className={CARD_STYLES}>
       <CardContent className="p-4">
-        <div className="flex gap-4">
-          <PriceDisplay
-            pricePerUnit={recommendation.pricePerNight || recommendation.pricePerUnit || recommendation.totalPrice}
-            pricingType={recommendation.pricingType}
-            totalPrice={recommendation.totalPrice}
-            commission={recommendation.commission}
+        {/* Horizontal layout following reference structure: Image, Price, Details, Buttons */}
+        <div className="flex gap-4 items-start">
+          {/* Single enlargeable image with carousel and integrated amenities */}
+          {recommendation.images.length > 0 && (
+            <div className={`${IMAGE_CONTAINER_WIDTH} h-auto relative flex-shrink-0 self-stretch`}>
+              <Dialog open={isImageEnlarged} onOpenChange={setIsImageEnlarged}>
+                <RecommendationImageCarousel
+                  images={recommendation.images}
+                  amenityKeys={recommendation.amenityKeys}
+                  currentIndex={current}
+                  title={t(recommendation.titleKey)}
+                  onApiChange={setApi}
+                  onImageClick={handleImageClick}
+                  className="h-full"
+                  t={t}
+                />
+                <DialogContent className={DIALOG_MAX_WIDTH}>
+                  <VisuallyHidden>
+                    <DialogTitle>{t(recommendation.titleKey)}</DialogTitle>
+                  </VisuallyHidden>
+                  <RecommendationImageCarousel
+                    images={recommendation.images}
+                    amenityKeys={[]}
+                    currentIndex={0}
+                    title={t(recommendation.titleKey)}
+                    onApiChange={() => {}}
+                    imageClassName="object-contain"
+                    t={t}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          
+          {/* PriceDisplay component to the right of image */}
+          <div className="flex-shrink-0">
+            <PriceDisplay
+              pricePerUnit={recommendation.pricePerNight || recommendation.pricePerUnit || recommendation.totalPrice}
+              pricingType={recommendation.pricingType}
+              totalPrice={recommendation.totalPrice}
+              commission={recommendation.commission}
+            />
+          </div>
+          
+          {/* Details section with title/subtitle on top, bullets on bottom */}
+          <RecommendationDetails
+            title={t(recommendation.titleKey)}
+            description={t(recommendation.descriptionKey)}
+            details={recommendation.detailsKey ? t(recommendation.detailsKey) as string[] : undefined}
           />
           
-          <div className="flex-1 flex justify-between items-start">
-            <div className="space-y-3">
-              <div>
-                <h4 className="font-semibold">{t(recommendation.titleKey)}</h4>
-                <p className="text-base text-muted-foreground">
-                  {t(recommendation.descriptionKey)}
-                </p>
-              </div>
-              
-              {recommendation.images.length > 0 && (
-                <div className="flex gap-2">
-                  {recommendation.images.map((image, index) => (
-                    <div key={index} className="flex-1 h-20 bg-gray-200 rounded overflow-hidden">
-                      <img 
-                        src={image} 
-                        alt={`${recommendation.title} ${index + 1}`} 
-                        className="w-full h-full object-cover" 
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              <div className="flex gap-2">
-                {recommendation.amenityKeys.map((amenityKey) => (
-                  <Badge key={amenityKey} variant="secondary" className="text-xs">
-                    {t(amenityKey)}
-                  </Badge>
-                ))}
-              </div>
-              
-              {recommendation.detailsKey && (
-                <div className="text-sm text-muted-foreground">
-                  {(t(recommendation.detailsKey) as string[]).map((detail, index) => (
-                    <div key={index}>• {detail}</div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={handleDecline}
-                disabled={isAccepted}
-              >
-                {t('decline')}
-              </Button>
-              <Button 
-                size="sm"
-                onClick={handleAccept}
-                disabled={isAccepted}
-                variant={isAccepted ? "secondary" : "default"}
-              >
-                {isAccepted ? t('confirmed') : t('accept')}
-              </Button>
-            </div>
-          </div>
+          {/* Accept/Decline buttons to the right of details */}
+          <RecommendationActions
+            isAccepted={isAccepted}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+            t={t}
+          />
         </div>
       </CardContent>
     </Card>
