@@ -7,6 +7,8 @@ export interface RequestedItem {
   price: number
   status: 'pending_hotel' | 'confirmed'
   includesHotels: boolean
+  agent?: string // Agent who sold the service (name or "Online")
+  commission?: number // Commission amount
 }
 
 export interface RequestedItemsData {
@@ -23,7 +25,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Check-in desde las 12:00",
       price: 25,
       status: "pending_hotel",
-      includesHotels: true
+      includesHotels: true,
+      agent: "María García",
+      commission: 2.5
     },
     {
       id: "e2",
@@ -31,7 +35,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Check-out hasta las 14:00",
       price: 30,
       status: "confirmed",
-      includesHotels: true
+      includesHotels: true,
+      agent: "Online",
+      commission: 3.0
     },
     {
       id: "e3",
@@ -39,7 +45,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Cuna para bebé con ropa de cama",
       price: 15,
       status: "pending_hotel",
-      includesHotels: true
+      includesHotels: true,
+      agent: "Carlos López",
+      commission: 1.5
     }
   ],
   upsell: [
@@ -49,7 +57,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Vista al mar, balcón privado",
       price: 355,
       status: "confirmed",
-      includesHotels: true
+      includesHotels: true,
+      agent: "Online",
+      commission: 35.5
     },
     {
       id: "u2",
@@ -57,7 +67,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Botella de cava, pétalos de rosa, desayuno en habitación",
       price: 95,
       status: "pending_hotel",
-      includesHotels: false
+      includesHotels: false,
+      agent: "María García",
+      commission: 9.5
     }
   ],
   atributos: [
@@ -67,7 +79,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Alejada de ascensores y zonas comunes",
       price: 0,
       status: "confirmed",
-      includesHotels: true
+      includesHotels: true,
+      agent: "Online",
+      commission: 0
     },
     {
       id: "a2",
@@ -75,7 +89,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Plantas 8-12 con mejores vistas",
       price: 45,
       status: "pending_hotel",
-      includesHotels: true
+      includesHotels: true,
+      agent: "Ana Rodríguez",
+      commission: 4.5
     },
     {
       id: "a3",
@@ -83,7 +99,9 @@ export const requestedItemsData: RequestedItemsData = {
       description: "Acceso directo a zona wellness",
       price: 35,
       status: "pending_hotel",
-      includesHotels: true
+      includesHotels: true,
+      agent: "María García",
+      commission: 3.5
     }
   ]
 }

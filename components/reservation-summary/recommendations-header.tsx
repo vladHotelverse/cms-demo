@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Star } from "lucide-react"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
 import { Recommendation } from "@/data/recommendations"
@@ -11,9 +12,10 @@ interface RecommendationsHeaderProps {
     roomType: string
   }
   recommendations?: Recommendation[]
+  onViewFullCatalog?: () => void
 }
 
-export function RecommendationsHeader({ reservation, recommendations }: RecommendationsHeaderProps) {
+export function RecommendationsHeader({ reservation, recommendations, onViewFullCatalog }: RecommendationsHeaderProps) {
   const { t } = useReservationTranslations()
   
   // Use provided recommendations or fallback to empty array
@@ -60,14 +62,19 @@ export function RecommendationsHeader({ reservation, recommendations }: Recommen
       <div className="flex items-center gap-6 p-4 bg-muted/30 rounded-lg">
         <div className="flex items-center gap-2">
           <Star className="h-4 w-4 text-amber-500" />
-          <span className="text-sm font-medium">
+          <span className="text-lg font-medium">
             {items.length} {t('recommendations').toLowerCase()}
           </span>
-        </div>
-        <div className="flex items-center gap-2 ml-auto">
-          <span className="text-sm text-muted-foreground">
-            {t('totalCommissionPotential')}: <span className="font-semibold text-emerald-600">€{totalCommission.toFixed(2)}</span>
-          </span>
+          {onViewFullCatalog && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="ml-2"
+              onClick={onViewFullCatalog}
+            >
+              {t('viewFullCatalog')}
+            </Button>
+          )}
         </div>
       </div>
     </div>

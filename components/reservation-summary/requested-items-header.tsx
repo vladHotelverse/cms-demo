@@ -14,9 +14,9 @@ interface RequestedItemsHeaderProps {
 
 export function RequestedItemsHeader({ reservation }: RequestedItemsHeaderProps) {
   const { t } = useReservationTranslations()
-  const { calculateGrandTotal, requestedItems } = useReservationSummaryStore()
+  const { calculateGrandTotal, calculateActualCommission, requestedItems } = useReservationSummaryStore()
   const total = calculateGrandTotal()
-  const commission = total * 0.15
+  const commission = calculateActualCommission()
 
   return (
     <div className="space-y-4">
@@ -51,12 +51,14 @@ export function RequestedItemsHeader({ reservation }: RequestedItemsHeaderProps)
               <p className="text-2xl font-bold">€{total}</p>
             </div>
           </Card>
-          <Card className="px-4 py-3">
-            <div className="text-center space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('estimatedCommission')}</p>
-              <p className="text-xl font-bold text-emerald-600">€{commission.toFixed(2)}</p>
-            </div>
-          </Card>
+          {commission > 0 && (
+            <Card className="px-4 py-3">
+              <div className="text-center space-y-1">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('estimatedCommission')}</p>
+                <p className="text-xl font-bold text-emerald-600">€{commission.toFixed(2)}</p>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
       

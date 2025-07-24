@@ -6,7 +6,7 @@ export const reservationSummaryTranslations = {
     recommendations: "Recomendaciones",
     
     // Labels
-    locator: "Localizador",
+    locator: "ID de Reserva",
     guest: "Huésped",
     checkIn: "Llegada",
     roomType: "Habitación",
@@ -32,6 +32,7 @@ export const reservationSummaryTranslations = {
     manageOrder: "Gestionar pedido",
     
     // Table Headers
+    agent: "Agente",
     supplements: "Suplementos",
     room: "Habitación",
     type: "Tipo",
@@ -105,7 +106,7 @@ export const reservationSummaryTranslations = {
       butler: "Servicio de Mayordomo",
       luxury: "Lujo",
       meetingRoom: "Sala de Reuniones",
-      businessCenter: "Centro de Negocios",
+      businessCenter: "Masaje de 30 minutos",
       express: "Servicio Express",
       champagne: "Champán",
       rosePetals: "Pétalos de Rosa",
@@ -121,8 +122,8 @@ export const reservationSummaryTranslations = {
     extraBabyCribDescription: "Cuna para bebé con ropa de cama",
     extraAirportTransferName: "Transfer Aeropuerto",
     extraAirportTransferDescription: "Transporte privado desde/hacia el aeropuerto",
-    extraBusinessCenterName: "Centro de Negocios",
-    extraBusinessCenterDescription: "Acceso 24h a centro de negocios y servicios",
+    extraBusinessCenterName: "Masaje de 30 minutos",
+    extraBusinessCenterDescription: "Sesión de masaje relajante de 30 minutos",
 
     upsellRoomUpgradeName: "Mejora de Habitación",
     upsellRoomUpgradeDescription: "Mejora a categoría superior con mejores vistas",
@@ -173,7 +174,7 @@ export const reservationSummaryTranslations = {
     recommendations: "Recommendations",
     
     // Labels
-    locator: "Locator",
+    locator: "Booking ID",
     guest: "Guest",
     checkIn: "Check-in",
     roomType: "Room",
@@ -199,6 +200,7 @@ export const reservationSummaryTranslations = {
     manageOrder: "Manage order",
     
     // Table Headers
+    agent: "Agent",
     supplements: "Supplements",
     room: "Room",
     type: "Type",
@@ -272,7 +274,7 @@ export const reservationSummaryTranslations = {
       butler: "Butler Service",
       luxury: "Luxury",
       meetingRoom: "Meeting Room",
-      businessCenter: "Business Center",
+      businessCenter: "30 minutes massage",
       express: "Express Service",
       champagne: "Champagne",
       rosePetals: "Rose Petals",
@@ -284,12 +286,12 @@ export const reservationSummaryTranslations = {
     extraEarlyCheckinDescription: "Check-in from 12:00 PM",
     extraLateCheckoutName: "Late Checkout",
     extraLateCheckoutDescription: "Check-out until 2:00 PM",
-    extraBabyCribName: "Baby Crib",
-    extraBabyCribDescription: "Baby crib with bedding included",
+    extraBabyCribName: "Baby Cot",
+    extraBabyCribDescription: "Baby cot with bedding included",
     extraAirportTransferName: "Airport Transfer",
     extraAirportTransferDescription: "Private transportation to/from airport",
-    extraBusinessCenterName: "Business Center",
-    extraBusinessCenterDescription: "24h access to business center and services",
+    extraBusinessCenterName: "30 minutes massage",
+    extraBusinessCenterDescription: "30-minute relaxing massage session",
 
     upsellRoomUpgradeName: "Room Upgrade",
     upsellRoomUpgradeDescription: "Upgrade to higher category with better views",

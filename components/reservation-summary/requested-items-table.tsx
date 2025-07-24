@@ -22,11 +22,12 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
       {/* Header */}
       <div className="bg-muted/10 border-b border-border">
         <div className="grid grid-cols-10 gap-4 px-4 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <div className="col-span-1">{t('agent')}</div>
           <div className="col-span-1">{t('supplements')}</div>
+          <div className="col-span-1">{t('commission')}</div>
           <div className="col-span-3">{t('room')}</div>
-          <div className="col-span-1">{t('type')}</div>
           <div className="col-span-2">{t('dates')}</div>
-          <div className="col-span-2">{t('status')}</div>
+          <div className="col-span-1">{t('status')}</div>
           <div className="col-span-1 text-center">{t('action')}</div>
         </div>
       </div>
@@ -85,10 +86,24 @@ function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedI
   
   return (
     <div className="grid grid-cols-10 gap-4 px-4 py-3 border-b border-border last:border-b-0 hover:bg-muted/5 transition-colors items-center">
+      {/* Agent */}
+      <div className="col-span-1">
+        <div className="text-sm font-medium">
+          {item.agent || 'Online'}
+        </div>
+      </div>
+
       {/* Supplements (Price) */}
       <div className="col-span-1">
         <div className="font-semibold text-sm">
           {item.price > 0 ? `${item.price},00 €` : '0,00 €'}
+        </div>
+      </div>
+
+      {/* Commission */}
+      <div className="col-span-1">
+        <div className="text-sm font-medium text-green-600">
+          {item.agent !== 'Online' && item.commission ? `${item.commission.toFixed(2)} €` : ''}
         </div>
       </div>
 
@@ -104,13 +119,6 @@ function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedI
         </div>
       </div>
 
-      {/* Type */}
-      <div className="col-span-1">
-        <span className="text-sm font-medium text-muted-foreground">
-          {t(config.labelKey)}
-        </span>
-      </div>
-
       {/* Dates */}
       <div className="col-span-2">
         <div className="space-y-0.5">
@@ -120,7 +128,7 @@ function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedI
       </div>
 
       {/* Status */}
-      <div className="col-span-2">
+      <div className="col-span-1">
         <Badge className={cn("text-xs font-medium", status.color)}>
           <div className={cn("w-1.5 h-1.5 rounded-full mr-1.5", status.dotColor)} />
           {t(status.labelKey)}
