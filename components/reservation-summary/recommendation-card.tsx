@@ -18,7 +18,7 @@ interface RecommendationCardProps {
 }
 
 // Constants for better maintainability
-const IMAGE_CONTAINER_WIDTH = "max-w-[260px]"
+const IMAGE_CONTAINER_WIDTH = "max-w-[290px]"
 const CARD_STYLES = "border-2 border-dashed hover:border-solid transition-all hover:shadow-sm"
 const DIALOG_MAX_WIDTH = "max-w-4xl"
 
