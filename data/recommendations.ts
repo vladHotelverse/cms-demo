@@ -62,8 +62,7 @@ export const recommendationsData: Recommendation[] = [
     images: [
       IMAGES.wellness.spa,
       IMAGES.wellness.massage,
-      IMAGES.upperFloor.exclusive
-
+      IMAGES.wellness.yoga
     ],
     amenityKeys: ['amenities.unlimitedSpa', 'amenities.massage60min', 'amenities.privateYoga'],
     detailsKey: 'wellness.details'

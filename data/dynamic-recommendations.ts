@@ -79,7 +79,7 @@ export const generateDynamicRecommendations = (context: ReservationContext): Rec
     images: [
       IMAGES.wellness.spa,
       IMAGES.wellness.massage,
-      IMAGES.upperFloor.exclusive
+      IMAGES.wellness.yoga
     ],
     amenityKeys: ['amenities.unlimitedSpa', 'amenities.massage60min', 'amenities.privateYoga'],
     detailsKey: 'wellness.details'
@@ -96,7 +96,11 @@ export const generateDynamicRecommendations = (context: ReservationContext): Rec
       totalPrice: 75,
       commission: 11.25,
       commissionPercentage: 15,
-      images: [IMAGES.wellness.spa], // Placeholder
+      images: [
+        IMAGES.business.meetingRoom,
+        IMAGES.business.businessCenter,
+        IMAGES.business.workspace
+      ],
       amenityKeys: ['amenities.meetingRoom', 'amenities.businessCenter', 'amenities.express'],
       detailsKey: 'businessPackage.details'
     })
@@ -113,7 +117,11 @@ export const generateDynamicRecommendations = (context: ReservationContext): Rec
       totalPrice: 95,
       commission: 14.25,
       commissionPercentage: 15,
-      images: [IMAGES.wellness.massage], // Placeholder
+      images: [
+        IMAGES.romantic.dinner,
+        IMAGES.romantic.champagne,
+        IMAGES.romantic.roses
+      ],
       amenityKeys: ['amenities.champagne', 'amenities.rosePetals', 'amenities.candleDinner'],
       detailsKey: 'romanticPackage.details'
     })
