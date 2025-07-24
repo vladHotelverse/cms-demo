@@ -107,7 +107,11 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
     return (
       <div className="p-6 max-w-7xl mx-auto">
         <div className="space-y-6">
-          <RecommendationsHeader reservation={reservation} recommendations={dynamicRecommendations} />
+          <RecommendationsHeader 
+            reservation={reservation} 
+            recommendations={dynamicRecommendations}
+            onViewFullCatalog={() => setShowDetailedView(true)}
+          />
           
           <div className="space-y-4">
             {dynamicRecommendations.map((recommendation) => (
@@ -116,16 +120,7 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
           </div>
           
           {/* Action Footer */}
-          <div className="flex items-center justify-between p-6 bg-muted/20 rounded-lg border border-dashed">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="outline" 
-                className="gap-2"
-                onClick={() => setShowDetailedView(true)}
-              >
-                {t('viewFullCatalog')}
-              </Button>
-            </div>
+          <div className="flex items-center justify-end p-6 bg-muted/20 rounded-lg border border-dashed">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="icon" className="h-9 w-9">
                 <RefreshCw className="h-4 w-4" />
