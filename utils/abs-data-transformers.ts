@@ -6,7 +6,7 @@ interface ExtendedPricingItem {
   id: string
   name: string
   price: number
-  type: 'room' | 'customization' | 'offer' | 'bid' | 'extra'
+  type: 'room' | 'customization' | 'offer' | 'bid'
   concept: 'choose-your-room' | 'customize-your-room' | 'enhance-your-stay' | 'choose-your-superior-room' | 'bid-for-upgrade'
   quantity?: number
 }
@@ -99,7 +99,7 @@ function generateAvailableDates(): Date[] {
 export function transformToPricingItems(
   cartItems: any[],
   selectedRoom?: any,
-  customizations?: Record<string, string>,
+  customizations?: Record<string, { id: string; label: string; price: number } | undefined>,
   bookedOffers?: any[]
 ): ExtendedPricingItem[] {
   const items: ExtendedPricingItem[] = []
@@ -117,15 +117,16 @@ export function transformToPricingItems(
 
   // Add customizations
   if (customizations) {
-    Object.entries(customizations).forEach(([sectionKey, optionId]) => {
-      // We'll need to look up the actual option details
-      items.push({
-        id: optionId,
-        name: optionId, // This should be replaced with actual name lookup
-        price: 10, // This should be replaced with actual price lookup
-        type: 'customization',
-        concept: 'customize-your-room',
-      })
+    Object.entries(customizations).forEach(([sectionKey, customization]) => {
+      if (customization) {
+        items.push({
+          id: customization.id,
+          name: customization.label,
+          price: customization.price,
+          type: 'customization',
+          concept: 'customize-your-room',
+        })
+      }
     })
   }
 
@@ -143,13 +144,13 @@ export function transformToPricingItems(
     })
   }
 
-  // Add existing cart items
+  // Add existing cart items as offers
   cartItems.forEach((item) => {
     items.push({
       id: `cart-${item.name}`,
       name: item.name,
       price: item.price || 15,
-      type: 'extra',
+      type: 'offer',
       concept: 'enhance-your-stay',
     })
   })

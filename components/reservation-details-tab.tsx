@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Select,
@@ -310,7 +310,7 @@ export default function ReservationDetailsTab({
 			// Remove specific customization
 			const newCustomizations = { ...roomCustomizations };
 			Object.keys(newCustomizations).forEach((key) => {
-				if (newCustomizations[key] === id) {
+				if (newCustomizations[key]?.id === id) {
 					delete newCustomizations[key];
 				}
 			});
@@ -396,12 +396,6 @@ export default function ReservationDetailsTab({
 								value: reservation.roomType,
 							},
 						]}
-						labels={{
-							roomLabel: getABSTranslation("room"),
-							nightsLabel: getABSTranslation("nights"),
-							guestsLabel: getABSTranslation("guests"),
-							totalLabel: getABSTranslation("total"),
-						}}
 					/>
 				</div>
 
@@ -630,7 +624,7 @@ export default function ReservationDetailsTab({
 
 						<div className="lg:col-span-1">
 							<ABS_PricingSummaryPanel
-								items={pricingItems as any}
+								items={pricingItems}
 								pricing={{ subtotal: calculateSubtotal() }}
 								onRemoveItem={handleRemovePricingItem}
 								onConfirm={handleConfirmBooking}

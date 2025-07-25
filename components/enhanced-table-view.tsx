@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
 
 interface EnhancedTableViewProps {
   onAddToCart: (item: any) => void
@@ -225,20 +224,14 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
     }))
   }
 
-  const getPopularityColor = (popularity: number) => {
-    if (popularity >= 90) return "text-green-600"
-    if (popularity >= 70) return "text-yellow-600"
-    return "text-gray-500"
-  }
 
   return (
     <TooltipProvider>
       <div className="space-y-8">
         {/* Room Upgrade Enhanced Table */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2 bg-blue-100/70 rounded-lg px-4 py-2">
-              <Crown className="h-6 w-6 text-blue-600" />
+          <CardHeader className="border-b px-4 py-2">
+            <CardTitle className="text-lg font-semibold">
               Room Upgrades
               <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
                 {roomUpgrades.length} options
@@ -248,7 +241,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
           <CardContent className="p-4">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="h-10">
+                <TableHeader className="h-8">
                   <TableRow className="bg-gray-50/50">
                     <TableHead className="w-12"></TableHead>
                     <TableHead className="min-w-[200px]">
@@ -258,8 +251,13 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                       </div>
                     </TableHead>
                     <TableHead className="text-right">Price/Night</TableHead>
-                    <TableHead className="text-right">Total Price</TableHead>
-                    <TableHead className="text-right">Commission</TableHead>
+                    <TableHead className="text-right">Total (5 nights)</TableHead>
+                    <TableHead className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Zap className="h-4 w-4 text-green-600" />
+                        Commission
+                      </div>
+                    </TableHead>
                     <TableHead className="min-w-[250px]">Features</TableHead>
                     <TableHead className="text-center">Action</TableHead>
                   </TableRow>
@@ -273,7 +271,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                       }`}
                       onClick={() => toggleRoomSelection(room.id)}
                     >
-                      <TableCell className="text-center px-3 py-2">
+                      <TableCell className="text-center px-3 py-1.5">
                         <div className="flex flex-col items-center gap-2">
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={room.image || "/placeholder.svg"} alt={room.type} />
@@ -282,7 +280,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           {selectedRooms.has(room.id) && <Check className="h-4 w-4 text-blue-600" />}
                         </div>
                       </TableCell>
-                      <TableCell className="px-3 py-2">
+                      <TableCell className="px-3 py-1.5">
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-gray-900">{room.type}</span>
@@ -300,10 +298,25 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right font-medium px-3 py-2">{room.price}</TableCell>
-                      <TableCell className="text-right font-semibold text-lg px-3 py-2">{(parseFloat(room.price.replace('€', '')) * 5).toFixed(0)}€</TableCell>
-                      <TableCell className="text-right font-medium text-green-600 px-3 py-2">{(parseFloat(room.price.replace('€', '')) * 0.1).toFixed(1)}€</TableCell>
-                      <TableCell className="px-3 py-2">
+                      <TableCell className="text-right px-3 py-1.5">
+                        <div className="space-y-0.5">
+                          <div className="text-lg font-semibold text-gray-900">{room.price}</div>
+                          <div className="text-xs text-gray-500">per night</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right px-3 py-1.5">
+                        <div className="space-y-0.5">
+                          <div className="text-lg font-semibold text-blue-600">{(parseFloat(room.price.replace('€', '')) * 5).toFixed(0)}€</div>
+                          <div className="text-xs text-gray-500">5 nights total</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right px-3 py-1.5">
+                        <div className="bg-green-50 border border-green-200 rounded-lg px-2.5 py-1.5 inline-block">
+                          <div className="text-base font-bold text-green-700">{(parseFloat(room.price.replace('€', '')) * 5 * 0.1).toFixed(1)}€</div>
+                          <div className="text-xs text-green-600">total</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-3 py-1.5">
                         <div className="space-y-1">
                           {room.features.split(", ").map((feature, index) => (
                             <Badge key={index} variant="outline" className="text-xs px-1.5 py-0.5 mr-1">
@@ -312,7 +325,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="text-center px-3 py-2">
+                      <TableCell className="text-center px-3 py-1.5">
                         <Button
                           size="sm"
                           onClick={(e) => {
@@ -325,7 +338,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                               : "bg-gray-600 hover:bg-gray-700"
                           }`}
                         >
-                          {selectedRooms.has(room.id) ? "Selected" : "Select Room"}
+                          {selectedRooms.has(room.id) ? "Selected" : "Select"}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -338,9 +351,8 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
 
         {/* Attributes Enhanced Table */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2 bg-green-100/70 rounded-lg px-4 py-2">
-              <Building2 className="h-6 w-6 text-green-600" />
+          <CardHeader className="border-b px-4 py-2">
+            <CardTitle className="text-lg font-semibold">
               Room Attributes
               <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
                 {Object.values(attributes).reduce((acc, cat) => acc + cat.items.length, 0)} options
@@ -350,13 +362,17 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
           <CardContent className="p-4">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="h-10">
+                <TableHeader className="h-8">
                   <TableRow className="bg-gray-50/50">
-                    <TableHead className="w-12"></TableHead>
                     <TableHead className="min-w-[180px]">Attribute</TableHead>
                     <TableHead className="text-right">Price/Night</TableHead>
-                    <TableHead className="text-right">Total Price</TableHead>
-                    <TableHead className="text-right">Commission</TableHead>
+                    <TableHead className="text-right">Total (5 nights)</TableHead>
+                    <TableHead className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Zap className="h-4 w-4 text-green-600" />
+                        Commission
+                      </div>
+                    </TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead className="text-center">Action</TableHead>
                   </TableRow>
@@ -374,21 +390,34 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                           }`}
                           onClick={() => toggleAttributeSelection(itemKey)}
                         >
-                          <TableCell className="text-center px-3 py-2">
-                            <div className="flex flex-col items-center gap-2">
-                              {isSelected && <Check className="h-4 w-4 text-green-600" />}
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-3 py-2">
+                          <TableCell className="px-3 py-1.5">
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">{item.name}</span>
+                              <span className="font-semibold text-gray-900">{item.name}</span>
+                              <Badge variant="outline" className="text-xs px-2 py-0.5 bg-gray-50">
+                                {category}
+                              </Badge>
                             </div>
                           </TableCell>
-                          <TableCell className="text-right font-medium px-3 py-2">{item.price}</TableCell>
-                          <TableCell className="text-right font-semibold px-3 py-2">{(parseFloat(item.price.replace('€', '').replace(',', '.')) * 5).toFixed(0)}€</TableCell>
-                          <TableCell className="text-right font-medium text-green-600 px-3 py-2">{(parseFloat(item.price.replace('€', '').replace(',', '.')) * 0.1).toFixed(1)}€</TableCell>
-                          <TableCell className="text-gray-600 px-3 py-2">{item.description}</TableCell>
-                          <TableCell className="text-center px-3 py-2">
+                          <TableCell className="text-right px-3 py-1.5">
+                            <div className="space-y-0.5">
+                              <div className="text-lg font-semibold text-gray-900">{item.price}</div>
+                              <div className="text-xs text-gray-500">per night</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right px-3 py-1.5">
+                            <div className="space-y-0.5">
+                              <div className="text-lg font-semibold text-blue-600">{(parseFloat(item.price.replace('€', '').replace(',', '.')) * 5).toFixed(0)}€</div>
+                              <div className="text-xs text-gray-500">5 nights total</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right px-3 py-1.5">
+                            <div className="bg-green-50 border border-green-200 rounded-lg px-2.5 py-1.5 inline-block">
+                              <div className="text-base font-bold text-green-700">{(parseFloat(item.price.replace('€', '').replace(',', '.')) * 5 * 0.1).toFixed(1)}€</div>
+                              <div className="text-xs text-green-600">total</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-gray-600 px-3 py-1.5">{item.description}</TableCell>
+                          <TableCell className="text-center px-3 py-1.5">
                             <Button
                               size="sm"
                               onClick={(e) => {
@@ -399,7 +428,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                                 isSelected ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"
                               }`}
                             >
-                              {isSelected ? "Added" : "Add to Cart"}
+                              {isSelected ? "Selected" : "Select"}
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -415,9 +444,8 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
 
         {/* Extras Enhanced Table */}
         <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2 bg-amber-100/70 rounded-lg px-4 py-2">
-              <Zap className="h-6 w-6 text-amber-600" />
+          <CardHeader className="border-b px-4 py-2">
+            <CardTitle className="text-lg font-semibold">
               Extra Services
               <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
                 {extras.length} services
@@ -427,14 +455,18 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
           <CardContent className="p-4">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="h-10">
+                <TableHeader className="h-8">
                   <TableRow className="bg-gray-50/50">
-                    <TableHead className="w-12"></TableHead>
                     <TableHead className="min-w-[180px]">Service</TableHead>
                     <TableHead className="text-right">Price</TableHead>
-                    <TableHead className="text-center">Units</TableHead>
                     <TableHead className="text-right">Total Price</TableHead>
-                    <TableHead className="text-right">Commission</TableHead>
+                    <TableHead className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Zap className="h-4 w-4 text-green-600" />
+                        Commission
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-center">Units</TableHead>
                     <TableHead className="text-center">Action</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -449,31 +481,34 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                         }`}
                         onClick={() => toggleExtraSelection(extra.name)}
                       >
-                        <TableCell className="text-center px-3 py-2">
-                          <div className="flex flex-col items-center gap-2">
-                            {isSelected && <Check className="h-4 w-4 text-amber-600" />}
+    
+                        <TableCell className="px-3 py-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-gray-900">{extra.name}</span>
+                            <Badge variant="outline" className="text-xs px-2 py-0.5 bg-gray-50">
+                              {extra.description}
+                            </Badge>
                           </div>
                         </TableCell>
-                        <TableCell className="px-3 py-2">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold">{extra.name}</span>
-                              {extra.popularity >= 80 && (
-                                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
-                                  Popular
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-gray-600">{extra.description}</p>
+                        <TableCell className="text-right px-3 py-1.5">
+                          <div className="space-y-0.5">
+                            <div className="text-lg font-semibold text-gray-900">{extra.price}</div>
+                            <div className="text-xs text-gray-500">{extra.priceType}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right px-3 py-2">
-                          <div className="space-y-1">
-                            <div className="font-medium">{extra.price}</div>
-                            <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">{extra.priceType}</div>
+                        <TableCell className="text-right px-3 py-1.5">
+                          <div className="space-y-0.5">
+                            <div className="text-lg font-semibold text-blue-600">{(parseFloat(extra.price.replace('€', '')) * (extraQuantities[extra.name] || extra.units)).toFixed(0)}€</div>
+                            <div className="text-xs text-gray-500">total</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center px-3 py-2">
+                        <TableCell className="text-right px-3 py-1.5">
+                          <div className="bg-green-50 border border-green-200 rounded-lg px-2.5 py-1.5 inline-block">
+                            <div className="text-base font-bold text-green-700">{(parseFloat(extra.price.replace('€', '')) * 0.1 * (extraQuantities[extra.name] || extra.units)).toFixed(1)}€</div>
+                            <div className="text-xs text-green-600">total</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center px-3 py-1.5">
                           {extra.name === "Spa Treatment" || extra.name === "Dinner Package" ? (
                             <div className="flex items-center justify-center gap-2">
                               <Button
@@ -523,9 +558,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                             <span className="font-medium">{extra.units}</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-semibold px-3 py-2">{(parseFloat(extra.price.replace('€', '')) * (extraQuantities[extra.name] || extra.units)).toFixed(0)}€</TableCell>
-                        <TableCell className="text-right font-medium text-green-600 px-3 py-2">{(parseFloat(extra.price.replace('€', '')) * 0.1 * (extraQuantities[extra.name] || extra.units)).toFixed(1)}€</TableCell>
-                        <TableCell className="text-center px-3 py-2">
+                        <TableCell className="text-center px-3 py-1.5">
                           <Button
                             size="sm"
                             onClick={(e) => {
@@ -536,7 +569,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                               isSelected ? "bg-amber-600 hover:bg-amber-700" : "bg-gray-600 hover:bg-gray-700"
                             }`}
                           >
-                            {isSelected ? "Added" : "Add to Cart"}
+                            {isSelected ? "Selected" : "Select"}
                           </Button>
                         </TableCell>
                       </TableRow>
