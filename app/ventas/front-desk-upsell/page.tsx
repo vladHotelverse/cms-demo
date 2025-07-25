@@ -233,7 +233,7 @@ export default function FrontDeskUpsellPage() {
         />
 
         <TabsContent value="front-desk-upsell" className="mt-0">
-          <div className="p-6">
+          <div className="p-6 max-w-7xl mx-auto">
             {/* Info Banner */}
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">

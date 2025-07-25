@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Minus, CalendarDays, Check, Star, Eye, Zap, Crown, MapPin, Building2 } from "lucide-react"
+import { Plus, Minus, CalendarDays, Check, Zap, Crown, MapPin, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -237,7 +237,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
         {/* Room Upgrade Enhanced Table */}
         <Card className="overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2 bg-blue-100/70 rounded-lg px-4 py-2">
               <Crown className="h-6 w-6 text-blue-600" />
               Room Upgrades
               <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
@@ -288,10 +288,6 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
                             <span className="font-semibold text-gray-900">{room.type}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs font-medium">{room.rating}</span>
-                            </div>
                             <span
                               className={`text-xs px-2 py-1 rounded-full ${
                                 room.availability === "Limited"
@@ -343,7 +339,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
         {/* Attributes Enhanced Table */}
         <Card className="overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2 bg-green-100/70 rounded-lg px-4 py-2">
               <Building2 className="h-6 w-6 text-green-600" />
               Room Attributes
               <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">
@@ -420,7 +416,7 @@ export default function EnhancedTableView({ onAddToCart, onSelectRoom }: Enhance
         {/* Extras Enhanced Table */}
         <Card className="overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-amber-50 via-orange-50 to-red-50 border-b px-4 py-3">
-            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
+            <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2 bg-amber-100/70 rounded-lg px-4 py-2">
               <Zap className="h-6 w-6 text-amber-600" />
               Extra Services
               <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0.5">

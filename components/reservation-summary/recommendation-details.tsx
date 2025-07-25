@@ -1,5 +1,6 @@
 "use client"
 
+
 interface RecommendationDetailsProps {
   title: string
   description: string
@@ -15,7 +16,9 @@ export function RecommendationDetails({
     <div className="flex-1">
       {/* Title and Description on top */}
       <div className="mb-3">
-        <h4 className="font-semibold">{title}</h4>
+        <div className="mb-2">
+          <h4 className="text-xl font-bold">{title}</h4>
+        </div>
         <p className="text-base text-muted-foreground">{description}</p>
       </div>
       
