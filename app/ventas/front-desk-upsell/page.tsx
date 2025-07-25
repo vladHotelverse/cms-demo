@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { ChevronUp, ChevronDown, X } from "lucide-react"
+import { useState, useMemo } from "react"
+import { ChevronUp, ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -58,16 +58,19 @@ export default function FrontDeskUpsellPage() {
   const [isInReservationMode, setIsInReservationMode] = useState(false)
 
   // Generate reservations with proper translation handling
-  const reservations = rawReservations.map(res => {
-    const { nights: nightsCount, extrasCount, hasExtras, ...restRes } = res
-    return {
-      ...restRes,
-      nights: calculateNights(nightsCount, t),
-      extras: hasExtras 
-        ? getExtrasStatus(true, t, extrasCount)
-        : getExtrasStatus(false, t)
-    }
-  })
+  const reservations = useMemo(() => 
+    rawReservations.map(res => {
+      const { nights: nightsCount, extrasCount, hasExtras, ...restRes } = res
+      return {
+        ...restRes,
+        nights: calculateNights(nightsCount, t),
+        extras: hasExtras 
+          ? getExtrasStatus(true, t, extrasCount)
+          : getExtrasStatus(false, t)
+      }
+    }),
+    [t]
+  )
 
   // Calculate total commission from reservations with extras
   const totalCommission = reservations
@@ -109,7 +112,7 @@ export default function FrontDeskUpsellPage() {
     setTimeout(() => setAlert(null), 4000)
   }
 
-  const handleExtrasButtonClick = (reservation: any) => {
+  const handleExtrasButtonClick = (reservation: Reservation) => {
     // Create a unique tab ID for the reservation summary
     const summaryTabId = `summary_${reservation.id}`
     
@@ -143,26 +146,6 @@ export default function FrontDeskUpsellPage() {
     }
   }
 
-  const handleReservationClick = (reservation: (typeof reservations)[0]) => {
-    const tabId = `reservation-${reservation.id}`
-
-    // Check if tab is already open
-    const existingTab = openTabs.find((tab) => tab.id === tabId)
-    if (existingTab) {
-      setActiveTab(tabId)
-      return
-    }
-
-    // Add new tab
-    const newTab: OpenTab = {
-      id: tabId,
-      reservation,
-    }
-
-    setOpenTabs((prev) => [...prev, newTab])
-    setActiveTab(tabId)
-    setIsInReservationMode(true) // Enable reservation mode
-  }
 
   const handleCloseTab = (tabId: string) => {
     setOpenTabs((prev) => prev.filter((tab) => tab.id !== tabId))
@@ -233,7 +216,7 @@ export default function FrontDeskUpsellPage() {
         />
 
         <TabsContent value="front-desk-upsell" className="mt-0">
-          <div className="p-6">
+          <div className="p-6 max-w-7xl mx-auto">
             {/* Info Banner */}
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">

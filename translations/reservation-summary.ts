@@ -105,9 +105,9 @@ export const reservationSummaryTranslations = {
       privatePool: "Piscina Privada",
       butler: "Servicio de Mayordomo",
       luxury: "Lujo",
-      meetingRoom: "Sala de Reuniones",
-      businessCenter: "Masaje de 30 minutos",
-      express: "Servicio Express",
+      meetingRoom: "Exposición solar matutina",
+      businessCenter: "Luz natural continua",
+      express: "Vistas despejadas",
       champagne: "Champán",
       rosePetals: "Pétalos de Rosa",
       candleDinner: "Cena a la Luz de las Velas"
@@ -147,12 +147,12 @@ export const reservationSummaryTranslations = {
 
     // Additional packages
     businessPackage: {
-      title: "Paquete de Negocios",
-      description: "Servicios ejecutivos completos para viajeros de negocios",
+      title: "Sol Todo el Día",
+      description: "Habitación con exposición solar completa durante todo el día",
       details: [
-        "Acceso a sala de reuniones",
-        "Centro de negocios 24h",
-        "Servicio express de lavandería"
+        "Exposición solar desde el amanecer",
+        "Luz natural durante todo el día",
+        "Vistas despejadas al este y oeste"
       ]
     },
 
@@ -273,9 +273,9 @@ export const reservationSummaryTranslations = {
       privatePool: "Private Pool",
       butler: "Butler Service",
       luxury: "Luxury",
-      meetingRoom: "Meeting Room",
-      businessCenter: "30 minutes massage",
-      express: "Express Service",
+      meetingRoom: "Morning sun exposure",
+      businessCenter: "Continuous natural light",
+      express: "Clear views",
       champagne: "Champagne",
       rosePetals: "Rose Petals",
       candleDinner: "Candlelight Dinner"
@@ -315,12 +315,12 @@ export const reservationSummaryTranslations = {
 
     // Additional packages
     businessPackage: {
-      title: "Business Package",
-      description: "Complete executive services for business travelers",
+      title: "All Day Sun",
+      description: "Room with complete sun exposure throughout the day",
       details: [
-        "Meeting room access",
-        "24h business center",
-        "Express laundry service"
+        "Sun exposure from sunrise",
+        "Natural light all day long",
+        "Clear views to east and west"
       ]
     },
 

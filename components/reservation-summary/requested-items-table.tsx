@@ -37,17 +37,16 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
         .filter(([category, categoryItems]) => categoryItems.length > 0)
         .map(([category, categoryItems]) => {
         const config = categoryConfig[category as keyof typeof categoryConfig]
-        const Icon = config.icon
         
         return (
           <div key={category}>
             {/* Category Header */}
-            <div className="bg-muted/5 border-b border-border px-4 py-2">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className="bg-muted/60 border-b border-border">
+              <div className="flex items-center gap-2 bg-muted/80 rounded-md px-3 py-2">
+                <span className="text-sm font-medium text-foreground uppercase tracking-wide">
                   {t(config.labelKey)}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground font-medium">
                   ({categoryItems.length} item{categoryItems.length !== 1 ? 's' : ''})
                 </span>
               </div>
@@ -59,7 +58,6 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
                 key={item.id} 
                 item={item} 
                 category={category as keyof RequestedItemsData}
-                config={config}
                 onStatusUpdate={(status) => updateItemStatus(category as keyof RequestedItemsData, item.id, status)}
                 onDelete={() => deleteItem(category as keyof RequestedItemsData, item.id)}
               />
@@ -74,15 +72,13 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
 interface RequestedItemRowProps {
   item: RequestedItem
   category: keyof RequestedItemsData
-  config: typeof categoryConfig[keyof typeof categoryConfig]
   onStatusUpdate: (status: 'pending_hotel' | 'confirmed') => void
   onDelete: () => void
 }
 
-function RequestedItemRow({ item, config, onStatusUpdate, onDelete }: RequestedItemRowProps) {
+function RequestedItemRow({ item, onStatusUpdate, onDelete }: RequestedItemRowProps) {
   const { t } = useReservationTranslations()
   const status = statusConfig[item.status as keyof typeof statusConfig]
-  const Icon = config.icon
   
   return (
     <div className="grid grid-cols-10 gap-4 px-4 py-3 border-b border-border last:border-b-0 hover:bg-muted/5 transition-colors items-center">

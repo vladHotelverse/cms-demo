@@ -21,6 +21,7 @@ interface RecommendationImageCarouselProps {
   className?: string
   imageClassName?: string
   t: (key: string) => string
+  recommendationId?: string
 }
 
 export function RecommendationImageCarousel({
@@ -33,7 +34,8 @@ export function RecommendationImageCarousel({
   showControls = true,
   className = "",
   imageClassName = "",
-  t
+  t,
+  recommendationId
 }: RecommendationImageCarouselProps) {
   return (
     <Carousel className={`w-full ${className}`} setApi={onApiChange}>
@@ -49,7 +51,20 @@ export function RecommendationImageCarousel({
                 alt={`${title} ${index + 1}`} 
                 className={`w-full h-full object-cover hover:scale-105 transition-transform ${imageClassName}`}
               />
-              {amenityKeys[currentIndex] && index === currentIndex && (
+              {index === currentIndex && recommendationId === 'room-upgrade' && amenityKeys.length > 0 && (
+                <div className="absolute top-2 left-2 pointer-events-none flex flex-wrap gap-2 items-center justify-start">
+                  {amenityKeys.map((amenityKey, amenityIndex) => (
+                    <Badge 
+                      key={amenityIndex}
+                      variant="secondary" 
+                      className="text-xs bg-white/90 text-gray-800 backdrop-blur-sm block"
+                    >
+                      {t(amenityKey)}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              {index === currentIndex && recommendationId !== 'room-upgrade' && amenityKeys[currentIndex] && (
                 <div className="absolute top-2 left-2 pointer-events-none">
                   <Badge variant="secondary" className="text-xs bg-white/90 text-gray-800 backdrop-blur-sm">
                     {t(amenityKeys[currentIndex])}
