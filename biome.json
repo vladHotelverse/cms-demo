@@ -24,12 +24,9 @@
       "jsxQuoteStyle": "double"
     }
   },
-  "files": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "dist",
-      "build"
-    ]
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   }
 }
