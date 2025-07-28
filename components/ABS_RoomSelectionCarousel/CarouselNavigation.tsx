@@ -17,7 +17,7 @@ const CarouselNavigation: React.FC<CarouselNavigationProps> = ({
     <>
       <button
         onClick={onPrev}
-        className="hidden sm:block absolute left-0 ml-2 top-1/2 -translate-y-1/2 z-20 bg-white rounded-full shadow-md p-2 transition-all duration-200 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full shadow-md p-2 transition-all duration-200 hover:bg-white focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
         aria-label={previousLabel}
       >
         <svg
@@ -38,7 +38,7 @@ const CarouselNavigation: React.FC<CarouselNavigationProps> = ({
 
       <button
         onClick={onNext}
-        className="hidden sm:block absolute right-0 mr-2 top-1/2 -translate-y-1/2 z-20 bg-white rounded-full shadow-md p-2 transition-all duration-200 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+        className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full shadow-md p-2 transition-all duration-200 hover:bg-white focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
         aria-label={nextLabel}
       >
         <svg

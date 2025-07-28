@@ -22,15 +22,10 @@ import {
 import { useLanguage } from "@/contexts/language-context";
 
 // Import ABS components
-import { ABS_PricingSummaryPanel } from "@/components/ABS_PricingSummaryPanel";
 import BookingInfoBar from "@/components/ABS_BookingInfoBar";
 import EnhancedTableView from "@/components/enhanced-table-view";
 import ReservationBlocksSection from "@/components/reservation-blocks-section";
-
-// Import data transformers
-import {
-	transformToPricingItems,
-} from "@/utils/abs-data-transformers";
+import CompactReservationView from "@/components/compact-reservation-view";
 
 
 // Import ABS translations
@@ -94,10 +89,9 @@ export default function ReservationDetailsTab({
 }: ReservationDetailsTabProps) {
 	const [selectedSegment, setSelectedSegment] = useState("loyalty2");
 	const [selectedAgent, setSelectedAgent] = useState("agent1");
-	const [viewMode, setViewMode] = useState<"list" | "blocks">("list");
+	const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks");
 	const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
 	const [selectedCommissionReason, setSelectedCommissionReason] = useState("");
-	const [cartItems, setCartItems] = useState<any[]>([]);
 	const { t, currentLanguage } = useLanguage();
 
 	// Helper function to get ABS translations
@@ -112,31 +106,6 @@ export default function ReservationDetailsTab({
 		[key: string]: { id: string; label: string; price: number } | undefined;
 	}>({});
 	const [bookedOffers, setBookedOffers] = useState<any[]>([]);
-
-
-	// Transform data for pricing panel
-	const pricingItems = useMemo(
-		() =>
-			transformToPricingItems(
-				cartItems,
-				selectedRoom,
-				roomCustomizations,
-				bookedOffers,
-			),
-		[cartItems, selectedRoom, roomCustomizations, bookedOffers],
-	);
-
-	// Calculate total price
-	const calculateSubtotal = () => {
-		return pricingItems.reduce(
-			(sum, item) => sum + item.price * (item.quantity || 1),
-			0,
-		);
-	};
-
-	const handleConfirmBooking = () => {
-		setIsCommissionModalOpen(true);
-	};
 
 	const handleCommissionConfirm = () => {
 		if (!selectedCommissionReason) {
@@ -165,7 +134,6 @@ export default function ReservationDetailsTab({
 	};
 
 	const handleAddToCart = (item: any) => {
-		setCartItems((prev) => [...prev, item]);
 		onShowAlert("success", `${item.name} added to cart`);
 	};
 
@@ -192,31 +160,6 @@ export default function ReservationDetailsTab({
 		onShowAlert("success", `${offerData.title} booked successfully`);
 	};
 
-	const handleRemovePricingItem = (
-		itemId: string | number,
-		itemName: string,
-		itemType: "room" | "customization" | "offer" | "bid",
-	) => {
-		const id = itemId.toString();
-		if (itemType === "room") {
-			setSelectedRoom(null);
-		} else if (itemType === "customization") {
-			// Remove specific customization
-			const newCustomizations = { ...roomCustomizations };
-			Object.keys(newCustomizations).forEach((key) => {
-				if (newCustomizations[key]?.id === id) {
-					delete newCustomizations[key];
-				}
-			});
-			setRoomCustomizations(newCustomizations);
-		} else if (itemType === "offer") {
-			setBookedOffers((prev) => prev.filter((offer) => offer.id !== id));
-		} else {
-			setCartItems((prev) => prev.filter((item) => `cart-${item.name}` !== id));
-		}
-		onShowAlert("info" as any, `${itemName} removed`);
-	};
-
 
 	return (
 		<React.Fragment>
@@ -225,9 +168,8 @@ export default function ReservationDetailsTab({
 				<div className="max-w-7xl mx-auto">
 					<BookingInfoBar
 						className="!container !max-w-none !mx-0"
-						hotelImage="/images/hotel-aerial-view.png"
 						title={getABSTranslation("bookingInformation")}
-						showBanner={true}
+						showBanner={false}
 						items={[
 							{
 								icon: "Tag",
@@ -277,7 +219,7 @@ export default function ReservationDetailsTab({
 												onClick={() => setViewMode("list")}
 												className="px-3"
 											>
-												Lista
+												{t("currentLanguage") === "es" ? "Lista" : "List"}
 											</Button>
 											<Button
 												variant={viewMode === "blocks" ? "default" : "outline"}
@@ -285,7 +227,7 @@ export default function ReservationDetailsTab({
 												onClick={() => setViewMode("blocks")}
 												className="px-3"
 											>
-												Bloques
+												{t("currentLanguage") === "es" ? "Bloques" : "Blocks"}
 											</Button>
 										</div>
 									</div>
@@ -352,78 +294,17 @@ export default function ReservationDetailsTab({
 							</div>
 						</div>
 					) : (
-						<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-							{/* Blocks Mode - Full Width Layout */}
-							<div className="lg:col-span-3">
-								<ReservationBlocksSection
-									selectedRoom={selectedRoom}
-									roomCustomizations={roomCustomizations}
-									bookedOffers={bookedOffers}
-									onRoomSelected={handleSelectRoom}
-									onRoomCustomizationChange={handleRoomCustomizationChange}
-									onOfferBook={handleOfferBook}
-									onShowAlert={onShowAlert}
-								/>
-							</div>
-
-							{/* Price Summary Section - ABS Pricing Panel */}
-							<div className="lg:col-span-1">
-								<ABS_PricingSummaryPanel
-									items={pricingItems}
-									pricing={{ subtotal: calculateSubtotal() }}
-									onRemoveItem={handleRemovePricingItem}
-								onConfirm={handleConfirmBooking}
-								currency="EUR"
-								locale={t("currentLanguage")}
-								labels={{
-									pricingSummaryLabel: getABSTranslation("pricingSummary"),
-									roomImageAltText: getABSTranslation("roomImage"),
-									emptyCartMessage: getABSTranslation("emptyCart"),
-									subtotalLabel: getABSTranslation("subtotal"),
-									totalLabel: getABSTranslation("total"),
-									confirmButtonLabel: getABSTranslation("confirmBooking"),
-									euroSuffix: "€",
-									payAtHotelLabel: getABSTranslation("payAtHotel"),
-									viewTermsLabel: getABSTranslation("viewTerms"),
-									loadingLabel: getABSTranslation("loading"),
-									removeRoomUpgradeLabel: getABSTranslation("remove"),
-									customizationRemovedMessagePrefix:
-										getABSTranslation("removed"),
-									offerRemovedMessagePrefix: getABSTranslation("removed"),
-									roomRemovedMessage: getABSTranslation("roomRemoved"),
-									notificationsLabel: getABSTranslation("notifications"),
-									closeNotificationLabel: getABSTranslation("close"),
-									exploreLabel: getABSTranslation("explore"),
-									fromLabel: getABSTranslation("from"),
-									customizeStayTitle: getABSTranslation("customizeYourStay"),
-									chooseOptionsSubtitle: getABSTranslation("chooseOptions"),
-									invalidPricingError: getABSTranslation("invalidPricing"),
-									selectedRoomLabel: getABSTranslation("selectedRoomLabel"),
-									upgradesLabel: getABSTranslation("upgradesLabel"),
-									specialOffersLabel: getABSTranslation("specialOffersLabel"),
-									chooseYourSuperiorRoomLabel: getABSTranslation(
-										"chooseYourSuperiorRoomLabel",
-									),
-									chooseYourRoomLabel: getABSTranslation("chooseYourRoomLabel"),
-									customizeYourRoomLabel: getABSTranslation(
-										"customizeYourRoomLabel",
-									),
-									enhanceYourStayLabel: getABSTranslation(
-										"enhanceYourStayLabel",
-									),
-									bidForUpgradeLabel: getABSTranslation("bidForUpgradeLabel"),
-									taxesLabel: "Taxes",
-									noUpgradesSelectedLabel: "No upgrades selected",
-									noOffersSelectedLabel: "No offers selected",
-									editLabel: "Edit",
-									addedMessagePrefix: "Added",
-									missingLabelsError: getABSTranslation("invalidPricing"),
-									currencyFormatError: "Currency format error",
-									performanceWarning: "Performance warning",
-									processingLabel: "Processing",
-								}}
-								/>
-							</div>
+						<div className="flex flex-row h-[calc(100vh-300px)] gap-6 overflow-hidden">
+							{/* Blocks Mode - Original Layout with Horizontal Arrangement */}
+							<ReservationBlocksSection
+								selectedRoom={selectedRoom}
+								roomCustomizations={roomCustomizations}
+								bookedOffers={bookedOffers}
+								onRoomSelected={handleSelectRoom}
+								onRoomCustomizationChange={handleRoomCustomizationChange}
+								onOfferBook={handleOfferBook}
+								onShowAlert={onShowAlert}
+							/>
 						</div>
 					)}
 				</div>

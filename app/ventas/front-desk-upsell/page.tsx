@@ -197,19 +197,19 @@ export default function FrontDeskUpsellPage() {
   })
 
   const handleExtrasButtonClick = (reservation: OrderFromAPI) => {
-    // Create a unique tab ID for the reservation summary
-    const summaryTabId = `summary_${reservation.id}`
+    // Create a unique tab ID for the reservation details
+    const detailsTabId = `details_${reservation.id}`
     
-    // Check if summary tab is already open
-    const existingTab = openTabs.find(tab => tab.id === summaryTabId)
+    // Check if details tab is already open
+    const existingTab = openTabs.find(tab => tab.id === detailsTabId)
     if (existingTab) {
-      setActiveTab(summaryTabId)
+      setActiveTab(detailsTabId)
       return
     }
 
-    // Add the summary tab
+    // Add the details tab
     const newTab: OpenTab = {
-      id: summaryTabId,
+      id: detailsTabId,
       reservation: {
         ...reservation,
         nights: reservation.nights,
@@ -217,7 +217,8 @@ export default function FrontDeskUpsellPage() {
       }
     }
     setOpenTabs([...openTabs, newTab])
-    setActiveTab(summaryTabId)
+    setActiveTab(detailsTabId)
+    setIsInReservationMode(true) // Enable reservation mode when opening details tab
   }
 
 
@@ -404,7 +405,7 @@ export default function FrontDeskUpsellPage() {
 
         {/* Dynamic reservation tabs content */}
         {openTabs
-          .filter(tab => !tab.id.startsWith('summary_'))
+          .filter(tab => tab.id.startsWith('details_'))
           .map((tab) => (
             <TabsContent key={tab.id} value={tab.id} className="mt-0">
               <ReservationDetailsTab
@@ -416,7 +417,7 @@ export default function FrontDeskUpsellPage() {
             </TabsContent>
           ))}
 
-        {/* Render Summary Tabs */}
+        {/* Render Summary Tabs (if any still exist) */}
         {openTabs
           .filter(tab => tab.id.startsWith('summary_'))
           .map(tab => (

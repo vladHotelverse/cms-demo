@@ -544,104 +544,109 @@ export default function ReservationBlocksSection({
   }
 
   return (
-    <div className="space-y-8">
-      {/* Room Selection Section - Matching ABS Layout */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {getABSTranslation("chooseYourSuperiorRoomLabel") || "Choose your Superior Room!"}
+    <div className="flex flex-row gap-6 h-full pb-12">
+      {/* Room Selection Section - Card Layout */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
+        <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            {getABSTranslation("chooseYourSuperiorRoomLabel") || "Room Upgrades"}
           </h2>
-          <p className="text-gray-600">
+          <p className="text-xs text-gray-600">
             {getABSTranslation("selectRoomDescription") || "Choose from our selection of premium rooms and suites"}
           </p>
         </div>
-        <ABS_RoomSelectionCarousel
-            roomOptions={transformedRoomOptions}
-            onRoomSelected={onRoomSelected}
-            initialSelectedRoom={selectedRoom}
-            showPriceSlider={false}
-            translations={{
-              learnMoreText: getABSTranslation("learnMore") || "Learn More",
-              selectText: getABSTranslation("select") || "UPGRADE NOW",
-              selectedText: getABSTranslation("selected") || "Selected",
-              nightText: getABSTranslation("perNight") || "night",
-              currencySymbol: "€",
-              priceInfoText: getABSTranslation("priceInfo") || "Price includes all taxes and fees",
-              makeOfferText: getABSTranslation("makeOffer") || "Make Offer",
-              availabilityText: getABSTranslation("availabilityNotice") || "Instant Confirmation",
-              proposePriceText: getABSTranslation("proposePriceText") || "Propose your price:",
-              currencyText: "EUR",
-              upgradeNowText: getABSTranslation("upgradeNow") || "UPGRADE NOW",
-              removeText: getABSTranslation("remove") || "Remove",
-              offerMadeText: getABSTranslation("offerMadeText") || "Offer made: {price} EUR per night",
-              discountBadgeText: "-{percentage}%",
-              noRoomsAvailableText: getABSTranslation("noRoomsAvailable") || "No rooms available",
-              bidSubmittedText: getABSTranslation("bidSubmitted") || "Bid submitted",
-              updateBidText: getABSTranslation("updateBid") || "Update bid",
-              cancelBidText: getABSTranslation("cancel") || "Cancel",
-              navigationLabels: {
-                previousRoom: getABSTranslation("previousRoom") || "Previous room",
-                nextRoom: getABSTranslation("nextRoom") || "Next room",
-                previousRoomMobile: getABSTranslation("previousRoom") || "Previous room (mobile)",
-                nextRoomMobile: getABSTranslation("nextRoom") || "Next room (mobile)",
-                goToRoom: getABSTranslation("goToRoom") || "Go to room {index}",
-                previousImage: getABSTranslation("previousImage") || "Previous image",
-                nextImage: getABSTranslation("nextImage") || "Next image",
-                viewImage: getABSTranslation("viewImage") || "View image {index}",
-              },
-            }}
-          />
-      </section>
+        <div className="p-4 h-full overflow-hidden">
+          <ABS_RoomSelectionCarousel
+              roomOptions={transformedRoomOptions}
+              onRoomSelected={onRoomSelected}
+              initialSelectedRoom={selectedRoom}
+              showPriceSlider={false}
+              translations={{
+                learnMoreText: getABSTranslation("learnMore") || "Learn More",
+                selectText: getABSTranslation("select") || "UPGRADE NOW",
+                selectedText: getABSTranslation("selected") || "Selected",
+                nightText: getABSTranslation("perNight") || "night",
+                currencySymbol: "€",
+                priceInfoText: getABSTranslation("priceInfo") || "Price includes all taxes and fees",
+                makeOfferText: getABSTranslation("makeOffer") || "Make Offer",
+                availabilityText: getABSTranslation("availabilityNotice") || "Instant Confirmation",
+                proposePriceText: getABSTranslation("proposePriceText") || "Propose your price:",
+                currencyText: "EUR",
+                upgradeNowText: getABSTranslation("upgradeNow") || "UPGRADE NOW",
+                removeText: getABSTranslation("remove") || "Remove",
+                offerMadeText: getABSTranslation("offerMadeText") || "Offer made: {price} EUR per night",
+                discountBadgeText: "-{percentage}%",
+                noRoomsAvailableText: getABSTranslation("noRoomsAvailable") || "No rooms available",
+                bidSubmittedText: getABSTranslation("bidSubmitted") || "Bid submitted",
+                updateBidText: getABSTranslation("updateBid") || "Update bid",
+                cancelBidText: getABSTranslation("cancel") || "Cancel",
+                navigationLabels: {
+                  previousRoom: getABSTranslation("previousRoom") || "Previous room",
+                  nextRoom: getABSTranslation("nextRoom") || "Next room",
+                  previousRoomMobile: getABSTranslation("previousRoom") || "Previous room (mobile)",
+                  nextRoomMobile: getABSTranslation("nextRoom") || "Next room (mobile)",
+                  goToRoom: getABSTranslation("goToRoom") || "Go to room {index}",
+                  previousImage: getABSTranslation("previousImage") || "Previous image",
+                  nextImage: getABSTranslation("nextImage") || "Next image",
+                  viewImage: getABSTranslation("viewImage") || "View image {index}",
+                },
+              }}
+            />
+        </div>
+      </div>
 
-      {/* Room Customization Section - Matching ABS Layout */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Customize Your Stay
+      {/* Room Customization Section - Card Layout */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
+        <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            Room Customization
           </h2>
-          <p className="text-gray-600">
+          <p className="text-xs text-gray-600">
             Personalize your room for the perfect experience
           </p>
         </div>
-        <ABS_RoomCustomization
-            title=""
-            subtitle=""
-            sections={customizationSections}
-            sectionOptions={sectionOptions}
-            initialSelections={roomCustomizations}
-            onCustomizationChange={onRoomCustomizationChange}
-            texts={{
-              pricePerNightText: "/night",
-              selectText: "Add for", // ✅ No {price} placeholder - component adds price automatically
-              selectedText: "Selected",
-              featuresText: "Features",
-              availableOptionsText: "Available Options",
-              understood: "Understood",
-              improveText: "Improve your room",
-              addForPriceText: "Add for", // ✅ No {price} placeholder - component adds price automatically  
-              removeText: "Remove",
-              showMoreText: "Show more",
-              showLessText: "Show less",
-              optionDisabledText: "Option disabled",
-              conflictWithText: "Conflicts with",
-              keepCurrentText: "Keep current",
-              switchToNewText: "Switch to new",
-              conflictDialogTitle: "Selection Conflict",
-              conflictDialogDescription: "This selection conflicts with your current choice",
-            }}
-          />
-      </section>
+        <div className="p-4 h-full overflow-hidden">
+          <ABS_RoomCustomization
+              title=""
+              subtitle=""
+              sections={customizationSections}
+              sectionOptions={sectionOptions}
+              initialSelections={roomCustomizations}
+              onCustomizationChange={onRoomCustomizationChange}
+              texts={{
+                pricePerNightText: "/night",
+                selectText: "Add for", // ✅ No {price} placeholder - component adds price automatically
+                selectedText: "Selected",
+                featuresText: "Features",
+                availableOptionsText: "Available Options",
+                understood: "Understood",
+                improveText: "Improve your room",
+                addForPriceText: "Add for", // ✅ No {price} placeholder - component adds price automatically  
+                removeText: "Remove",
+                showMoreText: "Show more",
+                showLessText: "Show less",
+                optionDisabledText: "Option disabled",
+                conflictWithText: "Conflicts with",
+                keepCurrentText: "Keep current",
+                switchToNewText: "Switch to new",
+                conflictDialogTitle: "Selection Conflict",
+                conflictDialogDescription: "This selection conflicts with your current choice",
+              }}
+            />
+        </div>
+      </div>
 
-      {/* Special Offers Section - Matching ABS Layout */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {getABSTranslation("enhanceYourStayLabel") || "Enhance your stay"}
+      {/* Special Offers Section - Card Layout */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
+        <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            {getABSTranslation("enhanceYourStayLabel") || "Special Offers"}
           </h2>
-          <p className="text-gray-600">
+          <p className="text-xs text-gray-600">
             {getABSTranslation("offersDescription") || "Enhance your stay with these exclusive offers"}
           </p>
         </div>
+        <div className="p-4 h-full overflow-hidden">
           {transformedOffers.length > 0 && 
            Object.keys(initialOfferSelections).length > 0 && 
            transformedOffers.every(offer => initialOfferSelections[offer.id] !== undefined) ? (
@@ -687,20 +692,21 @@ export default function ReservationBlocksSection({
               }}
             />
           ) : (
-            <div className="flex items-center justify-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+            <div className="flex items-center justify-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
               <div className="text-center">
-                <div className="text-gray-400 mb-3">
-                  <svg className="mx-auto h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-gray-400 mb-2">
+                  <svg className="mx-auto h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
-                <p className="text-gray-500 font-medium">
+                <p className="text-gray-500 font-medium text-sm">
                   {getABSTranslation("loadingOffers") || "Loading special offers..."}
                 </p>
               </div>
             </div>
           )}
-      </section>
+        </div>
+      </div>
     </div>
   );
 }

@@ -346,9 +346,9 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
     )
   }
 
-  // Three or more rooms: Full carousel behavior
+  // Three or more rooms: Full carousel behavior with container queries
   return (
-    <div className={clsx(className)}>
+    <div className={clsx('@container', className)}>
       {/* Title and Subtitle */}
       {(title || subtitle) && (
         <div className="mb-6 text-center">
@@ -360,6 +360,11 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
       <div className="lg:col-span-2">
         {/* Slider Container with Visible Cards */}
         <div className="relative w-full overflow-visible h-full">
+          {/* Room counter label */}
+          <div className="absolute top-4 right-4 z-20 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+            {state.activeIndex + 1}/{roomOptions.length}
+          </div>
+          
           {/* Main Carousel Area */}
           <div className="w-full relative perspective-[1000px] h-[750px] overflow-hidden">
             {roomOptions.map((room, index) => {
@@ -378,9 +383,14 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
                 <div
                   key={room.id}
                   className={clsx('w-full absolute transition-all duration-500 ease-in-out', {
-                    'left-0 z-10 sm:w-1/2 sm:left-1/4': state.activeIndex === index,
-                    'left-[-100%] z-5 opacity-70 sm:w-1/2 sm:left-[-30%]': index === prevIndex,
-                    'left-[100%] z-5 opacity-70 sm:w-1/2 sm:left-[80%]': index === nextIndex,
+                    // Default: show only current card
+                    'left-0 z-10': state.activeIndex === index,
+                    'left-[-100%] z-5 opacity-0': index === prevIndex,
+                    'left-[100%] z-5 opacity-0': index === nextIndex,
+                    // When container is large enough (>1024px), show side cards
+                    '@[1024px]:w-1/2 @[1024px]:left-1/4': state.activeIndex === index,
+                    '@[1024px]:left-[-30%] @[1024px]:opacity-70': index === prevIndex,
+                    '@[1024px]:left-[80%] @[1024px]:opacity-70': index === nextIndex,
                   })}
                 >
                   <RoomCard
