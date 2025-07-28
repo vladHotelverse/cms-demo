@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { ChevronUp, ChevronDown, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -156,9 +156,9 @@ export default function FrontDeskUpsellPage() {
     return () => {
       unsubscribeAll()
     }
-  }, [])
+  }, [handleOrderUpdate])
 
-  // Use the orders from Supabase instead of raw reservations
+  // Use the orders from Supabase
   const reservations = orders
 
   // Calculate total commission from reservations with extras
@@ -196,7 +196,7 @@ export default function FrontDeskUpsellPage() {
     }
   })
 
-  const handleExtrasButtonClick = (reservation: any) => {
+  const handleExtrasButtonClick = (reservation: OrderFromAPI) => {
     // Create a unique tab ID for the reservation summary
     const summaryTabId = `summary_${reservation.id}`
     
@@ -300,7 +300,7 @@ export default function FrontDeskUpsellPage() {
         />
 
         <TabsContent value="front-desk-upsell" className="mt-0">
-          <div className="p-6">
+          <div className="p-6 max-w-7xl mx-auto">
             {/* Info Banner */}
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">

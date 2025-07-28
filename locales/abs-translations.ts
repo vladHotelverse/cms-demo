@@ -1,0 +1,142 @@
+export const absTranslations = {
+  en: {
+    // Common
+    select: "Select",
+    selected: "Selected",
+    remove: "Remove",
+    total: "Total",
+    from: "From",
+    perNight: "per night",
+    perStay: "per stay",
+    perPerson: "per person",
+    loading: "Loading...",
+    close: "Close",
+    
+    // Booking Info
+    bookingInformation: "Booking Information",
+    bookingReference: "Booking Reference",
+    checkIn: "Check-in",
+    checkOut: "Check-out",
+    nights: "Nights",
+    guests: "Guests",
+    room: "Room",
+    roomType: "Room Type",
+    
+    // Room Selection
+    learnMore: "Learn More",
+    
+    // Room Customization
+    features: "Features",
+    availableOptions: "Available Options",
+    understood: "Understood",
+    
+    // Special Offers
+    bookNow: "Book Now",
+    
+    // Pricing Summary
+    pricingSummary: "Price Summary",
+    roomImage: "Room Image",
+    emptyCart: "Your cart is empty",
+    subtotal: "Subtotal",
+    confirmBooking: "Confirm Booking",
+    payAtHotel: "Pay at Hotel",
+    viewTerms: "View Terms",
+    removed: "Removed",
+    roomRemoved: "Room removed",
+    notifications: "Notifications",
+    explore: "Explore",
+    customizeYourStay: "Customize Your Stay",
+    chooseOptions: "Choose from available options",
+    invalidPricing: "Invalid pricing data",
+    selectedRoomLabel: "Selected Room",
+    upgradesLabel: "Upgrades",
+    specialOffersLabel: "Special Offers",
+    chooseYourSuperiorRoomLabel: "Superior Rooms",
+    chooseYourRoomLabel: "Room Selection",
+    customizeYourRoomLabel: "Room Customization",
+    enhanceYourStayLabel: "Stay Enhancements",
+    bidForUpgradeLabel: "Bid for Upgrades",
+    baseRoomPriceLabel: "Base Room Price",
+    roomUpgradeLabel: "Room Upgrade",
+    customizationsLabel: "Customizations",
+    offersLabel: "Offers",
+    roomUpgradedMessage: "Room upgraded successfully",
+    confirmAllButtonLabel: "Confirm All",
+    confirmingLabel: "Confirming...",
+    confirmationSuccessMessage: "All items confirmed successfully",
+    confirmationErrorMessage: "Error confirming items",
+    removeAllLabel: "Remove All",
+    expandAllLabel: "Expand All",
+    collapseAllLabel: "Collapse All",
+  },
+  es: {
+    // Common
+    select: "Seleccionar",
+    selected: "Seleccionado",
+    remove: "Eliminar",
+    total: "Total",
+    from: "Desde",
+    perNight: "por noche",
+    perStay: "por estancia",
+    perPerson: "por persona",
+    loading: "Cargando...",
+    close: "Cerrar",
+    
+    // Booking Info
+    bookingInformation: "Información de Reserva",
+    bookingReference: "Código de Reserva",
+    checkIn: "Entrada",
+    checkOut: "Salida",
+    nights: "Noches",
+    guests: "Huéspedes",
+    room: "Habitación",
+    roomType: "Tipo de Habitación",
+    
+    // Room Selection
+    learnMore: "Más Información",
+    
+    // Room Customization
+    features: "Características",
+    availableOptions: "Opciones Disponibles",
+    understood: "Entendido",
+    
+    // Special Offers
+    bookNow: "Reservar Ahora",
+    
+    // Pricing Summary
+    pricingSummary: "Resumen de Precios",
+    roomImage: "Imagen de Habitación",
+    emptyCart: "Tu carrito está vacío",
+    subtotal: "Subtotal",
+    confirmBooking: "Confirmar Reserva",
+    payAtHotel: "Pagar en el Hotel",
+    viewTerms: "Ver Términos",
+    removed: "Eliminado",
+    roomRemoved: "Habitación eliminada",
+    notifications: "Notificaciones",
+    explore: "Explorar",
+    customizeYourStay: "Personaliza tu Estancia",
+    chooseOptions: "Elige entre las opciones disponibles",
+    invalidPricing: "Datos de precio inválidos",
+    selectedRoomLabel: "Habitación Seleccionada",
+    upgradesLabel: "Mejoras",
+    specialOffersLabel: "Ofertas Especiales",
+    chooseYourSuperiorRoomLabel: "Habitaciones Superiores",
+    chooseYourRoomLabel: "Selección de Habitación",
+    customizeYourRoomLabel: "Personalización de Habitación",
+    enhanceYourStayLabel: "Mejoras de Estancia",
+    bidForUpgradeLabel: "Pujar por Mejoras",
+    baseRoomPriceLabel: "Precio Base de Habitación",
+    roomUpgradeLabel: "Mejora de Habitación",
+    customizationsLabel: "Personalizaciones",
+    offersLabel: "Ofertas",
+    roomUpgradedMessage: "Habitación mejorada exitosamente",
+    confirmAllButtonLabel: "Confirmar Todo",
+    confirmingLabel: "Confirmando...",
+    confirmationSuccessMessage: "Todos los elementos confirmados exitosamente",
+    confirmationErrorMessage: "Error al confirmar elementos",
+    removeAllLabel: "Eliminar Todo",
+    expandAllLabel: "Expandir Todo",
+    collapseAllLabel: "Colapsar Todo",
+  }
+}

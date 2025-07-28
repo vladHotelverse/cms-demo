@@ -1,6 +1,6 @@
 "use client"
 
-import { Star, Eye } from "lucide-react"
+import { Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -42,12 +42,6 @@ export function RoomUpgradeCard({
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h3 className="font-semibold text-lg">{upgrade.type}</h3>
-                <div className="flex items-center gap-1 mt-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm text-muted-foreground">
-                    {upgrade.rating}
-                  </span>
-                </div>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-green-600">
