@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import clsx from 'clsx'
-import { Icon } from '@/lib/iconify-fallback'
+import { Icon } from '@iconify/react'
 import type { CustomizationOption, RoomCustomizationTexts } from '../types'
 import { IconRenderer } from './IconRenderer'
 

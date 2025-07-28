@@ -1,4 +1,4 @@
-import { Icon } from '@/lib/iconify-fallback'
+import { Icon } from '@iconify/react'
 import clsx from 'clsx'
 import type React from 'react'
 import { useState } from 'react'

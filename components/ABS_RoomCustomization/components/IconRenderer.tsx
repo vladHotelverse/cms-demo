@@ -1,4 +1,4 @@
-import { Icon } from '@/lib/iconify-fallback'
+import { Icon } from '@iconify/react'
 import type React from 'react'
 
 const iconMap = {
