@@ -179,9 +179,13 @@ function transformSpecialOffersToABS(offers: SpecialOffer[], currentLanguage: st
     
     const offerName = getMultilingualValue(offer.name || {}, "Special Offer");
     const offerDescription = getMultilingualValue(offer.description || {}, "");
-    const offerPrice = Number(offer.price) || 0;
+    // Handle price which might come as string from Supabase DECIMAL field
+    // Check both base_price and price fields (ABS database uses base_price)
+    const rawPrice = (offer as any).base_price || offer.price;
+    const offerPrice = rawPrice !== null && rawPrice !== undefined 
+      ? (typeof rawPrice === 'string' ? parseFloat(rawPrice) : Number(rawPrice))
+      : 0;
     const offerImage = offer.image || "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop";
-    
     
     return {
       id: numericId,
@@ -359,7 +363,7 @@ export default function ReservationBlocksSection({
   }
 
   return (
-    <div className="flex flex-row gap-6 h-full pb-12">
+    <div className="grid grid-cols-3 gap-6 pb-12">
       {/* Room Selection Section - Card Layout */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[calc(100vh-350px)]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">

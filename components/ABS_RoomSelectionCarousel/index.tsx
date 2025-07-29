@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import type React from 'react';
 import { useMemo, useRef, useCallback } from 'react';
-import { Button } from '../ui/button';
 import { RoomCard } from './components';
 import { useCarouselState } from './hooks/useCarouselState';
 import type {
@@ -260,7 +259,7 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
 
   // Three or more rooms: Full carousel behavior with container queries
   return (
-    <div className={clsx('@container', className)}>
+    <div className={clsx('@container h-[calc(100%-74px)]', className)}>
       {/* Title and Subtitle */}
       {(title || subtitle) && (
         <div className="mb-6 text-center">
@@ -269,7 +268,7 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
         </div>
       )}
 
-      <div className="lg:col-span-2">
+      <div className="lg:col-span-2 relative h-full">
         {/* Slider Container with Visible Cards */}
         <div className="relative w-full overflow-visible h-full">
           {/* Main Carousel Area */}
@@ -362,73 +361,53 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
         </div>
 
         {/* Carousel Controls with counter */}
-        <div className="flex justify-center items-center gap-4 mt-4">
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex justify-center items-center gap-4 absolute bottom-5 left-0 right-0">
+          {/* Previous button */}
+          <button
+            type="button"
             onClick={actions.prevSlide}
+            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
             aria-label={resolvedTexts.previousRoom}
-            className="rounded-full"
           >
-            <svg
-              className="h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               <title>Previous</title>
-              <polyline points="15 18 9 12 15 6" />
             </svg>
-          </Button>
+          </button>
 
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2">
-              {roomOptions.map((room, index) => (
-                <Button
-                  key={`${room.id}-indicator`}
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => actions.setActiveIndex(index)}
-                  className={clsx('h-2 w-2 rounded-full p-0 min-w-0', {
-                    'bg-black hover:bg-black/80': state.activeIndex === index,
-                    'bg-neutral-300 hover:bg-neutral-400':
-                      state.activeIndex !== index,
-                  })}
-                  aria-label={resolvedTexts.goToRoom.replace(
-                    '{index}',
-                    (index + 1).toString(),
-                  )}
-                />
-              ))}
-            </div>
-            {/* <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm">
-              {state.activeIndex + 1}/{roomOptions.length}
-            </div> */}
+          {/* Dot indicators */}
+          <div className="flex gap-2">
+            {roomOptions.map((room, index) => (
+              <button
+                key={`room-${room.id}-indicator`}
+                type="button"
+                onClick={() => actions.setActiveIndex(index)}
+                className={clsx(
+                  'w-2 h-2 rounded-full transition-colors',
+                  state.activeIndex === index 
+                    ? 'bg-gray-800' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                )}
+                aria-label={resolvedTexts.goToRoom.replace(
+                  '{index}',
+                  (index + 1).toString(),
+                )}
+              />
+            ))}
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
+          {/* Next button */}
+          <button
+            type="button"
             onClick={actions.nextSlide}
+            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
             aria-label={resolvedTexts.nextRoom}
-            className="rounded-full"
           >
-            <svg
-              className="h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               <title>Next</title>
-              <polyline points="9 18 15 12 9 6" />
             </svg>
-          </Button>
+          </button>
         </div>
       </div>
     </div>

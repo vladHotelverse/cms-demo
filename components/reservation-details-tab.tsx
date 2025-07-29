@@ -22,14 +22,9 @@ import {
 import { useLanguage } from "@/contexts/language-context";
 
 // Import ABS components
-import BookingInfoBar from "@/components/ABS_BookingInfoBar";
 import EnhancedTableView from "@/components/enhanced-table-view";
 import ReservationBlocksSection from "@/components/reservation-blocks-section";
-import CompactReservationView from "@/components/compact-reservation-view";
-
-
-// Import ABS translations
-import { absTranslations } from "@/locales/abs-translations";
+import { RequestedItemsHeader } from "@/components/reservation-summary/requested-items-header";
 
 interface ReservationData {
 	id: string;
@@ -49,7 +44,6 @@ interface ReservationDetailsTabProps {
 	reservation: ReservationData;
 	onShowAlert: (type: "success" | "error", message: string) => void;
 	onCloseTab: () => void;
-	isInReservationMode: boolean;
 }
 
 
@@ -85,20 +79,13 @@ export default function ReservationDetailsTab({
 	reservation,
 	onShowAlert,
 	onCloseTab,
-	isInReservationMode,
 }: ReservationDetailsTabProps) {
 	const [selectedSegment, setSelectedSegment] = useState("loyalty2");
 	const [selectedAgent, setSelectedAgent] = useState("agent1");
 	const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks");
 	const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
 	const [selectedCommissionReason, setSelectedCommissionReason] = useState("");
-	const { t, currentLanguage } = useLanguage();
-
-	// Helper function to get ABS translations
-	const getABSTranslation = (key: string): string => {
-		const lang = currentLanguage === "es" ? "es" : "en";
-		return (absTranslations as any)[lang][key] || key;
-	};
+	const { t } = useLanguage();
 
 	// ABS component states
 	const [selectedRoom, setSelectedRoom] = useState<any>(null);
@@ -165,33 +152,18 @@ export default function ReservationDetailsTab({
 		<React.Fragment>
 			<div className="space-y-8">
 				{/* Booking Info Bar - ABS Component */}
-				<div className="max-w-7xl mx-auto">
-					<BookingInfoBar
-						className="!container !max-w-none !mx-0"
-						title={getABSTranslation("bookingInformation")}
-						showBanner={false}
-						items={[
-							{
-								icon: "Tag",
-								label: getABSTranslation("bookingReference"),
-								value: reservation.locator,
-							},
-							{
-								icon: "Calendar",
-								label: getABSTranslation("checkIn"),
-								value: reservation.checkIn,
-							},
-							{
-								icon: "Users",
-								label: getABSTranslation("nights"),
-								value: reservation.nights,
-							},
-							{
-								icon: "Home",
-								label: getABSTranslation("roomType"),
-								value: reservation.roomType,
-							},
-						]}
+				<div className="max-w-7xl mx-auto pt-6">
+					<RequestedItemsHeader 
+						reservation={{
+							locator: reservation.locator,
+							name: reservation.name,
+							checkIn: reservation.checkIn,
+							roomType: reservation.roomType
+						}}
+						title="Recommended Services"
+						nights={reservation.nights}
+						showZeroTotals={true}
+						showStatusBar={false}
 					/>
 				</div>
 

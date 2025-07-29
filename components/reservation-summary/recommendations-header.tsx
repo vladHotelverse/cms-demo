@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Star } from "lucide-react"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
+import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { Recommendation } from "@/data/recommendations"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
@@ -29,10 +30,15 @@ interface RecommendationsHeaderProps {
 
 export function RecommendationsHeader({ reservation, recommendations, onViewFullCatalog }: RecommendationsHeaderProps) {
   const { t } = useReservationTranslations()
+  const { acceptedRecommendations } = useReservationSummaryStore()
   const [selectedSegment, setSelectedSegment] = useState("loyalty2")
   
   // Use provided recommendations or fallback to empty array
   const items = recommendations || []
+  
+  // Calculate counts
+  const acceptedCount = acceptedRecommendations.length
+  const pendingCount = items.length - acceptedCount
   
   // Calculate total potential value and commission
   const totalValue = items.reduce((sum, item) => sum + item.totalPrice, 0)
@@ -42,71 +48,57 @@ export function RecommendationsHeader({ reservation, recommendations, onViewFull
     <div className="space-y-4">
       <h1 className="text-3xl font-bold tracking-tight">{t('recommendedServices')}</h1>
       
+      {/* Booking Information Bar - Similar to items preview but as part of recommendations */}
       <div className="flex items-start justify-between">
         <Card className="p-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('locator')}</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">BOOKING ID</span>
               <p className="text-sm font-semibold">{reservation.locator}</p>
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('guest')}</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">GUEST</span>
               <p className="text-sm font-semibold">{reservation.name}</p>
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('checkIn')}</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">CHECK-IN</span>
               <p className="text-sm font-semibold">{reservation.checkIn}</p>
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('roomType')}</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">ROOM</span>
               <p className="text-sm font-semibold">{reservation.roomType}</p>
             </div>
           </div>
         </Card>
         
-        <Card className="px-4 py-3">
-          <div className="text-center space-y-1">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('estimatedCommission')}</p>
-            <p className="text-xl font-bold text-emerald-600">€{totalCommission.toFixed(2)}</p>
-          </div>
-        </Card>
+        <div className="flex gap-4">
+          <Card className="px-4 py-3">
+            <div className="text-center space-y-1">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">EST. COMMISSION</p>
+              <p className="text-2xl font-bold text-emerald-600">€{totalCommission.toFixed(2)}</p>
+            </div>
+          </Card>
+        </div>
       </div>
       
-      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+      <div className="flex items-center gap-6 p-4 bg-muted/30 rounded-lg">
         <div className="flex items-center gap-2">
-          <Star className="h-4 w-4 text-amber-500" />
-          <span className="text-lg font-medium">
-            {items.length} {t('recommendations').toLowerCase()}
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-sm font-medium">
+            {acceptedCount} {t('confirmed')}
           </span>
-          {onViewFullCatalog && (
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="ml-2"
-              onClick={onViewFullCatalog}
-            >
-              {t('viewFullCatalog')}
-            </Button>
-          )}
         </div>
-        
-        {/* Segment Selector on the right */}
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-gray-600 whitespace-nowrap">
-            {t("currentLanguage") === "es" ? "Segmento:" : "Segment:"}
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-amber-500" />
+          <span className="text-sm font-medium">
+            {pendingCount} {t('pendingHotel')}
           </span>
-          <Select value={selectedSegment} onValueChange={setSelectedSegment}>
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {segments.map((segment) => (
-                <SelectItem key={segment.id} value={segment.id}>
-                  {segment.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <Star className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
+            {acceptedCount} {t('totalServices')}
+          </span>
         </div>
       </div>
     </div>

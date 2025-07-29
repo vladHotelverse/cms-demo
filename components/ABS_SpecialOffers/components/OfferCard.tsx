@@ -52,9 +52,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
   return (
     <Card
       data-testid="offer-card"
-      className={`overflow-hidden border transition-all h-full flex flex-col ${
-        isBooked ? 'border-green-300 bg-green-50/30' : 'border-neutral-100 hover:border-neutral-100'
-      }`}
+      className={`overflow-hidden transition-all h-full flex flex-col shadow-none rounded-none border-none`}
     >
       <div className="h-40 overflow-hidden relative">
         <OfferImage image={offer.image} title={offer.title} />
@@ -72,7 +70,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
         )}
       </div>
 
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 pl-3">
         <CardTitle className="text-lg font-bold flex items-center gap-2">
           {offer.title}
           {isBooked && <Star className="h-5 w-5 text-green-600" />}
@@ -124,7 +122,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
         )}
       </CardContent>
 
-      <CardFooter className="px-4 pb-4 space-y-2">
+      <CardFooter className="p-4 space-y-2">
         {/* Show validation messages only when user attempted to book */}
         {!isBooked && showValidation && (
           <>

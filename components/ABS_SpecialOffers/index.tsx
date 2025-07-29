@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import type React from 'react'
+import { useState } from 'react'
 
 import OfferCard from './components/OfferCard'
 import { useOfferBooking } from './hooks/useOfferBooking'
@@ -91,32 +92,120 @@ const SpecialOffers: React.FC<SpecialOffersProps> = ({
     reservationInfo,
   })
 
-  return (
-    <div id={id} className={clsx('transition-all duration-300 ease-in-out', className)}>
-      <div className={clsx(
-        'grid gap-6',
-        offers.length === 1 
-          ? 'grid-cols-1 max-w-md' 
-          : 'grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-6xl'
-      )}>
-        {offers.map((offer) => (
+  // Carousel state
+  const [currentIndex, setCurrentIndex] = useState(0)
+  
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? offers.length - 1 : prev - 1))
+  }
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === offers.length - 1 ? 0 : prev + 1))
+  }
+
+  // If only one offer, show it without navigation
+  if (offers.length === 1) {
+    return (
+      <div id={id} className={clsx('transition-all duration-300 ease-in-out', className)}>
+        <div className="max-w-md">
           <OfferCard
-            key={offer.id}
-            offer={offer}
-            selection={selections[offer.id]}
-            onUpdateQuantity={(change) => updateQuantity(offer.id, change)}
-            onUpdateSelectedDate={(date) => updateSelectedDate(offer.id, date)}
-            onUpdateSelectedDates={(dates) => updateSelectedDates(offer.id, dates)}
-            onBook={() => handleBookOrCancel(offer.id)}
+            key={offers[0].id}
+            offer={offers[0]}
+            selection={selections[offers[0].id]}
+            onUpdateQuantity={(change) => updateQuantity(offers[0].id, change)}
+            onUpdateSelectedDate={(date) => updateSelectedDate(offers[0].id, date)}
+            onUpdateSelectedDates={(dates) => updateSelectedDates(offers[0].id, dates)}
+            onBook={() => handleBookOrCancel(offers[0].id)}
             formatPrice={formatPrice}
             calculateTotal={calculateTotal}
             getUnitLabel={getUnitLabel}
             labels={labelTexts}
             reservationInfo={reservationInfo}
-            isBooked={bookedOffers.has(offer.id)}
-            showValidation={bookingAttempts.has(offer.id)}
+            isBooked={bookedOffers.has(offers[0].id)}
+            showValidation={bookingAttempts.has(offers[0].id)}
           />
-        ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div id={id} className={clsx('transition-all duration-300 ease-in-out relative h-[calc(100%-74px)]', className)}>
+      <div className="relative h-full">
+        {/* Main offer display */}
+        <div className="overflow-hidden">
+          <div 
+            className="flex transition-transform duration-300 ease-in-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {offers.map((offer) => (
+              <div key={offer.id} className="w-full flex-shrink-0">
+                <OfferCard
+                  offer={offer}
+                  selection={selections[offer.id]}
+                  onUpdateQuantity={(change) => updateQuantity(offer.id, change)}
+                  onUpdateSelectedDate={(date) => updateSelectedDate(offer.id, date)}
+                  onUpdateSelectedDates={(dates) => updateSelectedDates(offer.id, dates)}
+                  onBook={() => handleBookOrCancel(offer.id)}
+                  formatPrice={formatPrice}
+                  calculateTotal={calculateTotal}
+                  getUnitLabel={getUnitLabel}
+                  labels={labelTexts}
+                  reservationInfo={reservationInfo}
+                  isBooked={bookedOffers.has(offer.id)}
+                  showValidation={bookingAttempts.has(offer.id)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Navigation controls */}
+        <div className="flex justify-center items-center mt-4 gap-4 absolute bottom-5 left-0 right-0">
+          {/* Previous button */}
+          <button
+            type="button"
+            onClick={handlePrevious}
+            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
+            aria-label="Previous offer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <title>Previous</title>
+            </svg>
+          </button>
+
+          {/* Dot indicators */}
+          <div className="flex gap-2">
+            {offers.map((offer, index) => (
+              <button
+                key={`offer-${offer.id}-indicator`}
+                type="button"
+                onClick={() => setCurrentIndex(index)}
+                className={clsx(
+                  'w-2 h-2 rounded-full transition-colors',
+                  index === currentIndex 
+                    ? 'bg-gray-800' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                )}
+                aria-label={`Go to offer ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Next button */}
+          <button
+            type="button"
+            onClick={handleNext}
+            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
+            aria-label="Next offer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <title>Next</title>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   )
