@@ -26,6 +26,7 @@ interface ReservationBlocksSectionProps {
   ) => void;
   onOfferBook: (offerData: any) => void;
   onShowAlert: (type: "success" | "error", message: string) => void;
+  nights?: number;
 }
 
 // Transform functions to convert Supabase data to ABS component format
@@ -40,19 +41,18 @@ function transformRoomTypesToABS(roomTypes: RoomType[], currentLanguage: string 
       return fallback;
     };
 
-    // Extract values using proper multilingual support
-    const roomName = getMultilingualValue(room.name, "Room");
+    // Extract values using proper multilingual support  
+    const roomName = getMultilingualValue(room.title, "Unnamed Room");
     const roomDescription = getMultilingualValue(room.description, "Comfortable room with modern amenities");
     const roomPrice = Number(room.base_price) || 0;
     const roomAmenities = Array.isArray(room.amenities) ? room.amenities : [];
     const roomImages = room.images && room.images.length > 0 ? room.images : [room.main_image];
     
-    console.log(`Processing room: ${roomName}, price: ${roomPrice}, amenities:`, roomAmenities);
     
     return {
       id: String(room.id),
       title: roomName,
-      roomType: room.category,
+      roomType: room.room_type,
       description: roomDescription,
       amenities: roomAmenities,
       price: roomPrice,
@@ -60,13 +60,13 @@ function transformRoomTypesToABS(roomTypes: RoomType[], currentLanguage: string 
       images: roomImages,
       // Additional properties for backward compatibility
       name: roomName,
-      type: room.category,
+      type: room.room_type,
       features: roomAmenities,
       priceRange: `€${roomPrice} - €${Math.round(roomPrice * 1.3)}`,
       highlights: room.rating && room.rating > 4.5 ? ["Best Value"] : [],
       image: room.main_image,
       availability: "Instant Confirmation",
-      category: room.category,
+      category: room.room_type,
       rating: Number(room.rating) || 4.5,
       basePrice: roomPrice,
     };
@@ -85,12 +85,11 @@ function transformCustomizationOptionsToABS(options: CustomizationOption[], curr
     return fallback;
   };
   
-  console.log("Processing customization options for ABS_RoomCustomization:", options);
   
   options.forEach(option => {
     const category = option.category || "Other";
-    const optionName = getMultilingualValue(option.name, "Option");
-    const optionDescription = getMultilingualValue(option.description, `${optionName} upgrade`);
+    const optionName = getMultilingualValue(option.name || {}, "Option");
+    const optionDescription = getMultilingualValue(option.description || {}, `${optionName} upgrade`);
     const optionPrice = Number(option.price) || 0;
     const priceType = option.price_type || 'per_night';
     
@@ -119,12 +118,12 @@ function transformCustomizationOptionsToABS(options: CustomizationOption[], curr
     });
   });
 
-  console.log("Grouped customization options by category:", groupedOptions);
 
   // Create sections array with proper structure for ABS_RoomCustomization
   // IMPORTANT: section.key must match the keys in sectionOptions exactly!
   const sections = Object.keys(groupedOptions).map((category, index) => ({
     name: category,
+    title: category,  // Add required title property
     key: category, // ✅ Use category name directly to match sectionOptions keys
     id: `section-${category.toLowerCase().replace(/\s+/g, '-')}-${index}`,
     icon: groupedOptions[category].icon,
@@ -138,8 +137,6 @@ function transformCustomizationOptionsToABS(options: CustomizationOption[], curr
     sectionOptions[category] = groupedOptions[category].items; // ✅ Extract items array
   });
 
-  console.log("Final sections for ABS_RoomCustomization:", sections);
-  console.log("Final sectionOptions for ABS_RoomCustomization:", sectionOptions);
 
   return { sections, sectionOptions };
 }
@@ -180,12 +177,11 @@ function transformSpecialOffersToABS(offers: SpecialOffer[], currentLanguage: st
       numericId = 1000 + index;
     }
     
-    const offerName = getMultilingualValue(offer.name, "Special Offer");
-    const offerDescription = getMultilingualValue(offer.description, "");
+    const offerName = getMultilingualValue(offer.name || {}, "Special Offer");
+    const offerDescription = getMultilingualValue(offer.description || {}, "");
     const offerPrice = Number(offer.price) || 0;
     const offerImage = offer.image || "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop";
     
-    console.log(`Transforming offer "${offerName}" with ID ${numericId}, price: ${offerPrice}, image: ${offerImage}`);
     
     return {
       id: numericId,
@@ -222,6 +218,7 @@ export default function ReservationBlocksSection({
   onRoomCustomizationChange,
   onOfferBook,
   onShowAlert,
+  nights: propNights,
 }: ReservationBlocksSectionProps) {
   const { currentLanguage } = useLanguage();
   const { roomTypes, customizationOptions, specialOffers, loading, error } = useReservationContent(currentLanguage);
@@ -232,216 +229,18 @@ export default function ReservationBlocksSection({
     return (absTranslations as any)[lang][key] || key;
   };
 
-  // Provide fallback data if Supabase data is not available - matching ABS structure exactly
-  const safeRoomTypes = roomTypes && roomTypes.length > 0 ? roomTypes : [
-    {
-      id: "supreme-luxury-suite",
-      room_code: "supreme-luxury",
-      name: {
-        en: "Supreme luxury with divine views",
-        es: "Lujo supremo con vistas divinas"
-      },
-      description: {
-        en: "Our contemporary Hard Rock Ibiza Suites perfectly capture the authenticity and irreverence of rock 'n' roll with the sensuality and...",
-        es: "Nuestras suites contemporáneas Hard Rock Ibiza capturan perfectamente la autenticidad e irreverencia del rock and roll con la sensualidad y..."
-      },
-      base_price: 89,
-      main_image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop",
-      images: ["https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop", "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop"],
-      amenities: ["24 Hours Room Service", "Balcony", "Landmark View", "Coffee Machine", "King Size Bed"],
-      capacity: 2,
-      size_sqm: 60,
-      category: "ROCK SUITE",
-      rating: 4.8,
-      active: true,
-      sort_order: 1,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: "nostalgia-suite",
-      room_code: "80s-nostalgia",
-      name: {
-        en: "80s nostalgia unleashed",
-        es: "Nostalgia de los 80 desatada"
-      },
-      description: {
-        en: "60 square-meter space with bold colors, vibrant pop music, cassettes with 80s music and vintage decor...",
-        es: "Espacio de 60 metros cuadrados con colores vibrantes, música pop, casetes con música de los 80 y decoración vintage..."
-      },
-      base_price: 120,
-      main_image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
-      images: ["https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop"],
-      amenities: ["Coffee Machine", "King Size Bed", "80s Themed Decor", "Music System", "City View"],
-      capacity: 2,
-      size_sqm: 60,
-      category: "80S SUITE",
-      rating: 4.7,
-      active: true,
-      sort_order: 2,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  ];
+  // Use data directly from Supabase
+  const safeRoomTypes = roomTypes || [];
+  const safeCustomizationOptions = customizationOptions || [];
+  const safeSpecialOffers = specialOffers || [];
   
-  console.log("Raw customization options from database:", customizationOptions);
-  
-  const safeCustomizationOptions = customizationOptions && customizationOptions.length > 0 ? customizationOptions : [
-    {
-      id: "twin-beds",
-      option_code: "twin-beds",
-      category: "Beds",
-      name: {
-        en: "2 x Twin Beds",
-        es: "2 x Camas Individuales"
-      },
-      description: {
-        en: "Two separate single beds",
-        es: "Dos camas individuales separadas"
-      },
-      price: 0.00,
-      price_type: "per_night" as const,
-      icon: "bed-twin",
-      popular: false,
-      active: true,
-      sort_order: 1,
-      metadata: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: "king-bed",
-      option_code: "king-bed",
-      category: "Beds",
-      name: {
-        en: "King Size Bed",
-        es: "Cama King Size"
-      },
-      description: {
-        en: "One extra-large king-sized bed",
-        es: "Una cama king extra grande"
-      },
-      price: 5.00,
-      price_type: "per_night" as const,
-      icon: "bed-king",
-      popular: true,
-      active: true,
-      sort_order: 2,
-      metadata: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: "sofa-bed",
-      option_code: "sofa-bed",
-      category: "Beds",
-      name: {
-        en: "Sofa Bed - Single",
-        es: "Sofá Cama - Individual"
-      },
-      description: {
-        en: "Single sofa bed for additional sleeping space",
-        es: "Sofá cama individual para espacio de descanso adicional"
-      },
-      price: 2.00,
-      price_type: "per_night" as const,
-      icon: "sofa",
-      popular: false,
-      active: true,
-      sort_order: 3,
-      metadata: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  ];
-  
-  const safeSpecialOffers = specialOffers && specialOffers.length > 0 ? specialOffers : [
-    {
-      id: "all-inclusive-package",
-      offer_code: "all-inclusive",
-      name: {
-        en: "All inclusive package",
-        es: "Paquete todo incluido"
-      },
-      description: {
-        en: "Enjoy unlimited access to all amenities, meals and beverages.",
-        es: "Disfruta acceso ilimitado a todas las comodidades, comidas y bebidas."
-      },
-      image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
-      price: 50.00,
-      price_type: "per_person" as const,
-      requires_date_selection: false,
-      allows_multiple_dates: false,
-      max_quantity: 10,
-      popular: true,
-      active: true,
-      valid_from: undefined,
-      valid_until: undefined,
-      sort_order: 1,
-      metadata: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: "spa-access",
-      offer_code: "spa-access",
-      name: {
-        en: "Spa Access",
-        es: "Acceso al Spa"
-      },
-      description: {
-        en: "Enjoy a day of relaxation at our luxury spa - select your preferred date.",
-        es: "Disfruta de un día de relajación en nuestro spa de lujo - selecciona tu fecha preferida."
-      },
-      image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop",
-      price: 50.00,
-      price_type: "per_person" as const,
-      requires_date_selection: false,
-      allows_multiple_dates: false,
-      max_quantity: 10,
-      popular: false,
-      active: true,
-      valid_from: undefined,
-      valid_until: undefined,
-      sort_order: 2,
-      metadata: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: "airport-transfer",
-      offer_code: "airport-transfer",
-      name: {
-        en: "Airport Transfer",
-        es: "Traslado al Aeropuerto"
-      },
-      description: {
-        en: "Convenient transportation to and from the airport (uses reservation person count).",
-        es: "Transporte conveniente hacia y desde el aeropuerto (usa el conteo de personas de la reserva)."
-      },
-      image: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=300&fit=crop",
-      price: 35.00,
-      price_type: "per_person" as const,
-      requires_date_selection: false,
-      allows_multiple_dates: false,
-      max_quantity: 10,
-      popular: false,
-      active: true,
-      valid_from: undefined,
-      valid_until: undefined,
-      sort_order: 3,
-      metadata: {},
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  ];
+  // Get nights from props, default to 1
+  const nights = propNights || 1;
 
   // Transform data for ABS components
   const transformedRoomOptions = useMemo(
     () => {
       const transformed = transformRoomTypesToABS(safeRoomTypes, currentLanguage);
-      console.log("Original room types:", safeRoomTypes);
-      console.log("Transformed room options:", transformed);
       return transformed;
     },
     [safeRoomTypes, currentLanguage],
@@ -449,9 +248,7 @@ export default function ReservationBlocksSection({
 
   const { sections: customizationSections, sectionOptions } = useMemo(
     () => {
-      console.log("About to transform customization options:", safeCustomizationOptions);
       const result = transformCustomizationOptionsToABS(safeCustomizationOptions, currentLanguage);
-      console.log("Customization transformation result:", result);
       return result;
     },
     [safeCustomizationOptions, currentLanguage],
@@ -460,8 +257,6 @@ export default function ReservationBlocksSection({
   const transformedOffers = useMemo(
     () => {
       const transformed = transformSpecialOffersToABS(safeSpecialOffers, currentLanguage);
-      console.log("Original special offers:", safeSpecialOffers);
-      console.log("Transformed special offers:", transformed);
       
       // Check for duplicate IDs
       const ids = transformed.map(offer => offer.id);
@@ -490,13 +285,12 @@ export default function ReservationBlocksSection({
       
       // First, ensure we have valid transformed offers
       if (!transformedOffers || transformedOffers.length === 0) {
-        console.log("No transformed offers available yet");
         return {};
       }
       
       transformedOffers.forEach(offer => {
         // Validate offer ID
-        if (typeof offer.id !== 'number' || isNaN(offer.id)) {
+        if (typeof offer.id !== 'number' || Number.isNaN(offer.id)) {
           console.warn("Invalid offer ID:", offer.id, "for offer:", offer);
           return;
         }
@@ -513,8 +307,6 @@ export default function ReservationBlocksSection({
         };
       });
       
-      console.log("Initial offer selections created:", selections);
-      console.log("Transformed offers IDs:", transformedOffers.map(o => o.id));
       
       return selections;
     },
@@ -523,21 +315,44 @@ export default function ReservationBlocksSection({
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-6">
-        <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>
-        <div className="animate-pulse bg-gray-200 h-32 rounded-lg"></div>
-        <div className="animate-pulse bg-gray-200 h-48 rounded-lg"></div>
+      <div className="flex flex-row gap-6 h-full pb-12">
+        <div className="animate-pulse bg-gray-200 h-64 rounded-lg flex-1"></div>
+        <div className="animate-pulse bg-gray-200 h-32 rounded-lg flex-1"></div>
+        <div className="animate-pulse bg-gray-200 h-48 rounded-lg flex-1"></div>
       </div>
     );
   }
 
   if (error) {
-    console.error("Supabase error:", error);
+    console.error("Database error:", error);
     onShowAlert("error", "Failed to load content from database");
     return (
-      <div className="flex flex-col gap-6">
-        <div className="text-center py-8 text-red-600">
+      <div className="flex flex-row gap-6 h-full pb-12">
+        <div className="bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center text-red-600 flex-1">
           Error loading content. Please try again later.
+        </div>
+        <div className="bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center text-red-600 flex-1">
+          Error loading content. Please try again later.
+        </div>
+        <div className="bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center text-red-600 flex-1">
+          Error loading content. Please try again later.
+        </div>
+      </div>
+    );
+  }
+
+  // Check if we have no data from Supabase
+  if (!roomTypes || roomTypes.length === 0) {
+    return (
+      <div className="flex flex-row gap-6 h-full pb-12">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center text-gray-500 flex-1">
+          No room types available. Please add room types in the CMS.
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center text-gray-500 flex-1">
+          No customization options available.
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center text-gray-500 flex-1">
+          No special offers available.
         </div>
       </div>
     );
@@ -555,12 +370,12 @@ export default function ReservationBlocksSection({
             {getABSTranslation("selectRoomDescription") || "Choose from our selection of premium rooms and suites"}
           </p>
         </div>
-        <div className="p-4 h-full overflow-hidden">
+        <div className="p-0 h-full overflow-hidden">
           <ABS_RoomSelectionCarousel
               roomOptions={transformedRoomOptions}
               onRoomSelected={onRoomSelected}
               initialSelectedRoom={selectedRoom}
-              showPriceSlider={false}
+              nights={nights}
               translations={{
                 learnMoreText: getABSTranslation("learnMore") || "Learn More",
                 selectText: getABSTranslation("select") || "UPGRADE NOW",
@@ -568,23 +383,16 @@ export default function ReservationBlocksSection({
                 nightText: getABSTranslation("perNight") || "night",
                 currencySymbol: "€",
                 priceInfoText: getABSTranslation("priceInfo") || "Price includes all taxes and fees",
-                makeOfferText: getABSTranslation("makeOffer") || "Make Offer",
-                availabilityText: getABSTranslation("availabilityNotice") || "Instant Confirmation",
-                proposePriceText: getABSTranslation("proposePriceText") || "Propose your price:",
-                currencyText: "EUR",
                 upgradeNowText: getABSTranslation("upgradeNow") || "UPGRADE NOW",
                 removeText: getABSTranslation("remove") || "Remove",
-                offerMadeText: getABSTranslation("offerMadeText") || "Offer made: {price} EUR per night",
                 discountBadgeText: "-{percentage}%",
                 noRoomsAvailableText: getABSTranslation("noRoomsAvailable") || "No rooms available",
-                bidSubmittedText: getABSTranslation("bidSubmitted") || "Bid submitted",
-                updateBidText: getABSTranslation("updateBid") || "Update bid",
-                cancelBidText: getABSTranslation("cancel") || "Cancel",
+                instantConfirmationText: getABSTranslation("instantConfirmation") || "Instant Confirmation",
+                commissionText: getABSTranslation("commission") || "Commission",
+                totalAmountText: getABSTranslation("total") || "Total",
                 navigationLabels: {
                   previousRoom: getABSTranslation("previousRoom") || "Previous room",
                   nextRoom: getABSTranslation("nextRoom") || "Next room",
-                  previousRoomMobile: getABSTranslation("previousRoom") || "Previous room (mobile)",
-                  nextRoomMobile: getABSTranslation("nextRoom") || "Next room (mobile)",
                   goToRoom: getABSTranslation("goToRoom") || "Go to room {index}",
                   previousImage: getABSTranslation("previousImage") || "Previous image",
                   nextImage: getABSTranslation("nextImage") || "Next image",
@@ -607,8 +415,8 @@ export default function ReservationBlocksSection({
         </div>
         <div className="p-4 h-full overflow-hidden">
           <ABS_RoomCustomization
-              title=""
-              subtitle=""
+              title="Room Customization"
+              subtitle="Personalize your room for the perfect experience"
               sections={customizationSections}
               sectionOptions={sectionOptions}
               initialSelections={roomCustomizations}
@@ -646,7 +454,6 @@ export default function ReservationBlocksSection({
             {getABSTranslation("offersDescription") || "Enhance your stay with these exclusive offers"}
           </p>
         </div>
-        <div className="p-4 h-full overflow-hidden">
           {transformedOffers.length > 0 && 
            Object.keys(initialOfferSelections).length > 0 && 
            transformedOffers.every(offer => initialOfferSelections[offer.id] !== undefined) ? (
@@ -705,7 +512,6 @@ export default function ReservationBlocksSection({
               </div>
             </div>
           )}
-        </div>
       </div>
     </div>
   );

@@ -302,6 +302,7 @@ export default function ReservationDetailsTab({
 								bookedOffers={bookedOffers}
 								onRoomSelected={handleSelectRoom}
 								onRoomCustomizationChange={handleRoomCustomizationChange}
+								nights={parseInt(reservation.nights) || 1}
 								onOfferBook={handleOfferBook}
 								onShowAlert={onShowAlert}
 							/>

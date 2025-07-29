@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 export interface RoomType {
   id: string
   room_code: string
-  name: Record<string, string> // {"en": "Room Name", "es": "Nombre Habitación"}
+  title: Record<string, string> // {"en": "Room Name", "es": "Nombre Habitación"}
   description: Record<string, string>
   base_price: number
   main_image: string
@@ -13,7 +13,7 @@ export interface RoomType {
   amenities: string[] // ABS expects "amenities" not "features"
   capacity?: number
   size_sqm?: number
-  category: string
+  room_type: string
   rating?: number
   active: boolean
   sort_order: number
@@ -120,20 +120,15 @@ export function useRoomTypes(active: boolean = true) {
         setLoading(true)
         const supabase = createClient()
         
-        console.log('Fetching room types from database...')
-        
         const { data, error } = await supabase
           .from('room_types')
           .select('*')
           .eq('active', active)
           .order('base_price', { ascending: true })
 
-        console.log('Room types query result:', { data, error })
-
         if (error) throw error
 
         setRoomTypes(data || [])
-        console.log('Room types fetched successfully:', data?.length || 0, 'rooms')
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching room types:', err)
@@ -160,8 +155,6 @@ export function useCustomizationOptions(category?: string, active: boolean = tru
         setLoading(true)
         const supabase = createClient()
         
-        console.log('Fetching customization options from database...')
-        
         let query = supabase
           .from('customization_options')
           .select('*')
@@ -174,12 +167,9 @@ export function useCustomizationOptions(category?: string, active: boolean = tru
 
         const { data, error } = await query
 
-        console.log('Customization options query result:', { data, error })
-
         if (error) throw error
 
         setOptions(data || [])
-        console.log('Customization options fetched successfully:', data?.length || 0, 'options')
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching customization options:', err)
@@ -207,8 +197,6 @@ export function useSpecialOffers(active: boolean = true) {
         const supabase = createClient()
         const today = new Date().toISOString().split('T')[0]
         
-        console.log('Fetching special offers from database...')
-        
         const { data, error } = await supabase
           .from('special_offers')
           .select('*')
@@ -217,12 +205,9 @@ export function useSpecialOffers(active: boolean = true) {
           .or(`valid_until.is.null,valid_until.gte.${today}`)
           .order('sort_order', { ascending: true })
 
-        console.log('Special offers query result:', { data, error })
-
         if (error) throw error
 
         setOffers(data || [])
-        console.log('Special offers fetched successfully:', data?.length || 0, 'offers')
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching special offers:', err)

@@ -197,28 +197,56 @@ export default function FrontDeskUpsellPage() {
   })
 
   const handleExtrasButtonClick = (reservation: OrderFromAPI) => {
-    // Create a unique tab ID for the reservation details
-    const detailsTabId = `details_${reservation.id}`
+    // Check if this is an item preview (has reserved items) or recommendation button
+    const hasReservedItems = reservation.extras.includes(t("reserved"))
     
-    // Check if details tab is already open
-    const existingTab = openTabs.find(tab => tab.id === detailsTabId)
-    if (existingTab) {
-      setActiveTab(detailsTabId)
-      return
-    }
-
-    // Add the details tab
-    const newTab: OpenTab = {
-      id: detailsTabId,
-      reservation: {
-        ...reservation,
-        nights: reservation.nights,
-        extras: reservation.extras
+    if (hasReservedItems) {
+      // For items preview, open the summary modal
+      const summaryTabId = `summary_${reservation.id}`
+      
+      // Check if summary tab is already open
+      const existingTab = openTabs.find(tab => tab.id === summaryTabId)
+      if (existingTab) {
+        setActiveTab(summaryTabId)
+        return
       }
+
+      // Add the summary tab
+      const newTab: OpenTab = {
+        id: summaryTabId,
+        reservation: {
+          ...reservation,
+          nights: reservation.nights,
+          extras: reservation.extras
+        }
+      }
+      setOpenTabs([...openTabs, newTab])
+      setActiveTab(summaryTabId)
+      // Don't enable reservation mode for summary view
+    } else {
+      // For recommendations, open the new details UI
+      const detailsTabId = `details_${reservation.id}`
+      
+      // Check if details tab is already open
+      const existingTab = openTabs.find(tab => tab.id === detailsTabId)
+      if (existingTab) {
+        setActiveTab(detailsTabId)
+        return
+      }
+
+      // Add the details tab
+      const newTab: OpenTab = {
+        id: detailsTabId,
+        reservation: {
+          ...reservation,
+          nights: reservation.nights,
+          extras: reservation.extras
+        }
+      }
+      setOpenTabs([...openTabs, newTab])
+      setActiveTab(detailsTabId)
+      setIsInReservationMode(true) // Enable reservation mode when opening details tab
     }
-    setOpenTabs([...openTabs, newTab])
-    setActiveTab(detailsTabId)
-    setIsInReservationMode(true) // Enable reservation mode when opening details tab
   }
 
 
