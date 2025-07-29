@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import clsx from 'clsx'
-import { Icon } from '@/lib/iconify-fallback'
+import { Icon } from '@iconify/react'
 import type { CustomizationOption, RoomCustomizationTexts } from '../types'
 import { IconRenderer } from './IconRenderer'
 
@@ -39,7 +39,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
 
   const cardContent = (
     <div className={clsx(
-      'flex-none sm:w-auto h-full bg-white border border-neutral-300 rounded-lg overflow-hidden snap-center transition-all duration-200 relative',
+      'flex-none sm:w-auto bg-white border border-neutral-300 rounded-lg overflow-hidden snap-center transition-all duration-200 relative',
       {
         'opacity-50 cursor-not-allowed': isDisabled,
         'hover:shadow-md': !isDisabled,
@@ -52,7 +52,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
           Selected
         </div>
       )}
-      <div className="p-4 flex flex-col h-full">
+      <div className="p-4 flex flex-col">
         <div className="flex flex-col mb-1">
           <div className="flex gap-2.5 items-center w-20">
             <div className={clsx(

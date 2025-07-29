@@ -51,10 +51,61 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
     [reservationContext, reservation.extras]
   )
 
-  // Initialize store with dynamic data on mount
+  // Convert Supabase orderItems to the format expected by the store
+  const supabaseRequestedItems = useMemo(() => {
+    const reservationWithItems = reservation as any
+    console.log('🔍 Reservation data in modal:', {
+      name: reservationWithItems.name,
+      extras: reservationWithItems.extras,
+      hasOrderItems: !!reservationWithItems.orderItems,
+      orderItemsCount: reservationWithItems.orderItems?.length || 0,
+      orderItems: reservationWithItems.orderItems
+    })
+    
+    if (!reservationWithItems.orderItems || reservationWithItems.orderItems.length === 0) {
+      console.log('⚠️ No order items found, using dynamic recommendations')
+      return dynamicReservationItems
+    }
+
+    // Convert actual order items from Supabase to RequestedItemsData format
+    const nights = parseInt(reservation.nights) || 1
+    const extras = reservationWithItems.orderItems.map((item: any) => {
+      const basePrice = item.price * (item.quantity || 1)
+      
+      // Format price based on item type and context
+      let priceDisplay = basePrice
+      let description = item.description
+      
+      // For items that are typically per-night, show per-night pricing
+      if (item.type === 'customization' && nights > 1) {
+        const perNightPrice = basePrice / nights
+        description += ` (${perNightPrice.toFixed(2)}€ per night × ${nights} nights)`
+      } else if (item.quantity > 1) {
+        const unitPrice = item.price
+        description += ` (${unitPrice}€ × ${item.quantity} units)`
+      }
+      
+      return {
+        id: item.id,
+        name: item.name,
+        description: description,
+        price: priceDisplay,
+        status: 'confirmed' as const,
+        includesHotels: true
+      }
+    })
+
+    return {
+      extras,
+      upsell: [],
+      atributos: []
+    }
+  }, [reservation, dynamicReservationItems])
+
+  // Initialize store with actual Supabase data on mount
   useEffect(() => {
-    useReservationSummaryStore.setState({ requestedItems: dynamicReservationItems })
-  }, [reservation.id, dynamicReservationItems])
+    useReservationSummaryStore.setState({ requestedItems: supabaseRequestedItems })
+  }, [reservation.id, supabaseRequestedItems])
 
   // Route to appropriate view component
   if (hasItems) {

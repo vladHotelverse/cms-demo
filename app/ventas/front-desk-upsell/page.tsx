@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState, useMemo } from "react"
-import { ChevronUp, ChevronDown } from "lucide-react"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { ChevronUp, ChevronDown, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -18,33 +18,36 @@ import { cn } from "@/lib/utils/index"
 import { useReservationStore } from "@/store/use-reservation-store"
 import type { Reservation } from "@/types/reservation"
 import { DataStateWrapper } from "@/components/ui/data-state-wrapper"
+import { subscribeToOrders, unsubscribeAll } from "@/lib/supabase/realtime"
+import type { OrderUpdate } from "@/lib/supabase/realtime"
 
-import { rawReservations } from "./reservation-data"
 
-// Helper function to calculate number of nights
-const calculateNights = (stayDuration: number, t: (key: string) => string) => {
-  return `${stayDuration} ${stayDuration === 1 ? t("night") : t("nights")}`
-}
-
-// Helper function to get extras status with total amounts
-const getExtrasStatus = (hasItems: boolean, t: (key: string) => string, itemCount?: number) => {
-  if (hasItems && itemCount) {
-    const totalAmount = itemCount * 15 // Example price per item
-    return `${itemCount} ${t("reserved")} (${totalAmount}€)`
-  }
-  return t("recommendation")
-}
 
 
 type SortField = "locator" | "name" | "checkIn" | "nights" | "roomType" | "extras"
 type SortDirection = "asc" | "desc"
 
+interface OrderFromAPI {
+  id: string
+  locator: string
+  name: string
+  email: string
+  checkIn: string
+  nights: string
+  roomType: string
+  aci: string
+  status: string
+  extras: string
+  extrasCount: number
+  hasExtras: boolean
+  hasHotelverseRequest: boolean
+  orderItems: any[]
+  proposals: any[]
+}
+
 interface OpenTab {
   id: string
-  reservation: Omit<(typeof rawReservations)[0], 'nights' | 'extrasCount' | 'hasExtras'> & {
-    nights: string
-    extras: string
-  }
+  reservation: OrderFromAPI
 }
 
 export default function FrontDeskUpsellPage() {
@@ -56,21 +59,107 @@ export default function FrontDeskUpsellPage() {
   const [openTabs, setOpenTabs] = useState<OpenTab[]>([])
   const { t } = useLanguage()
   const [isInReservationMode, setIsInReservationMode] = useState(false)
+  const [orders, setOrders] = useState<OrderFromAPI[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Generate reservations with proper translation handling
-  const reservations = useMemo(() => 
-    rawReservations.map(res => {
-      const { nights: nightsCount, extrasCount, hasExtras, ...restRes } = res
-      return {
-        ...restRes,
-        nights: calculateNights(nightsCount, t),
-        extras: hasExtras 
-          ? getExtrasStatus(true, t, extrasCount)
-          : getExtrasStatus(false, t)
+  // Alert function (moved up to avoid initialization issues)
+  const showAlert = (type: "success" | "error", message: string) => {
+    setAlert({ type, message })
+    setTimeout(() => setAlert(null), 4000)
+  }
+
+  // Handle real-time order updates
+  const handleOrderUpdate = useCallback((update: OrderUpdate) => {
+    console.log('Received order update:', update)
+    
+    switch (update.type) {
+      case 'INSERT':
+        // Add new order to the list
+        setOrders(prevOrders => {
+          // Format date to DD/MM/YYYY
+          const checkInDate = new Date(update.order.check_in)
+          const formattedCheckIn = `${checkInDate.getDate().toString().padStart(2, '0')}/${(checkInDate.getMonth() + 1).toString().padStart(2, '0')}/${checkInDate.getFullYear()}`
+          
+          const newOrder = {
+            id: update.order.id,
+            locator: update.order.reservation_code || `loc-${update.order.id.slice(0, 8)}`,
+            name: update.order.user_name || 'Guest',
+            email: update.order.user_email,
+            checkIn: formattedCheckIn,
+            nights: update.order.check_out ? 
+              Math.ceil((new Date(update.order.check_out).getTime() - new Date(update.order.check_in).getTime()) / (1000 * 60 * 60 * 24)).toString() : 
+              '3',
+            roomType: update.order.room_type,
+            aci: update.order.occupancy || '2/0/0',
+            status: 'New',
+            extras: update.order.total_price?.toString() || '0',
+            extrasCount: update.order.order_items?.length || 0,
+            hasExtras: (update.order.order_items?.length || 0) > 0,
+            hasHotelverseRequest: true,
+            orderItems: update.order.order_items || [],
+            proposals: update.order.hotel_proposals || []
+          }
+          
+          // Show notification using setTimeout to avoid dependency issues
+          setTimeout(() => {
+            setAlert({ type: 'success', message: `New order from ${newOrder.name}!` })
+            setTimeout(() => setAlert(null), 4000)
+          }, 0)
+          
+          return [newOrder, ...prevOrders]
+        })
+        break
+        
+      case 'UPDATE':
+        // Update existing order
+        setOrders(prevOrders => 
+          prevOrders.map(order => 
+            order.id === update.order.id 
+              ? { ...order, status: update.order.status === 'confirmed' ? 'New' : update.order.status }
+              : order
+          )
+        )
+        break
+        
+      case 'DELETE':
+        // Remove order from list
+        setOrders(prevOrders => prevOrders.filter(order => order.id !== update.id))
+        break
+    }
+  }, [])
+
+  // Fetch orders from Supabase API and set up real-time subscriptions
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/orders?status=confirmed')
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders')
+        }
+        const data = await response.json()
+        setOrders(data)
+      } catch (error) {
+        console.error('Error fetching orders:', error)
+        showAlert('error', 'Failed to load orders. Please refresh the page.')
+      } finally {
+        setLoading(false)
       }
-    }),
-    [t]
-  )
+    }
+
+    fetchOrders()
+    
+    // Set up real-time subscription
+    subscribeToOrders(handleOrderUpdate)
+    
+    // Cleanup on unmount
+    return () => {
+      unsubscribeAll()
+    }
+  }, [handleOrderUpdate])
+
+  // Use the orders from Supabase
+  const reservations = orders
 
   // Calculate total commission from reservations with extras
   const totalCommission = reservations
@@ -107,33 +196,57 @@ export default function FrontDeskUpsellPage() {
     }
   })
 
-  const showAlert = (type: "success" | "error", message: string) => {
-    setAlert({ type, message })
-    setTimeout(() => setAlert(null), 4000)
-  }
-
-  const handleExtrasButtonClick = (reservation: Reservation) => {
-    // Create a unique tab ID for the reservation summary
-    const summaryTabId = `summary_${reservation.id}`
+  const handleExtrasButtonClick = (reservation: OrderFromAPI) => {
+    // Check if this is an item preview (has reserved items) or recommendation button
+    const hasReservedItems = reservation.extras.includes(t("reserved"))
     
-    // Check if summary tab is already open
-    const existingTab = openTabs.find(tab => tab.id === summaryTabId)
-    if (existingTab) {
-      setActiveTab(summaryTabId)
-      return
-    }
-
-    // Add the summary tab
-    const newTab: OpenTab = {
-      id: summaryTabId,
-      reservation: {
-        ...reservation,
-        nights: reservation.nights,
-        extras: reservation.extras
+    if (hasReservedItems) {
+      // For items preview, open the summary modal
+      const summaryTabId = `summary_${reservation.id}`
+      
+      // Check if summary tab is already open
+      const existingTab = openTabs.find(tab => tab.id === summaryTabId)
+      if (existingTab) {
+        setActiveTab(summaryTabId)
+        return
       }
+
+      // Add the summary tab
+      const newTab: OpenTab = {
+        id: summaryTabId,
+        reservation: {
+          ...reservation,
+          nights: reservation.nights,
+          extras: reservation.extras
+        }
+      }
+      setOpenTabs([...openTabs, newTab])
+      setActiveTab(summaryTabId)
+      // Don't enable reservation mode for summary view
+    } else {
+      // For recommendations, open the new details UI
+      const detailsTabId = `details_${reservation.id}`
+      
+      // Check if details tab is already open
+      const existingTab = openTabs.find(tab => tab.id === detailsTabId)
+      if (existingTab) {
+        setActiveTab(detailsTabId)
+        return
+      }
+
+      // Add the details tab
+      const newTab: OpenTab = {
+        id: detailsTabId,
+        reservation: {
+          ...reservation,
+          nights: reservation.nights,
+          extras: reservation.extras
+        }
+      }
+      setOpenTabs([...openTabs, newTab])
+      setActiveTab(detailsTabId)
+      setIsInReservationMode(true) // Enable reservation mode when opening details tab
     }
-    setOpenTabs([...openTabs, newTab])
-    setActiveTab(summaryTabId)
   }
 
 
@@ -251,42 +364,48 @@ export default function FrontDeskUpsellPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedReservations.map((reservation) => (
-                    <TableRow
-                      key={reservation.id}
-                      className="hover:bg-gray-50"
-                    >
-                      <TableCell className="font-mono text-sm">{reservation.locator}</TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{reservation.name}</span>
-                          </div>
-                          <div className="text-sm text-gray-500">{reservation.email}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-sm">{reservation.aci}</TableCell>
-                      <TableCell className="text-sm font-medium">{reservation.roomType}</TableCell>
-                      <TableCell className="text-sm">{reservation.checkIn}</TableCell>
-                      <TableCell className="text-sm">{reservation.nights}</TableCell>
-                      <TableCell className="text-sm">
-                        <Button
-                          variant={reservation.extras.includes(t("reserved")) ? "ghost" : "default"}
-                          size="sm"
-                          onClick={() => handleExtrasButtonClick(reservation)}
-                        >
-                          {reservation.extras}
-                        </Button>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                        Loading orders...
                       </TableCell>
                     </TableRow>
-                  ))}
-
-                  {sortedReservations.length === 0 && (
+                  ) : sortedReservations.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                         {t("noReservationsFound")}
                       </TableCell>
                     </TableRow>
+                  ) : (
+                    sortedReservations.map((reservation) => (
+                      <TableRow
+                        key={reservation.id}
+                        className="hover:bg-gray-50"
+                      >
+                        <TableCell className="font-mono text-sm">{reservation.locator}</TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{reservation.name}</span>
+                            </div>
+                            <div className="text-sm text-gray-500">{reservation.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm">{reservation.aci}</TableCell>
+                        <TableCell className="text-sm font-medium">{reservation.roomType}</TableCell>
+                        <TableCell className="text-sm">{reservation.checkIn}</TableCell>
+                        <TableCell className="text-sm">{reservation.nights}</TableCell>
+                        <TableCell className="text-sm">
+                          <Button
+                            variant={reservation.extras.includes(t("reserved")) ? "ghost" : "default"}
+                            size="sm"
+                            onClick={() => handleExtrasButtonClick(reservation)}
+                          >
+                            {reservation.extras}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
                   )}
                 </TableBody>
               </Table>
@@ -314,7 +433,7 @@ export default function FrontDeskUpsellPage() {
 
         {/* Dynamic reservation tabs content */}
         {openTabs
-          .filter(tab => !tab.id.startsWith('summary_'))
+          .filter(tab => tab.id.startsWith('details_'))
           .map((tab) => (
             <TabsContent key={tab.id} value={tab.id} className="mt-0">
               <ReservationDetailsTab
@@ -326,7 +445,7 @@ export default function FrontDeskUpsellPage() {
             </TabsContent>
           ))}
 
-        {/* Render Summary Tabs */}
+        {/* Render Summary Tabs (if any still exist) */}
         {openTabs
           .filter(tab => tab.id.startsWith('summary_'))
           .map(tab => (

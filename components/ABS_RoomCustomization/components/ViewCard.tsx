@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Icon } from '@/lib/iconify-fallback'
+import { Icon } from '@iconify/react'
 import { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'

@@ -1,10 +1,16 @@
-import clsx from 'clsx'
-import type React from 'react'
-import { useMemo } from 'react'
-import { CarouselNavigation, RoomCard } from './components'
-import { useCarouselState } from './hooks/useCarouselState'
-import type { RoomSelectionCarouselProps, RoomSelectionCarouselTranslations } from './types'
-import { getDynamicAmenitiesForAllRooms, getCurrentRoomAmenities } from './utils/amenitiesSelector'
+import clsx from 'clsx';
+import type React from 'react';
+import { useMemo, useRef, useCallback } from 'react';
+import { RoomCard } from './components';
+import { useCarouselState } from './hooks/useCarouselState';
+import type {
+  RoomSelectionCarouselProps,
+  RoomSelectionCarouselTranslations,
+} from './types';
+import {
+  getCurrentRoomAmenities,
+  getDynamicAmenitiesForAllRooms,
+} from './utils/amenitiesSelector';
 
 const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
   className,
@@ -13,117 +19,200 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
   roomOptions,
   initialSelectedRoom = null,
   onRoomSelected,
-  onMakeOffer,
-  onLearnMore,
-  onCancelBid,
-  minPrice = 10,
-  showPriceSlider = true,
-  variant = 'basic',
   translations,
   currentRoomType = 'DELUXE SILVER',
   currentRoomAmenities,
   mode = 'selection',
   readonly = false,
-  // Deprecated individual props - keeping for backward compatibility
-  learnMoreText,
+  nights = 1,
+  // Text props
   nightText,
   priceInfoText,
-  makeOfferText,
-  availabilityText,
   selectedText,
   selectText,
-  proposePriceText,
-  currencyText,
   currencySymbol,
-  offerMadeText,
   discountBadgeText,
-  bidSubmittedText,
-  updateBidText,
-  cancelBidText,
   upgradeNowText,
   removeText,
-  activeBid,
 }) => {
   // Helper function to resolve text values (new translations object takes precedence)
   const getTranslation = (
     key: keyof Omit<RoomSelectionCarouselTranslations, 'navigationLabels'>,
     fallbackValue?: string,
-    defaultValue = ''
+    defaultValue = '',
   ): string => {
     if (translations?.[key]) {
-      return translations[key] as string
+      return translations[key] as string;
     }
-    return fallbackValue || defaultValue
-  }
+    return fallbackValue || defaultValue;
+  };
 
   // Helper function to get navigation labels
   const getNavigationLabel = (
     key: keyof RoomSelectionCarouselTranslations['navigationLabels'],
     fallbackValue?: string,
-    defaultValue = ''
+    defaultValue = '',
   ): string => {
     if (translations?.navigationLabels?.[key]) {
-      return translations.navigationLabels[key]
+      return translations.navigationLabels[key];
     }
-    return fallbackValue || defaultValue
-  }
+    return fallbackValue || defaultValue;
+  };
 
   // Resolve all text values with backward compatibility
   const resolvedTexts = {
-    learnMoreText: getTranslation('learnMoreText', learnMoreText, 'Descubre más detalles'),
     nightText: getTranslation('nightText', nightText, '/noche'),
-    priceInfoText: getTranslation('priceInfoText', priceInfoText, 'Información sobre tarifas e impuestos.'),
-    makeOfferText: getTranslation('makeOfferText', makeOfferText, 'Hacer oferta'),
-    availabilityText: getTranslation('availabilityText', availabilityText, 'Sujeto a disponibilidad'),
+    priceInfoText: getTranslation(
+      'priceInfoText',
+      priceInfoText,
+      'Información sobre tarifas e impuestos.',
+    ),
     selectedText: getTranslation('selectedText', selectedText, 'SELECCIONADO'),
     selectText: getTranslation('selectText', selectText, 'SELECCIONAR'),
-    proposePriceText: getTranslation('proposePriceText', proposePriceText, 'Propon tu precio:'),
-    currencyText: getTranslation('currencyText', currencyText, 'EUR'),
     currencySymbol: getTranslation('currencySymbol', currencySymbol, '€'),
-    upgradeNowText: getTranslation('upgradeNowText', upgradeNowText, 'Upgrade now'),
+    upgradeNowText: getTranslation(
+      'upgradeNowText',
+      upgradeNowText,
+      'Upgrade now',
+    ),
     removeText: getTranslation('removeText', removeText, 'Remove'),
-    offerMadeText: getTranslation('offerMadeText', offerMadeText, 'Has propuesto {price} EUR por noche'),
-    discountBadgeText: getTranslation('discountBadgeText', discountBadgeText, '-{percentage}%'),
-    noRoomsAvailableText: getTranslation('noRoomsAvailableText', undefined, 'No hay habitaciones disponibles.'),
-    bidSubmittedText: getTranslation('bidSubmittedText', bidSubmittedText, 'Bid submitted'),
-    updateBidText: getTranslation('updateBidText', updateBidText, 'Update bid'),
-    cancelBidText: getTranslation('cancelBidText', cancelBidText, 'Cancel'),
+    discountBadgeText: getTranslation(
+      'discountBadgeText',
+      discountBadgeText,
+      '-{percentage}%',
+    ),
+    noRoomsAvailableText: getTranslation(
+      'noRoomsAvailableText',
+      undefined,
+      'No hay habitaciones disponibles.',
+    ),
+    instantConfirmationText: getTranslation(
+      'instantConfirmationText',
+      undefined,
+      'Instant Confirmation',
+    ),
+    commissionText: getTranslation('commissionText', undefined, 'Commission'),
+    totalAmountText: getTranslation('totalAmountText', undefined, 'Total'),
     // Navigation labels
-    previousRoom: getNavigationLabel('previousRoom', undefined, 'Previous room'),
+    previousRoom: getNavigationLabel(
+      'previousRoom',
+      undefined,
+      'Previous room',
+    ),
     nextRoom: getNavigationLabel('nextRoom', undefined, 'Next room'),
-    previousRoomMobile: getNavigationLabel('previousRoomMobile', undefined, 'Previous room (mobile)'),
-    nextRoomMobile: getNavigationLabel('nextRoomMobile', undefined, 'Next room (mobile)'),
     goToRoom: getNavigationLabel('goToRoom', undefined, 'Go to room {index}'),
-    previousImage: getNavigationLabel('previousImage', undefined, 'Previous image'),
+    previousImage: getNavigationLabel(
+      'previousImage',
+      undefined,
+      'Previous image',
+    ),
     nextImage: getNavigationLabel('nextImage', undefined, 'Next image'),
     viewImage: getNavigationLabel('viewImage', undefined, 'View image {index}'),
-  }
+  };
 
   // Generate dynamic amenities for all rooms
   const dynamicAmenitiesMap = useMemo(() => {
-    const userCurrentAmenities = currentRoomAmenities || getCurrentRoomAmenities(currentRoomType, roomOptions)
-    return getDynamicAmenitiesForAllRooms(roomOptions, currentRoomType, userCurrentAmenities)
-  }, [roomOptions, currentRoomType, currentRoomAmenities])
+    const userCurrentAmenities =
+      currentRoomAmenities ||
+      getCurrentRoomAmenities(currentRoomType, roomOptions);
+    return getDynamicAmenitiesForAllRooms(
+      roomOptions,
+      currentRoomType,
+      userCurrentAmenities,
+    );
+  }, [roomOptions, currentRoomType, currentRoomAmenities]);
 
-  // Use separated carousel state management (without slider logic)
+  // Use carousel state management
   const { state, actions } = useCarouselState({
     roomOptions,
     initialSelectedRoom,
     onRoomSelected,
-  })
+  });
 
-  // Determine if slider should be shown (disabled in consultation mode)
-  const shouldShowSlider = (showPriceSlider || variant === 'with-slider') && mode === 'selection' && !readonly
+  // Drag functionality for carousel navigation
+  const dragRef = useRef<HTMLDivElement>(null);
+  const dragStartX = useRef(0);
+  const isDragging = useRef(false);
+
+  const handleDragStart = useCallback((clientX: number) => {
+    isDragging.current = true;
+    dragStartX.current = clientX;
+  }, []);
+
+  const handleDragEnd = useCallback(
+    (clientX: number) => {
+      if (!isDragging.current) return;
+
+      const dragDistance = clientX - dragStartX.current;
+      const threshold = 50; // Minimum drag distance to trigger navigation
+
+      if (Math.abs(dragDistance) > threshold) {
+        if (dragDistance > 0) {
+          // Dragged right - go to previous
+          actions.prevSlide();
+        } else {
+          // Dragged left - go to next
+          actions.nextSlide();
+        }
+      }
+
+      isDragging.current = false;
+    },
+    [actions],
+  );
+
+  // Mouse events
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      handleDragStart(e.clientX);
+    },
+    [handleDragStart],
+  );
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+  }, []);
+
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      handleDragEnd(e.clientX);
+    },
+    [handleDragEnd],
+  );
+
+  // Touch events
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      handleDragStart(e.touches[0].clientX);
+    },
+    [handleDragStart],
+  );
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    // Prevent scrolling while dragging
+    e.preventDefault();
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (e.changedTouches.length > 0) {
+        handleDragEnd(e.changedTouches[0].clientX);
+      }
+    },
+    [handleDragEnd],
+  );
 
   if (roomOptions.length === 0) {
     return (
       <div className={clsx('text-center py-8', className)}>
         <p className="text-neutral-500">{resolvedTexts.noRoomsAvailableText}</p>
       </div>
-    )
+    );
   }
 
-  // Handle different room counts with different layouts
   if (roomOptions.length === 1) {
     // Single room: No carousel, just display the room card
     return (
@@ -141,214 +230,36 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
             room={roomOptions[0]}
             discountBadgeText={resolvedTexts.discountBadgeText}
             nightText={resolvedTexts.nightText}
-            learnMoreText={resolvedTexts.learnMoreText}
             priceInfoText={resolvedTexts.priceInfoText}
             selectedText={resolvedTexts.selectedText}
-            selectText={resolvedTexts.upgradeNowText || resolvedTexts.selectText}
+            selectText={
+              resolvedTexts.upgradeNowText || resolvedTexts.selectText
+            }
             removeText={resolvedTexts.removeText}
             selectedRoom={state.selectedRoom}
-            onSelectRoom={readonly || mode === 'consultation' ? () => {} : actions.selectRoom}
+            onSelectRoom={
+              readonly || mode === 'consultation'
+                ? () => {}
+                : actions.selectRoom
+            }
             activeImageIndex={state.activeImageIndices[0] || 0}
-            onImageChange={(newImageIndex: number) => actions.setActiveImageIndex(0, newImageIndex)}
+            onImageChange={(newImageIndex: number) =>
+              actions.setActiveImageIndex(0, newImageIndex)
+            }
             currencySymbol={resolvedTexts.currencySymbol}
-            onLearnMore={onLearnMore}
-            activeBid={activeBid}
-            bidSubmittedText={resolvedTexts.bidSubmittedText}
             previousImageLabel={resolvedTexts.previousImage}
             nextImageLabel={resolvedTexts.nextImage}
             viewImageLabel={resolvedTexts.viewImage}
-            isActive={state.activeIndex === 0}
-            showPriceSlider={shouldShowSlider}
-            minPrice={minPrice}
-            onMakeOffer={onMakeOffer}
-            onCancelBid={onCancelBid}
-            proposePriceText={resolvedTexts.proposePriceText}
-            makeOfferText={resolvedTexts.makeOfferText}
-            availabilityText={resolvedTexts.availabilityText}
-            currencyText={resolvedTexts.currencyText}
-            offerMadeText={resolvedTexts.offerMadeText}
-            updateBidText={resolvedTexts.updateBidText}
-            cancelBidText={resolvedTexts.cancelBidText}
             dynamicAmenities={dynamicAmenitiesMap.get(roomOptions[0].id)}
           />
         </div>
       </div>
-    )
+    );
   }
 
-  if (roomOptions.length === 2) {
-    // Two rooms: Show side by side on large screens, carousel on mobile
-    return (
-      <div className={clsx(className)}>
-        {/* Title and Subtitle */}
-        {(title || subtitle) && (
-          <div className="mb-6 text-center">
-            {title && <h2 className="text-2xl font-bold mb-2">{title}</h2>}
-            {subtitle && <p className="text-neutral-600">{subtitle}</p>}
-          </div>
-        )}
-
-        {/* Desktop: Side by side layout */}
-        <div className="hidden lg:grid lg:grid-cols-2 gap-6">
-          {roomOptions.map((room, index) => (
-            <div key={room.id}>
-              <RoomCard
-                room={room}
-                discountBadgeText={resolvedTexts.discountBadgeText}
-                nightText={resolvedTexts.nightText}
-                learnMoreText={resolvedTexts.learnMoreText}
-                priceInfoText={resolvedTexts.priceInfoText}
-                selectedText={resolvedTexts.selectedText}
-                selectText={resolvedTexts.upgradeNowText || resolvedTexts.selectText}
-                removeText={resolvedTexts.removeText}
-                selectedRoom={state.selectedRoom}
-                onSelectRoom={readonly || mode === 'consultation' ? () => {} : actions.selectRoom}
-                activeImageIndex={state.activeImageIndices[index] || 0}
-                onImageChange={(newImageIndex: number) => actions.setActiveImageIndex(index, newImageIndex)}
-                currencySymbol={resolvedTexts.currencySymbol}
-                onLearnMore={onLearnMore}
-                activeBid={activeBid}
-                bidSubmittedText={resolvedTexts.bidSubmittedText}
-                previousImageLabel={resolvedTexts.previousImage}
-                nextImageLabel={resolvedTexts.nextImage}
-                viewImageLabel={resolvedTexts.viewImage}
-                isActive={state.activeIndex === index}
-                showPriceSlider={shouldShowSlider}
-                minPrice={minPrice}
-                onMakeOffer={onMakeOffer}
-                onCancelBid={onCancelBid}
-                proposePriceText={resolvedTexts.proposePriceText}
-                makeOfferText={resolvedTexts.makeOfferText}
-                availabilityText={resolvedTexts.availabilityText}
-                currencyText={resolvedTexts.currencyText}
-                offerMadeText={resolvedTexts.offerMadeText}
-                updateBidText={resolvedTexts.updateBidText}
-                cancelBidText={resolvedTexts.cancelBidText}
-                dynamicAmenities={dynamicAmenitiesMap.get(room.id)}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Mobile/Tablet: Carousel layout */}
-        <div className="lg:hidden">
-          <div className="relative w-full overflow-visible h-full">
-            <div className="w-full relative perspective-[1000px] min-h-[550px] overflow-visible">
-              {roomOptions.map((room, index) => (
-                <div
-                  key={room.id}
-                  className={clsx('w-full absolute transition-all duration-500 ease-in-out', {
-                    'left-0 z-10': state.activeIndex === index,
-                    'left-[-100%] z-5 opacity-70': state.activeIndex !== index && index === 0,
-                    'left-[100%] z-5 opacity-70': state.activeIndex !== index && index === 1,
-                  })}
-                >
-                  <RoomCard
-                    room={room}
-                    discountBadgeText={resolvedTexts.discountBadgeText}
-                    nightText={resolvedTexts.nightText}
-                    learnMoreText={resolvedTexts.learnMoreText}
-                    priceInfoText={resolvedTexts.priceInfoText}
-                    selectedText={resolvedTexts.selectedText}
-                    selectText={resolvedTexts.upgradeNowText || resolvedTexts.selectText}
-                    removeText={resolvedTexts.removeText}
-                    selectedRoom={state.selectedRoom}
-                    onSelectRoom={readonly || mode === 'consultation' ? () => {} : actions.selectRoom}
-                    activeImageIndex={state.activeImageIndices[index] || 0}
-                    onImageChange={(newImageIndex: number) => actions.setActiveImageIndex(index, newImageIndex)}
-                    currencySymbol={resolvedTexts.currencySymbol}
-                    onLearnMore={onLearnMore}
-                    activeBid={activeBid}
-                    bidSubmittedText={resolvedTexts.bidSubmittedText}
-                    previousImageLabel={resolvedTexts.previousImage}
-                    nextImageLabel={resolvedTexts.nextImage}
-                    viewImageLabel={resolvedTexts.viewImage}
-                    isActive={state.activeIndex === index}
-                    showPriceSlider={shouldShowSlider}
-                    minPrice={minPrice}
-                    onMakeOffer={onMakeOffer}
-                    onCancelBid={onCancelBid}
-                    proposePriceText={resolvedTexts.proposePriceText}
-                    makeOfferText={resolvedTexts.makeOfferText}
-                    availabilityText={resolvedTexts.availabilityText}
-                    currencyText={resolvedTexts.currencyText}
-                    offerMadeText={resolvedTexts.offerMadeText}
-                    updateBidText={resolvedTexts.updateBidText}
-                    cancelBidText={resolvedTexts.cancelBidText}
-                    dynamicAmenities={dynamicAmenitiesMap.get(room.id)}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Mobile Navigation */}
-            <div className="flex justify-center items-center gap-4 mt-4">
-              <button
-                onClick={actions.prevSlide}
-                className="p-2 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
-                aria-label={resolvedTexts.previousRoomMobile}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
-
-              <div className="flex gap-2">
-                {roomOptions.map((room, index) => (
-                  <button
-                    key={`room-dot-${room.id}`}
-                    onClick={() => actions.setActiveIndex(index)}
-                    className={clsx('h-2 w-2 rounded-full transition-all duration-200', {
-                      'bg-black': state.activeIndex === index,
-                      'bg-neutral-300': state.activeIndex !== index,
-                    })}
-                    aria-label={resolvedTexts.goToRoom.replace('{index}', (index + 1).toString())}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={actions.nextSlide}
-                className="p-2 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
-                aria-label={resolvedTexts.nextRoomMobile}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    )
-  }
-
-  // Three or more rooms: Full carousel behavior
+  // Three or more rooms: Full carousel behavior with container queries
   return (
-    <div className={clsx(className)}>
+    <div className={clsx('@container h-[calc(100%-74px)]', className)}>
       {/* Title and Subtitle */}
       {(title || subtitle) && (
         <div className="mb-6 text-center">
@@ -357,135 +268,151 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
         </div>
       )}
 
-      <div className="lg:col-span-2">
+      <div className="lg:col-span-2 relative h-full">
         {/* Slider Container with Visible Cards */}
         <div className="relative w-full overflow-visible h-full">
           {/* Main Carousel Area */}
-          <div className="w-full relative perspective-[1000px] h-[750px] overflow-hidden">
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: Drag functionality for carousel navigation */}
+          <div
+            ref={dragRef}
+            className="w-full relative perspective-[1000px] h-[500px] overflow-hidden cursor-grab active:cursor-grabbing select-none"
+            role="presentation"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             {roomOptions.map((room, index) => {
               // Calculate if this card should be visible (previous, current, or next)
-              const prevIndex = (state.activeIndex - 1 + roomOptions.length) % roomOptions.length
-              const nextIndex = (state.activeIndex + 1) % roomOptions.length
-              
+              const prevIndex =
+                (state.activeIndex - 1 + roomOptions.length) %
+                roomOptions.length;
+              const nextIndex = (state.activeIndex + 1) % roomOptions.length;
+
               // Only show previous, current, and next cards
-              const isVisible = index === state.activeIndex || index === prevIndex || index === nextIndex
-              
+              const isVisible =
+                index === state.activeIndex ||
+                index === prevIndex ||
+                index === nextIndex;
+
               if (!isVisible) {
-                return null
+                return null;
               }
-              
+
               return (
                 <div
                   key={room.id}
-                  className={clsx('w-full absolute transition-all duration-500 ease-in-out', {
-                    'left-0 z-10 sm:w-1/2 sm:left-1/4': state.activeIndex === index,
-                    'left-[-100%] z-5 opacity-70 sm:w-1/2 sm:left-[-30%]': index === prevIndex,
-                    'left-[100%] z-5 opacity-70 sm:w-1/2 sm:left-[80%]': index === nextIndex,
-                  })}
+                  className={clsx(
+                    'w-full absolute transition-all duration-500 ease-in-out',
+                    {
+                      // Default: show only current card
+                      'left-0 z-10': state.activeIndex === index,
+                      'left-[-100%] z-5 opacity-0': index === prevIndex,
+                      'left-[100%] z-5 opacity-0': index === nextIndex,
+                      // When container is large enough (>1024px), show side cards
+                      '@[1024px]:w-1/2 @[1024px]:left-1/4':
+                        state.activeIndex === index,
+                      '@[1024px]:left-[-30%] @[1024px]:opacity-70':
+                        index === prevIndex,
+                      '@[1024px]:left-[80%] @[1024px]:opacity-70':
+                        index === nextIndex,
+                    },
+                  )}
                 >
                   <RoomCard
                     room={room}
                     discountBadgeText={resolvedTexts.discountBadgeText}
                     nightText={resolvedTexts.nightText}
-                    learnMoreText={resolvedTexts.learnMoreText}
                     priceInfoText={resolvedTexts.priceInfoText}
                     selectedText={resolvedTexts.selectedText}
-                    selectText={resolvedTexts.upgradeNowText || resolvedTexts.selectText}
+                    selectText={
+                      resolvedTexts.upgradeNowText || resolvedTexts.selectText
+                    }
                     removeText={resolvedTexts.removeText}
                     selectedRoom={state.selectedRoom}
-                    onSelectRoom={readonly || mode === 'consultation' ? () => {} : actions.selectRoom}
+                    onSelectRoom={
+                      readonly || mode === 'consultation'
+                        ? () => {}
+                        : actions.selectRoom
+                    }
                     activeImageIndex={state.activeImageIndices[index] || 0}
-                    onImageChange={(newImageIndex: number) => actions.setActiveImageIndex(index, newImageIndex)}
+                    onImageChange={(newImageIndex: number) =>
+                      actions.setActiveImageIndex(index, newImageIndex)
+                    }
                     currencySymbol={resolvedTexts.currencySymbol}
-                    onLearnMore={onLearnMore}
-                    activeBid={activeBid}
-                    bidSubmittedText={resolvedTexts.bidSubmittedText}
+                    instantConfirmationText={
+                      resolvedTexts.instantConfirmationText
+                    }
+                    commissionText={resolvedTexts.commissionText}
+                    totalAmountText={resolvedTexts.totalAmountText}
+                    nights={nights}
                     previousImageLabel={resolvedTexts.previousImage}
                     nextImageLabel={resolvedTexts.nextImage}
                     viewImageLabel={resolvedTexts.viewImage}
-                    isActive={state.activeIndex === index}
-                    showPriceSlider={shouldShowSlider}
-                    minPrice={minPrice}
-                    onMakeOffer={onMakeOffer}
-                    onCancelBid={onCancelBid}
-                    proposePriceText={resolvedTexts.proposePriceText}
-                    makeOfferText={resolvedTexts.makeOfferText}
-                    availabilityText={resolvedTexts.availabilityText}
-                    currencyText={resolvedTexts.currencyText}
-                    offerMadeText={resolvedTexts.offerMadeText}
-                    updateBidText={resolvedTexts.updateBidText}
-                    cancelBidText={resolvedTexts.cancelBidText}
                     dynamicAmenities={dynamicAmenitiesMap.get(room.id)}
                   />
                 </div>
-              )
+              );
             })}
           </div>
-
-          {/* Desktop Carousel Navigation - Only visible on Desktop */}
-          <CarouselNavigation
-            onPrev={actions.prevSlide}
-            onNext={actions.nextSlide}
-            previousLabel={resolvedTexts.previousRoom}
-            nextLabel={resolvedTexts.nextRoom}
-          />
         </div>
 
-        {/* Mobile/Tablet Carousel Controls */}
-        <div className="lg:hidden flex justify-center items-center gap-4 mt-4">
+        {/* Carousel Controls with counter */}
+        <div className="flex justify-center items-center gap-4 absolute bottom-5 left-0 right-0">
+          {/* Previous button */}
           <button
+            type="button"
             onClick={actions.prevSlide}
-            className="p-2 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
-            aria-label={resolvedTexts.previousRoomMobile}
+            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
+            aria-label={resolvedTexts.previousRoom}
           >
-            <svg
-              className="h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <polyline points="15 18 9 12 15 6" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <title>Previous</title>
             </svg>
           </button>
 
+          {/* Dot indicators */}
           <div className="flex gap-2">
             {roomOptions.map((room, index) => (
               <button
-                key={`${room.id}-indicator`}
+                key={`room-${room.id}-indicator`}
+                type="button"
                 onClick={() => actions.setActiveIndex(index)}
-                className={clsx('h-2 w-2 rounded-full transition-all duration-200', {
-                  'bg-black': state.activeIndex === index,
-                  'bg-neutral-300': state.activeIndex !== index,
-                })}
-                aria-label={resolvedTexts.goToRoom.replace('{index}', (index + 1).toString())}
+                className={clsx(
+                  'w-2 h-2 rounded-full transition-colors',
+                  state.activeIndex === index 
+                    ? 'bg-gray-800' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                )}
+                aria-label={resolvedTexts.goToRoom.replace(
+                  '{index}',
+                  (index + 1).toString(),
+                )}
               />
             ))}
           </div>
 
+          {/* Next button */}
           <button
+            type="button"
             onClick={actions.nextSlide}
-            className="p-2 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
-            aria-label={resolvedTexts.nextRoomMobile}
+            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
+            aria-label={resolvedTexts.nextRoom}
           >
-            <svg
-              className="h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <polyline points="9 18 15 12 9 6" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <title>Next</title>
             </svg>
           </button>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default RoomSelectionCarousel
-export { RoomSelectionCarousel as ABS_RoomSelectionCarousel }
+export default RoomSelectionCarousel;
+export { RoomSelectionCarousel as ABS_RoomSelectionCarousel };

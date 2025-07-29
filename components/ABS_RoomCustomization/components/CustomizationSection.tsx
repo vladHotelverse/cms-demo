@@ -1,7 +1,8 @@
-import { Icon } from '@/lib/iconify-fallback'
+import { Icon } from '@iconify/react'
 import clsx from 'clsx'
 import type React from 'react'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import type {
   CustomizationOption,
   RoomCustomizationTexts,
@@ -19,14 +20,15 @@ interface CustomizationSectionProps {
   options: CustomizationOption[] | ViewOption[] | ExactViewOption[]
   selectedOptions: SelectedCustomizations
   disabledOptions: DisabledOptions
-  isOpen: boolean
-  onToggle: () => void
   onSelect: (optionId: string) => void
   onOpenModal?: () => void
   texts: RoomCustomizationTexts
   fallbackImageUrl?: string
   mode?: 'interactive' | 'consultation'
   readonly?: boolean
+  allSections?: SectionConfig[]
+  currentSectionIndex?: number
+  onSectionChange?: (index: number) => void
 }
 
 const isExactViewOption = (option: CustomizationOption | ViewOption | ExactViewOption): option is ExactViewOption => {
@@ -38,14 +40,15 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
   options,
   selectedOptions,
   disabledOptions,
-  isOpen,
-  onToggle,
   onSelect,
   onOpenModal,
   texts,
   fallbackImageUrl,
   mode = 'interactive',
   readonly = false,
+  allSections = [],
+  currentSectionIndex = 0,
+  onSectionChange,
 }) => {
   const [showInfo, setShowInfo] = useState(false)
   const [showAllOptions, setShowAllOptions] = useState(false)
@@ -96,47 +99,56 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
     setShowAllOptions(!showAllOptions)
   }
 
+
   return (
     <div className="mb-6 bg-white rounded overflow-hidden">
-      <div className={clsx(
-        "flex justify-between items-center py-3 border-b",
-        mode !== 'consultation' && "cursor-pointer"
-      )} onClick={mode !== 'consultation' ? onToggle : undefined}>
-        <div className="flex items-center">
-          <h2 className="text-xl font-semibold">{config.title}</h2>
-          {config.infoText && mode !== 'consultation' && (
-            <button onClick={handleInfoToggle} className="ml-2 text-neutral-500 hover:text-neutral-700">
-              <Icon icon="solar:info-circle-bold" className="h-5 w-5" data-testid="info-icon" />
-            </button>
-          )}
-        </div>
-        {mode !== 'consultation' && (
-          <button className="text-neutral-400">
-            {isOpen ? (
-              <Icon icon="solar:alt-arrow-up-bold" className="h-6 w-6" data-testid="minus-icon" />
-            ) : (
-              <Icon icon="solar:alt-arrow-down-bold" className="h-6 w-6" data-testid="plus-icon" />
-            )}
-          </button>
-        )}
-      </div>
-
-      {(isOpen || mode === 'consultation') && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-300 -webkit-overflow-scrolling-touch pt-4">
-          {config.infoText && showInfo && (
-            <div className="transition-all duration-300 ease-in-out col-span-full pt-4">
-              <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-700 flex justify-between items-start">
-                {config.infoText}
-                <button
-                  onClick={() => setShowInfo(false)}
-                  className="ml-4 p-1 rounded-full hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      <div className="flex justify-between items-center py-3 border-b">
+        <div className="w-full">
+          {/* Tab Navigation */}
+          {mode !== 'consultation' && allSections.length > 1 && (
+            <div className="flex flex-wrap gap-2">
+              {allSections.map((section, index) => (
+                <Button
+                  key={section.key}
+                  type="button"
+                  onClick={() => onSectionChange?.(index)}
+                  variant={index === currentSectionIndex ? "default" : "outline"}
+                  size="sm"
                 >
-                  <Icon icon="solar:close-circle-bold" className="h-4 w-4 text-blue-700" />
-                </button>
-              </div>
+                  {section.title}
+                </Button>
+              ))}
             </div>
           )}
+          
+          {config.infoText && mode !== 'consultation' && (
+            <div className="flex items-center justify-end">
+              <button type="button" onClick={handleInfoToggle} className="text-neutral-500 hover:text-neutral-700">
+                <Icon icon="solar:info-circle-bold" className="h-5 w-5" data-testid="info-icon" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
 
+      <div className="py-4">
+        {/* Always show content, no accordion behavior */}
+        {config.infoText && showInfo && (
+          <div className="transition-all duration-300 ease-in-out mb-4">
+            <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-700 flex justify-between items-start">
+              {config.infoText}
+              <button
+                type="button"
+                onClick={() => setShowInfo(false)}
+                className="ml-4 p-1 rounded-full hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <Icon icon="solar:close-circle-bold" className="h-4 w-4 text-blue-700" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-4">
           {displayOptions.map((option) => {
             const isSelected = selectedOptions[config.key]?.id === option.id
             const isDisabled = disabledOptions[option.id]?.disabled || false
@@ -178,23 +190,24 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
             }
             return null
           })}
-          
-          {/* Show More/Less Button */}
-          {shouldShowMoreButton && (
-            <div className="col-span-full flex justify-center pt-4">
-              <button
-                onClick={handleShowMoreToggle}
-                className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200 border border-blue-200 hover:border-blue-300"
-              >
-                {showAllOptions 
-                  ? texts.showLessText
-                  : `${texts.showMoreText} (${filteredOptions.length - INITIAL_ITEMS_COUNT} more)`
-                }
-              </button>
-            </div>
-          )}
         </div>
-      )}
+        
+        {/* Show More/Less Button */}
+        {shouldShowMoreButton && (
+          <div className="flex justify-center pt-4">
+            <button
+              type="button"
+              onClick={handleShowMoreToggle}
+              className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200 border border-blue-200 hover:border-blue-300"
+            >
+              {showAllOptions 
+                ? texts.showLessText
+                : `${texts.showMoreText} (${filteredOptions.length - INITIAL_ITEMS_COUNT} more)`
+              }
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

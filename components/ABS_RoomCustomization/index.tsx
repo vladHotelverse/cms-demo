@@ -22,10 +22,8 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
 }) => {
   const { 
     selectedOptions, 
-    openSections, 
     disabledOptions,
     pendingConflict,
-    toggleSection, 
     handleSelect,
     resolveConflict,
     dismissConflict,
@@ -37,6 +35,7 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
   })
 
   const [modalSection, setModalSection] = useState<string | null>(null)
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
 
   const handleOpenModal = (sectionKey: string) => {
     setModalSection(sectionKey)
@@ -53,11 +52,19 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
     ? sections.filter(section => selectedOptions[section.key])
     : sections
 
+  // For the new navigation, show only the current section (in interactive mode)
+  const currentSection = mode === 'consultation' ? null : sectionsToShow[currentSectionIndex]
+  const displaySections = mode === 'consultation' ? sectionsToShow : (currentSection ? [currentSection] : [])
+
+  const handleSectionChange = (newIndex: number) => {
+    setCurrentSectionIndex(newIndex)
+  }
+
   return (
     <>
-      <div id={id} data-testid={id} className={clsx('section rounded-lg mt-6', className)}>
+      <div id={id} data-testid={id} className={clsx('section rounded-lg', className)}>
         <div className="rounded-lg">
-          {sectionsToShow.map((section) => {
+          {displaySections.map((section) => {
             const options = sectionOptions[section.key] || []
             return (
               <CustomizationSection
@@ -66,14 +73,15 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
                 options={options}
                 selectedOptions={selectedOptions}
                 disabledOptions={disabledOptions}
-                isOpen={openSections[section.key] || false}
-                onToggle={() => toggleSection(section.key)}
                 onSelect={(optionId) => handleSelect(section.key, optionId)}
                 onOpenModal={section.hasModal ? () => handleOpenModal(section.key) : undefined}
                 texts={texts}
                 fallbackImageUrl={fallbackImageUrl}
                 mode={mode}
                 readonly={readonly}
+                allSections={sectionsToShow}
+                currentSectionIndex={currentSectionIndex}
+                onSectionChange={handleSectionChange}
               />
             )
           })}
@@ -119,6 +127,7 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
 
               <DialogFooter>
                 <button
+                  type="button"
                   onClick={handleCloseModal}
                   className="px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
                 >

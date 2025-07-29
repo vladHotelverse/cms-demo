@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import type { Reservation, ReservationTab } from '@/types/reservation';
-import { mockReservations } from '@/data/reservations/mock-reservations';
 
 interface ReservationStore {
   // State
@@ -33,7 +32,7 @@ interface ReservationStore {
 
 export const useReservationStore = create<ReservationStore>((set, get) => ({
   // Initial state
-  reservations: mockReservations,
+  reservations: [],
   openTabs: [],
   activeTab: 'front-desk-upsell',
   searchTerm: '',

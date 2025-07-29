@@ -30,7 +30,7 @@ export function RequestedItemsView({ reservation, dynamicReservationItems }: Req
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="space-y-6">
-        <RequestedItemsHeader reservation={reservation} />
+        <RequestedItemsHeader reservation={reservation} requestDate={reservation.checkIn} />
         <RequestedItemsTable items={dynamicReservationItems} />
         
         {/* Action Footer */}
