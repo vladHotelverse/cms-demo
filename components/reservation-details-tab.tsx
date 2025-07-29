@@ -294,7 +294,7 @@ export default function ReservationDetailsTab({
 							</div>
 						</div>
 					) : (
-						<div className="flex flex-row h-[calc(100vh-300px)] gap-6 overflow-hidden">
+						<div className="flex flex-row gap-6 overflow-hidden">
 							{/* Blocks Mode - Original Layout with Horizontal Arrangement */}
 							<ReservationBlocksSection
 								selectedRoom={selectedRoom}

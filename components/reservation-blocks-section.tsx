@@ -361,7 +361,7 @@ export default function ReservationBlocksSection({
   return (
     <div className="flex flex-row gap-6 h-full pb-12">
       {/* Room Selection Section - Card Layout */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[calc(100vh-350px)]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
           <h2 className="text-lg font-semibold text-gray-900 mb-1">
             {getABSTranslation("chooseYourSuperiorRoomLabel") || "Room Upgrades"}
@@ -413,7 +413,7 @@ export default function ReservationBlocksSection({
             Personalize your room for the perfect experience
           </p>
         </div>
-        <div className="p-4 h-full overflow-hidden">
+        <div className="px-4">
           <ABS_RoomCustomization
               title="Room Customization"
               subtitle="Personalize your room for the perfect experience"
@@ -445,7 +445,7 @@ export default function ReservationBlocksSection({
       </div>
 
       {/* Special Offers Section - Card Layout */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[calc(100vh-350px)]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
           <h2 className="text-lg font-semibold text-gray-900 mb-1">
             {getABSTranslation("enhanceYourStayLabel") || "Special Offers"}
