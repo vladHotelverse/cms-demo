@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Coins } from "lucide-react"
 import { Recommendation } from "@/data/recommendations"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 
@@ -18,7 +18,12 @@ export function RecommendationsSummary({ recommendations }: RecommendationsSumma
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-muted-foreground">Potencial de comisión total</p>
-            <p className="text-2xl font-bold text-green-600">€{totalCommission.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-green-600 flex items-center gap-1">
+              <div className="bg-green-100 p-1 rounded-full">
+                <Coins className="h-5 w-5 text-green-600" />
+              </div>
+              €{totalCommission.toFixed(2)}
+            </p>
           </div>
           <Button 
             onClick={() => setShowDetailedView(true)}

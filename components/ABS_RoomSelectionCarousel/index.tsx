@@ -361,7 +361,7 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
         </div>
 
         {/* Carousel Controls with counter */}
-        <div className="flex justify-center items-center gap-4 absolute bottom-5 left-0 right-0">
+        <div className="flex justify-center items-center gap-4 absolute bottom-2.5 left-0 right-0">
           {/* Previous button */}
           <button
             type="button"

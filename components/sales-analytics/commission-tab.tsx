@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChartContainer } from "@/components/ui/chart"
-import { TrendingUp, DollarSign, Award, Users, Target, ArrowUpRight, ArrowDownRight, Crown } from "lucide-react"
+import { TrendingUp, DollarSign, Award, Users, Target, ArrowUpRight, ArrowDownRight, Crown, Coins } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 import { useSalesStore } from "@/store/use-sales-store"
 import { DataStateWrapper } from "@/components/ui/data-state-wrapper"
@@ -76,7 +76,7 @@ export function CommissionTab() {
       value: "$8,450",
       change: "+22.1%",
       trend: "up",
-      icon: DollarSign,
+      icon: Coins,
       description: t("vsLastMonth"),
       color: "text-green-600",
       bgColor: "bg-green-50",
@@ -244,7 +244,12 @@ export function CommissionTab() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span>{t('commission')}</span>
-                      <span className="font-semibold text-green-600">${agent.commission}</span>
+                      <span className="font-semibold text-green-600 flex items-center gap-1">
+                        <div className="bg-green-100 p-1 rounded-full">
+                          <Coins className="h-3 w-3 text-green-600" />
+                        </div>
+                        ${agent.commission}
+                      </span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span>{t('totalSales')}</span>

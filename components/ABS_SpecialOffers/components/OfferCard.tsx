@@ -54,7 +54,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
       data-testid="offer-card"
       className={`overflow-hidden transition-all h-full flex flex-col shadow-none rounded-none border-none`}
     >
-      <div className="h-40 overflow-hidden relative">
+      <div className="h-48 overflow-hidden relative">
         <OfferImage image={offer.image} title={offer.title} />
         {isBooked && (
           <Badge className="absolute top-2 left-2 bg-green-600 text-white text-xs flex items-center gap-1">
@@ -70,7 +70,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
         )}
       </div>
 
-      <CardHeader className="pb-3 pl-3">
+      <CardHeader className="py-3 pl-3">
         <CardTitle className="text-lg font-bold flex items-center gap-2">
           {offer.title}
           {isBooked && <Star className="h-5 w-5 text-green-600" />}

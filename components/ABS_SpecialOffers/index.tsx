@@ -161,7 +161,7 @@ const SpecialOffers: React.FC<SpecialOffersProps> = ({
         </div>
 
         {/* Navigation controls */}
-        <div className="flex justify-center items-center mt-4 gap-4 absolute bottom-5 left-0 right-0">
+        <div className="flex justify-center items-center mt-4 gap-4 absolute bottom-2.5 left-0 right-0">
           {/* Previous button */}
           <button
             type="button"

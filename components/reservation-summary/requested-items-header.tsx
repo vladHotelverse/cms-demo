@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { Package2 } from "lucide-react"
+import { Package2, Coins } from "lucide-react"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
 
@@ -72,7 +72,12 @@ export function RequestedItemsHeader({ reservation, title, requestDate, nights, 
             <Card className="px-4 py-3">
               <div className="text-center space-y-1">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('estimatedCommission')}</p>
-                <p className="text-xl font-bold text-emerald-600">€{commission.toFixed(2)}</p>
+                <p className="text-xl font-bold text-emerald-600 flex items-center justify-center gap-1">
+                  <div className="bg-green-100 p-1 rounded-full">
+                    <Coins className="h-4 w-4 text-green-600" />
+                  </div>
+                  €{commission.toFixed(2)}
+                </p>
               </div>
             </Card>
           )}
