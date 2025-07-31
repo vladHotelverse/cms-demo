@@ -1,23 +1,93 @@
-export interface RequestedItem {
+export interface BaseRequestedItem {
   id: string
-  name?: string // For backward compatibility
-  description?: string // For backward compatibility
-  nameKey?: string // For i18n support
-  descriptionKey?: string // For i18n support
   price: number
   status: 'pending_hotel' | 'confirmed'
   includesHotels: boolean
   agent?: string // Agent who sold the service (name or "Online")
   commission?: number // Commission amount
+  dateRequested?: string
+}
+
+export interface RoomItem extends BaseRequestedItem {
+  roomType: string
+  roomNumber?: string
+  attributes?: string[]
+  checkIn: string
+  checkOut: string
+  nights: number
+}
+
+export interface ExtraItem extends BaseRequestedItem {
+  name: string
+  description?: string
+  nameKey?: string // For i18n support
+  descriptionKey?: string // For i18n support
+  units: number
+  type: 'service' | 'amenity' | 'transfer'
+  serviceDate: string
+}
+
+export interface BiddingItem extends BaseRequestedItem {
+  pujaType: string
+  pujaNumber?: string
+  attributes?: string[]
+  dateCreated: string
+  dateModified: string
+}
+
+// Legacy interface for backward compatibility
+export interface RequestedItem extends BaseRequestedItem {
+  name?: string
+  description?: string
+  nameKey?: string
+  descriptionKey?: string
 }
 
 export interface RequestedItemsData {
+  rooms: RoomItem[]
+  extras: ExtraItem[]
+  bidding: BiddingItem[]
+}
+
+export interface LegacyRequestedItemsData {
   extras: RequestedItem[]
   upsell: RequestedItem[]
   atributos: RequestedItem[]
 }
 
 export const requestedItemsData: RequestedItemsData = {
+  rooms: [
+    {
+      id: "r1",
+      roomType: "Superior Room",
+      roomNumber: "405",
+      attributes: ["Vista al mar", "Balcón privado"],
+      price: 355,
+      status: "confirmed",
+      includesHotels: true,
+      agent: "Online",
+      commission: 35.5,
+      dateRequested: "2025-01-15",
+      checkIn: "2025-07-19",
+      checkOut: "2025-07-23",
+      nights: 4
+    },
+    {
+      id: "r2",
+      roomType: "Deluxe Suite",
+      roomNumber: "1201",
+      attributes: ["Piso Alto", "Habitación Tranquila", "Cerca del Spa"],
+      price: 485,
+      status: "pending_hotel",
+      includesHotels: true,
+      agent: "María García",
+      commission: 48.5,
+      dateRequested: "2025-01-20",
+      checkIn: "2025-07-19",
+      checkOut: "2025-07-23",
+      nights: 4
+    }
+  ],
   extras: [
     {
       id: "e1",
@@ -27,7 +97,11 @@ export const requestedItemsData: RequestedItemsData = {
       status: "pending_hotel",
       includesHotels: true,
       agent: "María García",
-      commission: 2.5
+      commission: 2.5,
+      dateRequested: "2025-01-15",
+      units: 1,
+      type: "service",
+      serviceDate: "2025-07-19"
     },
     {
       id: "e2",
@@ -37,7 +111,11 @@ export const requestedItemsData: RequestedItemsData = {
       status: "confirmed",
       includesHotels: true,
       agent: "Online",
-      commission: 3.0
+      commission: 3.0,
+      dateRequested: "2025-01-15",
+      units: 1,
+      type: "service",
+      serviceDate: "2025-07-23"
     },
     {
       id: "e3",
@@ -47,61 +125,42 @@ export const requestedItemsData: RequestedItemsData = {
       status: "pending_hotel",
       includesHotels: true,
       agent: "Carlos López",
-      commission: 1.5
-    }
-  ],
-  upsell: [
-    {
-      id: "u1",
-      name: "Superior Room Upgrade",
-      description: "Vista al mar, balcón privado",
-      price: 355,
-      status: "confirmed",
-      includesHotels: true,
-      agent: "Online",
-      commission: 35.5
+      commission: 1.5,
+      dateRequested: "2025-01-18",
+      units: 1,
+      type: "amenity",
+      serviceDate: "2025-07-19"
     },
     {
-      id: "u2",
-      name: "Paquete Romántico",
-      description: "Botella de cava, pétalos de rosa, desayuno en habitación",
+      id: "e4",
+      name: "Airport Transfer",
+      description: "Private car from airport",
       price: 95,
-      status: "pending_hotel",
+      status: "confirmed",
       includesHotels: false,
-      agent: "María García",
-      commission: 9.5
+      agent: "Ana Rodríguez",
+      commission: 9.5,
+      dateRequested: "2025-01-20",
+      units: 2,
+      type: "transfer",
+      serviceDate: "2025-07-19"
     }
   ],
-  atributos: [
+  // Business rule: Only one bidding item per reservation
+  bidding: [
     {
-      id: "a1",
-      name: "Habitación Tranquila",
-      description: "Alejada de ascensores y zonas comunes",
-      price: 0,
-      status: "confirmed",
+      id: "b1",
+      pujaType: "Deluxe Room", // Actual room type for the bid
+      pujaNumber: "BID-2025-001",
+      attributes: ["Ocean View", "High Floor", "Premium Service"],
+      price: 150,
+      status: "pending_hotel",
       includesHotels: true,
       agent: "Online",
-      commission: 0
-    },
-    {
-      id: "a2",
-      name: "Piso Alto",
-      description: "Plantas 8-12 con mejores vistas",
-      price: 45,
-      status: "pending_hotel",
-      includesHotels: true,
-      agent: "Ana Rodríguez",
-      commission: 4.5
-    },
-    {
-      id: "a3",
-      name: "Cerca del Spa",
-      description: "Acceso directo a zona wellness",
-      price: 35,
-      status: "pending_hotel",
-      includesHotels: true,
-      agent: "María García",
-      commission: 3.5
+      commission: 15.0,
+      dateRequested: "2025-01-22",
+      dateCreated: "2025-01-22",
+      dateModified: "2025-01-23"
     }
   ]
 }

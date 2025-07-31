@@ -44,6 +44,7 @@ interface ReservationDetailsTabProps {
 	reservation: ReservationData;
 	onShowAlert: (type: "success" | "error", message: string) => void;
 	onCloseTab: () => void;
+	isInReservationMode?: boolean;
 }
 
 
@@ -164,6 +165,7 @@ export default function ReservationDetailsTab({
 						nights={reservation.nights}
 						showZeroTotals={true}
 						showStatusBar={false}
+						onCloseTab={onCloseTab}
 					/>
 				</div>
 

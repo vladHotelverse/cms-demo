@@ -23,9 +23,10 @@ interface RecommendationsViewProps {
     hasHotelverseRequest: boolean
   }
   dynamicRecommendations: Recommendation[]
+  onCloseTab?: () => void
 }
 
-export function RecommendationsView({ reservation, dynamicRecommendations }: RecommendationsViewProps) {
+export function RecommendationsView({ reservation, dynamicRecommendations, onCloseTab }: RecommendationsViewProps) {
   const { t } = useReservationTranslations()
   const { setShowDetailedView } = useReservationSummaryStore()
 
@@ -36,6 +37,7 @@ export function RecommendationsView({ reservation, dynamicRecommendations }: Rec
           reservation={reservation} 
           recommendations={dynamicRecommendations}
           onViewFullCatalog={() => setShowDetailedView(true)}
+          onCloseTab={onCloseTab}
         />
         
         <div className="space-y-4">

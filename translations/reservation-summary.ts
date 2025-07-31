@@ -4,6 +4,7 @@ export const reservationSummaryTranslations = {
     recommendedServices: "Servicios Recomendados",
     requestSummary: "Resumen de Solicitudes",
     recommendations: "Recomendaciones",
+    back: "Volver",
     
     // Labels
     locator: "ID de Reserva",
@@ -33,9 +34,23 @@ export const reservationSummaryTranslations = {
     
     // Table Headers
     agent: "Agente",
+    agents: "Agentes",
+    commission: "Comisión",
     supplements: "Suplementos",
     room: "Habitación",
+    roomType: "Tipo de Habitación",
+    roomNumber: "Número",
+    attributes: "Atributos",
+    dateRequested: "Fecha Solicitada",
+    dateInOut: "Fecha Entrada/Salida",
+    extras: "Extras",
+    units: "Unidades",
     type: "Tipo",
+    dateService: "Fecha Servicio",
+    pujaType: "Tipo de Puja",
+    pujaNumber: "Número de Puja",
+    dateCreated: "Fecha Creada",
+    dateModified: "Fecha Modificada",
     dates: "Fechas",
     status: "Estado",
     action: "Acción",
@@ -45,7 +60,9 @@ export const reservationSummaryTranslations = {
     confirmed: "Confirmado",
     
     // Categories
+    rooms: "Habitaciones",
     extras: "Extras",
+    bidding: "Pujas",
     upsell: "Mejora",
     attributes: "Atributos",
     
@@ -172,6 +189,7 @@ export const reservationSummaryTranslations = {
     recommendedServices: "Recommended Services",
     requestSummary: "Request Summary",
     recommendations: "Recommendations",
+    back: "Back",
     
     // Labels
     locator: "Booking ID",
@@ -201,9 +219,23 @@ export const reservationSummaryTranslations = {
     
     // Table Headers
     agent: "Agent",
+    agents: "Agents",
+    commission: "Commission",
     supplements: "Supplements",
     room: "Room",
+    roomType: "Room Type",
+    roomNumber: "Room Number",
+    attributes: "Attributes",
+    dateRequested: "Date Requested",
+    dateInOut: "Date In/Out",
+    extras: "Extras",
+    units: "Units",
     type: "Type",
+    dateService: "Date Service",
+    pujaType: "Puja Type",
+    pujaNumber: "Puja Number",
+    dateCreated: "Date Created",
+    dateModified: "Date Modified",
     dates: "Dates",
     status: "Status",
     action: "Action",
@@ -213,7 +245,9 @@ export const reservationSummaryTranslations = {
     confirmed: "Confirmed",
     
     // Categories
+    rooms: "Rooms",
     extras: "Extras",
+    bidding: "Bidding",
     upsell: "Upsell",
     attributes: "Attributes",
     

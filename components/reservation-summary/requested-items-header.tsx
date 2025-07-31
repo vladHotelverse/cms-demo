@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card"
-import { Package2, Coins } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Package2, Coins, ArrowLeft } from "lucide-react"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
 
@@ -15,9 +16,10 @@ interface RequestedItemsHeaderProps {
   nights?: string
   showZeroTotals?: boolean
   showStatusBar?: boolean
+  onCloseTab?: () => void
 }
 
-export function RequestedItemsHeader({ reservation, title, requestDate, nights, showZeroTotals, showStatusBar = true }: RequestedItemsHeaderProps) {
+export function RequestedItemsHeader({ reservation, title, requestDate, nights, showZeroTotals, showStatusBar = true, onCloseTab }: RequestedItemsHeaderProps) {
   const { t } = useReservationTranslations()
   const { calculateGrandTotal, calculateActualCommission, requestedItems } = useReservationSummaryStore()
   const total = showZeroTotals ? 0 : calculateGrandTotal()
@@ -25,7 +27,18 @@ export function RequestedItemsHeader({ reservation, title, requestDate, nights, 
 
   return (
     <div className="space-y-4">
-      <h1 className="text-3xl font-bold tracking-tight">{title || t('requestSummary')}</h1>
+      <div className="flex items-center gap-3">
+        <Button 
+          variant="default" 
+          size="sm"
+          onClick={onCloseTab}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t('back')}
+        </Button>
+        <h1 className="text-3xl font-bold tracking-tight">{title || t('requestSummary')}</h1>
+      </div>
       
       <div className="flex items-start justify-between">
         <Card className="p-4">
