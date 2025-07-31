@@ -12,7 +12,7 @@ const AMENITY_PRIORITIES = {
   // Premium Features
   'Hydromassage Bathtub': 9,
   'Living Room': 9,
-  'Coffee Machine': 8,
+  'Coffee Machine': 1,
   'King Size Bed': 8,
   'Sofa Bed - Double': 7,
   
@@ -31,12 +31,12 @@ const AMENITY_PRIORITIES = {
   'Close to Pool': 6,
   
   // Technology and Comfort
-  'Bluetooth sound system': 6,
+  'Bluetooth sound system': 1,
   'Smart TV': 5,
   'Premium Wi-Fi': 4,
   
   // Service and Convenience
-  '24 Hours Room Service': 7,
+  '24 Hours Room Service': 1,
   'Pillow Menu': 5,
   'Minibar': 4,
   'Safe': 3,

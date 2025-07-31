@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Star } from 'lucide-react';
+import { Star, Coins } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -11,24 +11,30 @@ import {
 } from '../ui/tooltip';
 import type { RoomOption } from './types';
 
-// Helper component for discount badge to avoid conditional hook usage
-const DiscountBadge: React.FC<{
-  room: RoomOption;
-  discountBadgeText: string;
-}> = ({ room, discountBadgeText }) => {
-  const discountText = useMemo(() => {
-    if (!room.oldPrice || room.oldPrice === 0) return '';
-    const discountPercentage = Math.round(
-      (1 - room.price / room.oldPrice) * 100,
-    );
-    return discountBadgeText.includes('{percentage}')
-      ? discountBadgeText.replace('{percentage}', discountPercentage.toString())
-      : `${discountBadgeText}${discountPercentage}%`;
-  }, [discountBadgeText, room.price, room.oldPrice]);
-
+// Helper component for loyalty badge
+const LoyaltyBadge: React.FC<{
+  loyaltyPercentage?: number;
+  loyaltyText?: string;
+}> = ({ loyaltyPercentage = 10, loyaltyText = 'Loyalty' }) => {
   return (
-    <div className="absolute top-3 right-3 bg-black text-white py-1 px-2 rounded text-xs font-bold z-10">
-      <span>{discountText}</span>
+    <div className="inline-flex items-center bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold">
+      <span>{loyaltyText} {loyaltyPercentage}%</span>
+    </div>
+  );
+};
+
+// Helper component for commission badge
+const CommissionBadge: React.FC<{
+  commission: number;
+  currencySymbol: string;
+  commissionText: string;
+}> = ({ commission, currencySymbol, commissionText }) => {
+  return (
+    <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
+      <div className="bg-green-100 p-1 rounded-full">
+        <Coins className="h-3 w-3 text-green-600" />
+      </div>
+      <span className='text-emerald-600'>{currencySymbol}{commission}</span>
     </div>
   );
 };
@@ -57,6 +63,12 @@ interface RoomCardProps {
   commissionText?: string;
   totalAmountText?: string;
   nights?: number;
+  // Loyalty props
+  loyaltyPercentage?: number;
+  loyaltyText?: string;
+  // Selling points props
+  sellingPoints?: string[];
+  showSellingPoints?: boolean;
 }
 
 const RoomCard: React.FC<RoomCardProps> = ({
@@ -80,10 +92,75 @@ const RoomCard: React.FC<RoomCardProps> = ({
   commissionText = 'Commission',
   totalAmountText = 'Total',
   nights = 1,
+  loyaltyPercentage = 10,
+  loyaltyText = 'Loyalty',
+  sellingPoints,
+  showSellingPoints = true,
 }) => {
   // State for checking if description is truncated
   const [isDescriptionTruncated, setIsDescriptionTruncated] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  // Function to get room-specific selling points  
+  const getSellingPointsByRoomType = (roomType: string): string[] => {
+    const normalizedRoomType = roomType.toLowerCase().trim();
+    
+    // Standard Room variations
+    if (normalizedRoomType.includes('standard')) {
+      return [
+        "Cozy room with quality furnishings and comfortable queen bed",
+        "Great location with easy access to hotel amenities and facilities",
+        "Smart choice for travelers who value quality and convenience"
+      ];
+    }
+    
+    // Deluxe Room variations
+    if (normalizedRoomType.includes('deluxe')) {
+      return [
+        "40% larger space with premium king bed and marble bathroom",
+        "Exclusive balcony with stunning landmark views",
+        "Only €45 more per night for luxury upgrade experience"
+      ];
+    }
+    
+    // Suite variations
+    if (normalizedRoomType.includes('suite')) {
+      return [
+        "Spacious living area with separate bedroom and work space",
+        "Premium amenities: minibar, coffee machine, and bath robes",
+        "VIP concierge service and priority restaurant reservations"
+      ];
+    }
+    
+    // Premium Room variations
+    if (normalizedRoomType.includes('premium')) {
+      return [
+        "Top floor location with panoramic city/ocean views",
+        "Upgraded bathroom with rain shower and luxury toiletries",
+        "Express check-in/out and late checkout until 2 PM"
+      ];
+    }
+    
+    // Family Room variations
+    if (normalizedRoomType.includes('family')) {
+      return [
+        "Perfect for families - sleeps up to 4 with bunk bed area",
+        "Child-friendly amenities and toys provided free",
+        "Close to pool and family activities area"
+      ];
+    }
+    
+    // Fallback generic selling points for unknown room types
+    console.log('Unknown room type, using fallback points:', roomType);
+    return [
+      "We have a beautiful suite available with landmark views",
+      "40% larger space with king bed and private balcony", 
+      "Only €76 more per night for premium experience"
+    ];
+  };
+
+  // Use provided selling points, or get room-specific points, or use defaults
+  const currentSellingPoints = sellingPoints || getSellingPointsByRoomType(room.roomType);
 
   // Check if description needs truncation
   useEffect(() => {
@@ -191,10 +268,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         'relative rounded-b-lg overflow-hidden max-w-lg transition-all duration-300',
       )}
     >
-      {/* Discount Badge */}
-      {room.oldPrice && !selectedRoom?.id && (
-        <DiscountBadge room={room} discountBadgeText={discountBadgeText} />
-      )}
+      {/* Removed discount badge from image */}
 
       {/* Selected Badge */}
       {selectedRoom?.id === room.id && (
@@ -333,24 +407,37 @@ const RoomCard: React.FC<RoomCardProps> = ({
           {room.roomType}
         </h4>
         <div className="mb-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <p
-                  ref={descriptionRef}
-                  className="text-sm min-h-10 overflow-hidden line-clamp-2 cursor-help"
-                  style={{ maxHeight: '2.5rem' }}
-                >
-                  {room.description}
-                </p>
-              </TooltipTrigger>
-              {isDescriptionTruncated && (
-                <TooltipContent className="max-w-xs">
-                  <p className="text-sm">{room.description}</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
+          {showSellingPoints ? (
+            // Selling points list
+            <ul className="space-y-1 rounded-lg border bg-muted/50 p-3">
+              {currentSellingPoints.map((point, index) => (
+                <li key={`selling-point-${room.id}-${index}`} className="flex items-start gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-gray-700 rounded-full mt-2 flex-shrink-0" />
+                  <span className="text-black">{point}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            // Fallback to original description
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p
+                    ref={descriptionRef}
+                    className="text-sm min-h-10 overflow-hidden line-clamp-2 cursor-help"
+                    style={{ maxHeight: '2.5rem' }}
+                  >
+                    {room.description}
+                  </p>
+                </TooltipTrigger>
+                {isDescriptionTruncated && (
+                  <TooltipContent className="max-w-xs">
+                    <p className="text-sm">{room.description}</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
 
 
@@ -358,50 +445,54 @@ const RoomCard: React.FC<RoomCardProps> = ({
         <div className="mt-3 mb-4">
           {/* Calculate values */}
           {(() => {
+            // Calculate loyalty discount
+            const originalPrice = room.oldPrice || Math.round(room.price / (1 - loyaltyPercentage / 100));
             const totalPrice = room.price * nights;
             const commission = Math.round(totalPrice * 0.1 * 100) / 100; // 10% commission, rounded to 2 decimals
             
             return (
-              <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                {/* Row 1: Price per night | Upgrade button */}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xl font-bold text-gray-900">{`${currencySymbol}${room.price}`}</span>
-                  {room.oldPrice && (
-                    <span className="text-neutral-500 line-through text-base">{`${currencySymbol}${room.oldPrice}`}</span>
-                  )}
-                  <span className="text-base text-neutral-600">{nightText}</span>
+              <div>
+                {/* Badges Row: Loyalty and Commission */}
+                <div className="flex items-center justify-between gap-2">
+                  <LoyaltyBadge loyaltyPercentage={loyaltyPercentage} loyaltyText={loyaltyText} />
+                  <CommissionBadge commission={commission} currencySymbol={currencySymbol} commissionText={commissionText} />
                 </div>
-                <div className="flex justify-end">
-                  <Button
-                    variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
-                    className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
-                    onClick={handleSelectRoom}
-                  >
-                    {selectedRoom?.id === room.id ? removeText : selectText}
-                  </Button>
-                </div>
-
-                {/* Row 2: Commission Text | Instant Confirmation Text */}
-                <div className="flex items-center gap-2">
-                  <span className="text-base font-medium text-emerald-600">{commissionText}:</span>
-                  <span className="text-base font-semibold text-emerald-600">{`${currencySymbol}${commission}`}</span>
-                </div>
-                <div className="flex justify-end items-center">
-                  <span className="text-base font-medium text-emerald-600 whitespace-nowrap">
-                    {instantConfirmationText}
-                  </span>
+                
+                {/* Row 1: Price per night with loyalty discount */}
+                <div className="grid grid-cols-2 gap-x-2 mt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-gray-900">{`${currencySymbol}${room.price}`}</span>
+                    <span className="text-neutral-500 line-through text-base">{`${currencySymbol}${originalPrice}`}</span>
+                    <span className="text-base text-neutral-600">{nightText}</span>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button
+                      variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
+                      className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
+                      onClick={handleSelectRoom}
+                    >
+                      {selectedRoom?.id === room.id ? removeText : `${Math.floor(Math.random() * 10) + 1} Available`}
+                    </Button>
+                  </div>
                 </div>
 
-                {/* Row 3: Total | Price info */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-neutral-600">{totalAmountText}:</span>
-                  <span className="text-sm font-medium text-gray-700">{`${currencySymbol}${totalPrice}`}</span>
+                {/* Row 2: Total */}
+                <div className="grid grid-cols-2 gap-x-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-semibold text-gray-700">{`${currencySymbol}${totalPrice}`}</span>
+                    <span className="text-sm text-neutral-600">{totalAmountText}</span>
+                  </div>
+                  {/* <div className="flex justify-end items-center">
+                    <span className="text-base font-medium text-emerald-600 whitespace-nowrap">
+                      {instantConfirmationText}
+                    </span>
+                  </div> */}
                 </div>
-                <div className="flex justify-end items-center">
-                  <span className="text-xs text-neutral-500 text-right">
+
+                {/* Row 3: Price info */}
+                  <span className="text-xs text-neutral-500 whitespace-nowrap text-start">
                     {priceInfoText}
                   </span>
-                </div>
               </div>
             );
           })()}

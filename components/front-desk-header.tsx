@@ -3,7 +3,7 @@
 import React from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X } from "lucide-react";
+import { X, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface OpenTab {
@@ -116,7 +116,10 @@ export function FrontDeskHeader({
 						</div>
 						<div className="ml-2 text-right">
 							<div className="text-xs text-muted-foreground">Commission:</div>
-							<div className="font-semibold text-green-600">
+							<div className="font-semibold text-green-600 flex items-center gap-1">
+								<div className="bg-green-100 p-1 rounded-full">
+									<Coins className="h-3 w-3 text-green-600" />
+								</div>
 								€{agent.commission.toFixed(2)}
 							</div>
 						</div>

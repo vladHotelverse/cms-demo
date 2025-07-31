@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useReservationTranslations } from '@/hooks/use-reservation-translations'
 import { cn } from '@/lib/utils'
-import { Pencil } from 'lucide-react'
+import { Pencil, Coins } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface PriceDisplayProps {
@@ -95,7 +95,12 @@ export function PriceDisplay({ pricePerUnit, pricingType, totalPrice, commission
         <div className="relative">
           <div className="absolute inset-0 bg-emerald-500/10 rounded-lg" />
           <div className="relative px-6 py-3 text-center">
-            <div className="text-lg font-semibold text-emerald-700">€{commission.toFixed(2)}</div>
+            <div className="text-lg font-semibold text-emerald-700 flex items-center justify-center gap-1">
+              <div className="bg-green-100 p-1 rounded-full">
+                <Coins className="h-4 w-4 text-green-600" />
+              </div>
+              €{commission.toFixed(2)}
+            </div>
             <div className="text-xs text-emerald-600/80 uppercase tracking-wide font-medium">{t('commission')}</div>
           </div>
         </div>

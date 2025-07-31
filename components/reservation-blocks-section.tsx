@@ -151,6 +151,7 @@ function transformSpecialOffersToABS(offers: SpecialOffer[], currentLanguage: st
     return fallback;
   };
 
+
   // Use a more predictable ID generation approach
   return offers.map((offer, index) => {
     // Generate a consistent numeric ID based on the original string ID
@@ -177,7 +178,7 @@ function transformSpecialOffersToABS(offers: SpecialOffer[], currentLanguage: st
       numericId = 1000 + index;
     }
     
-    const offerName = getMultilingualValue(offer.name || {}, "Special Offer");
+    const offerName = getMultilingualValue(offer.title || {}, "Special Offer");
     const offerDescription = getMultilingualValue(offer.description || {}, "");
     // Handle price which might come as string from Supabase DECIMAL field
     // Check both base_price and price fields (ABS database uses base_price)
@@ -365,9 +366,9 @@ export default function ReservationBlocksSection({
   return (
     <div className="grid grid-cols-3 gap-6 pb-12">
       {/* Room Selection Section - Card Layout */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[calc(100vh-350px)]">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[max(650px,calc(100vh-350px))]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">
             {getABSTranslation("chooseYourSuperiorRoomLabel") || "Room Upgrades"}
           </h2>
           <p className="text-xs text-gray-600">
@@ -382,7 +383,7 @@ export default function ReservationBlocksSection({
               nights={nights}
               translations={{
                 learnMoreText: getABSTranslation("learnMore") || "Learn More",
-                selectText: getABSTranslation("select") || "UPGRADE NOW",
+                selectText: getABSTranslation("select") || "SELECCIONAR",
                 selectedText: getABSTranslation("selected") || "Selected",
                 nightText: getABSTranslation("perNight") || "night",
                 currencySymbol: "€",
@@ -410,7 +411,7 @@ export default function ReservationBlocksSection({
       {/* Room Customization Section - Card Layout */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">
             Room Customization
           </h2>
           <p className="text-xs text-gray-600">
@@ -449,9 +450,9 @@ export default function ReservationBlocksSection({
       </div>
 
       {/* Special Offers Section - Card Layout */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[calc(100vh-350px)]">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[max(650px,calc(100vh-350px))]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">
             {getABSTranslation("enhanceYourStayLabel") || "Special Offers"}
           </h2>
           <p className="text-xs text-gray-600">

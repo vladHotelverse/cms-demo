@@ -35,6 +35,12 @@ const isExactViewOption = (option: CustomizationOption | ViewOption | ExactViewO
   return 'imageUrl' in option && typeof option.imageUrl === 'string'
 }
 
+const formatSectionTitle = (title: string): string => {
+  // Split by capital letters to separate words like "ExactView" -> "Exact View"
+  const words = title.replace(/([A-Z])/g, ' $1').trim().split(/\s+/)
+  return words.length >= 2 ? words.join(' ') : title
+}
+
 export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
   config,
   options,
@@ -114,8 +120,9 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
                   onClick={() => onSectionChange?.(index)}
                   variant={index === currentSectionIndex ? "default" : "outline"}
                   size="sm"
+                  className='capitalize'
                 >
-                  {section.title}
+                  {formatSectionTitle(section.title)}
                 </Button>
               ))}
             </div>

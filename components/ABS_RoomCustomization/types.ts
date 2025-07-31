@@ -4,6 +4,7 @@ export interface CustomizationOption {
   label: string
   description?: string
   price: number
+  availability?: string
 }
 
 export interface ViewOption {
@@ -21,6 +22,7 @@ export interface ExactViewOption {
   price: number
   icon: string
   imageUrl: string
+  availability?: string
 }
 
 export interface SelectedCustomizations {

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { X, Check } from "lucide-react"
+import { X, Check, Coins } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { RequestedItem, RequestedItemsData } from "@/data/reservation-items"
 import { statusConfig, categoryConfig } from "@/data/reservation-configs"
@@ -98,8 +98,15 @@ function RequestedItemRow({ item, onStatusUpdate, onDelete }: RequestedItemRowPr
 
       {/* Commission */}
       <div className="col-span-1">
-        <div className="text-sm font-medium text-green-600">
-          {item.agent !== 'Online' && item.commission ? `${item.commission.toFixed(2)} €` : ''}
+        <div className="text-sm font-medium text-green-600 flex items-center gap-1">
+          {item.agent !== 'Online' && item.commission ? (
+            <>
+              <div className="bg-green-100 p-1 rounded-full">
+                <Coins className="h-3 w-3 text-green-600" />
+              </div>
+              {`${item.commission.toFixed(2)} €`}
+            </>
+          ) : ''}
         </div>
       </div>
 
