@@ -1,10 +1,21 @@
 "use client"
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, MoreHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { X, Check, Calendar } from "lucide-react"
 import type { BiddingItem } from "@/data/reservation-items"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
+import {
+  ActionButtons,
+  RoomNumberCell,
+  RoomTypeCell,
+  CompactDateCell,
+  StatusBadge,
+  MoneyDisplay
+} from "./shared-table-components"
 
 interface BiddingTableProps {
   items: BiddingItem[]
@@ -16,38 +27,50 @@ export function BiddingTable({ items }: BiddingTableProps) {
   if (!items || items.length === 0) return null
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      {/* Section Header */}
-      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-gray-500" />
-          <h3 className="text-base font-semibold text-gray-900">Bidding</h3>
+    <Card className="shadow-sm">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-purple-600" />
+            <span>Bidding</span>
+            <Badge variant="secondary" className="ml-2">
+              {items.length}
+            </Badge>
+          </div>
+          <Button variant="ghost" size="sm">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-gray-200">
+                <TableHead className="font-semibold text-gray-700">Amount</TableHead>
+                <TableHead className="font-semibold text-gray-700">Room Price</TableHead>
+                <TableHead className="font-semibold text-gray-700">Requested Room</TableHead>
+                <TableHead className="font-semibold text-gray-700">Room Number</TableHead>
+                <TableHead className="font-semibold text-gray-700">Date Created</TableHead>
+                <TableHead className="font-semibold text-gray-700">Date In/Out</TableHead>
+                <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                <TableHead className="font-semibold text-gray-700 text-right">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((item) => (
+                <BiddingRow 
+                  key={item.id} 
+                  item={item} 
+                  onStatusUpdate={(status) => updateItemStatus('bidding', item.id, status)}
+                  onDelete={() => deleteItem('bidding', item.id)}
+                />
+              ))}
+            </TableBody>
+          </Table>
         </div>
-      </div>
-
-      {/* Table Header */}
-      <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
-        <div className="grid grid-cols-12 gap-4 text-xs font-medium text-gray-500 uppercase tracking-wide">
-          <div className="col-span-2">Amount</div>
-          <div className="col-span-3">Room Type</div>
-          <div className="col-span-2">Date Created</div>
-          <div className="col-span-2">Date Rejected</div>
-          <div className="col-span-3 text-center">Action</div>
-        </div>
-      </div>
-
-      {/* Table Body */}
-      <div className="divide-y divide-gray-200">
-        {items.map((item) => (
-          <BiddingRow 
-            key={item.id} 
-            item={item} 
-            onStatusUpdate={(status) => updateItemStatus('bidding', item.id, status)}
-            onDelete={() => deleteItem('bidding', item.id)}
-          />
-        ))}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -60,67 +83,54 @@ interface BiddingRowProps {
 function BiddingRow({ item, onStatusUpdate, onDelete }: BiddingRowProps) {
   const { t } = useReservationTranslations()
   
-  // Calculate if this bid was rejected (for demo purposes, randomly determine some as rejected)
-  const isRejected = item.status === 'pending_hotel' && Math.random() > 0.6
-  const rejectionDate = isRejected ? item.dateModified : null
+  // Calculate if this bid was rejected (for demo, reject some pending items)
+  const isRejected = item.status === 'pending_hotel' && item.id === 'b2'
+  
+  // Generate date range for the bidding period (mock dates based on creation date)
+  const startDate = new Date(item.dateCreated)
+  const endDate = new Date(startDate)
+  endDate.setDate(startDate.getDate() + 3) // 3 days for demo
+  const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+  const dateInOut = `${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]} (${nights} nights)`
   
   return (
-    <div className="px-6 py-4 hover:bg-gray-50 transition-colors">
-      <div className="grid grid-cols-12 gap-4 items-center">
-        {/* Amount */}
-        <div className="col-span-2">
-          <div className="text-sm font-medium text-gray-900">
-            {item.price > 0 ? `${item.price} EUR` : '150 EUR'}
-          </div>
-        </div>
-
-        {/* Room Type */}
-        <div className="col-span-3">
-          <div className="text-sm font-medium text-gray-900">
-            {item.pujaType || 'Standard Room'}
-          </div>
-        </div>
-
-        {/* Date Created */}
-        <div className="col-span-2">
-          <div className="text-sm text-gray-600">
-            {item.dateCreated ? 
-              new Date(item.dateCreated).toLocaleDateString('en-CA') : 
-              '2024-01-12'
-            }
-          </div>
-        </div>
-
-        {/* Date Rejected */}
-        <div className="col-span-2">
-          <div className="text-sm text-gray-600">
-            {rejectionDate ? 
-              new Date(rejectionDate).toLocaleDateString('en-CA') : 
-              '-'
-            }
-          </div>
-        </div>
-
-        {/* Action */}
-        <div className="col-span-3 flex items-center justify-center gap-2">
-          {isRejected ? (
-            <span className="text-sm text-gray-500">Rejected</span>
-          ) : item.status === 'confirmed' ? (
-            <div className="h-5 w-5 rounded-full bg-green-500 flex items-center justify-center">
-              <Check className="h-3 w-3 text-white" />
-            </div>
-          ) : (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 w-8 p-0 text-green-600 hover:bg-green-50 hover:text-green-700"
-              onClick={() => onStatusUpdate('confirmed')}
-              aria-label={`Confirm bid for ${item.pujaType}`}
-            >
-              <Check className="h-4 w-4" />
-            </Button>
-          )}
-          
+    <TableRow className="border-gray-100 hover:bg-gray-50/50">
+      <TableCell className="py-4">
+        <MoneyDisplay amount={item.price} />
+      </TableCell>
+      <TableCell className="py-4 text-sm font-medium">
+        <MoneyDisplay amount={item.roomPrice || item.price * 1.2} />
+      </TableCell>
+      <TableCell className="py-4">
+        <RoomTypeCell 
+          roomType={item.pujaType}
+          originalRoomType={item.originalRoomType}
+          upgradeLabel="Room Upgrade Request"
+        />
+      </TableCell>
+      <TableCell className="py-4">
+        <RoomNumberCell
+          roomNumber={item.roomNumber || '101'}
+          hasKey={item.hasKey || false}
+          alternatives={item.alternatives || []}
+        />
+      </TableCell>
+      <TableCell className="py-4 text-sm">
+        {item.dateCreated ? 
+          new Date(item.dateCreated).toLocaleDateString('en-CA') : 
+          '2024-01-12'
+        }
+      </TableCell>
+      <TableCell className="py-4">
+        <CompactDateCell dateInOut={dateInOut} />
+      </TableCell>
+      <TableCell className="py-4">
+        <StatusBadge status={isRejected ? 'rejected' : item.status} />
+      </TableCell>
+      <TableCell className="py-4 text-right">
+        {isRejected ? (
+          <span className="text-sm text-gray-400">-</span>
+        ) : item.status === 'confirmed' ? (
           <Button
             size="sm"
             variant="ghost"
@@ -130,8 +140,14 @@ function BiddingRow({ item, onStatusUpdate, onDelete }: BiddingRowProps) {
           >
             <X className="h-4 w-4" />
           </Button>
-        </div>
-      </div>
-    </div>
+        ) : (
+          <ActionButtons
+            onConfirm={() => onStatusUpdate('confirmed')}
+            onDelete={onDelete}
+            status={item.status}
+          />
+        )}
+      </TableCell>
+    </TableRow>
   )
 }
