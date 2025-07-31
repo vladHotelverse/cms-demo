@@ -6,6 +6,18 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import type { RoomCustomizationTexts, ExactViewOption } from '../types'
 import { Button } from '@/components/ui/button'
 
+// Helper component for loyalty badge
+const LoyaltyBadge: React.FC<{
+  loyaltyPercentage?: number;
+  loyaltyText?: string;
+}> = ({ loyaltyPercentage = 10, loyaltyText = 'Loyalty' }) => {
+  return (
+    <div className="inline-flex items-center bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold">
+      <span>{loyaltyText} {loyaltyPercentage}%</span>
+    </div>
+  );
+};
+
 interface ViewCardProps {
   view: ExactViewOption
   isSelected: boolean
@@ -66,7 +78,7 @@ export const ViewCard: React.FC<ViewCardProps> = ({
               />
               {/* Zoom icon as visual cue */}
               {!isDisabled && (
-                <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full">
+                <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full">
                   <Icon icon="lucide:expand" className="h-5 w-5" />
                 </div>
               )}
@@ -80,6 +92,25 @@ export const ViewCard: React.FC<ViewCardProps> = ({
             />
           </DialogContent>
         </Dialog>
+        
+        {/* Price display with loyalty discount */}
+        {mode !== 'consultation' && (
+          <div className="absolute bottom-16 left-4 right-4">
+            <div className="bg-white/95 backdrop-blur px-3 py-2 rounded-lg flex items-center justify-between">
+              <div className="flex flex-col">
+                <div className="text-xs text-gray-500 line-through">
+                  {(view.price / 0.9).toFixed(2)} EUR
+                </div>
+                <div className="text-sm font-semibold text-green-600">
+                  {view.price.toFixed(2)} EUR per night
+                </div>
+              </div>
+              {view.price > 0 && (
+                <LoyaltyBadge loyaltyPercentage={10} loyaltyText="Loyalty" />
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Disabled overlay */}
         {isDisabled && (
@@ -105,7 +136,7 @@ export const ViewCard: React.FC<ViewCardProps> = ({
                 ? texts.removeText 
                 : isDisabled 
                   ? texts.optionDisabledText
-                  : `${texts.addForPriceText} ${view.price.toFixed(2)} EUR`}
+                  : `${Math.floor(Math.random() * 9) + 1} available`}
             </Button>
           </div>
         )}
