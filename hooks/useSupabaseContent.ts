@@ -41,7 +41,7 @@ export interface CustomizationOption {
 export interface SpecialOffer {
   id: string
   offer_code: string
-  name: Record<string, string> // Multilingual
+  title: Record<string, string> // Multilingual - changed from 'name' to 'title' to match API
   description?: Record<string, string> // Multilingual
   image: string // ABS expects "image" not "icon"
   price: number

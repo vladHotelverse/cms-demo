@@ -161,10 +161,6 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
   // Use provided selling points, or get room-specific points, or use defaults
   const currentSellingPoints = sellingPoints || getSellingPointsByRoomType(room.roomType);
-  
-  // Debug: Log the room type and selling points (remove in production)
-  console.log('Room Type:', room.roomType);
-  console.log('Selling Points:', currentSellingPoints);
 
   // Check if description needs truncation
   useEffect(() => {
@@ -413,7 +409,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         <div className="mb-2">
           {showSellingPoints ? (
             // Selling points list
-            <ul className="space-y-1">
+            <ul className="space-y-1 rounded-lg border bg-muted/50 p-3">
               {currentSellingPoints.map((point, index) => (
                 <li key={`selling-point-${room.id}-${index}`} className="flex items-start gap-2 text-sm">
                   <div className="w-1.5 h-1.5 bg-gray-700 rounded-full mt-2 flex-shrink-0" />

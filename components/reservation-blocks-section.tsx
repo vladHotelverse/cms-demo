@@ -151,6 +151,7 @@ function transformSpecialOffersToABS(offers: SpecialOffer[], currentLanguage: st
     return fallback;
   };
 
+
   // Use a more predictable ID generation approach
   return offers.map((offer, index) => {
     // Generate a consistent numeric ID based on the original string ID
@@ -177,7 +178,7 @@ function transformSpecialOffersToABS(offers: SpecialOffer[], currentLanguage: st
       numericId = 1000 + index;
     }
     
-    const offerName = getMultilingualValue(offer.name || {}, "Special Offer");
+    const offerName = getMultilingualValue(offer.title || {}, "Special Offer");
     const offerDescription = getMultilingualValue(offer.description || {}, "");
     // Handle price which might come as string from Supabase DECIMAL field
     // Check both base_price and price fields (ABS database uses base_price)
