@@ -1,4 +1,4 @@
-import { RequestedItemsData, RoomItem, ExtraItem, BiddingItem } from '@/data/reservation-items'
+import { RequestedItemsData, RoomItem, ExtraItem, BiddingItem, AllowedRoomType, RoomSelectionScenario, determineRoomScenario } from '@/data/reservation-items'
 import { RoomType } from '@/data/room-type-config'
 
 // Seeded random number generator for consistent results
@@ -36,11 +36,9 @@ class SeededRandom {
 
 // Room attributes by room type
 const ROOM_ATTRIBUTES: Record<string, string[]> = {
-  'Standard': ['City View', 'Garden View', 'Quiet Location', 'Near Elevator'],
-  'Superior': ['Partial Ocean View', 'Mountain View', 'Balcony', 'Corner Room', 'High Floor'],
-  'Deluxe': ['Ocean View', 'Balcony', 'Jacuzzi', 'Mini Bar', 'Work Desk', 'Sitting Area'],
-  'Suite': ['Ocean View', 'Balcony', 'Jacuzzi', 'Mini Bar', 'Living Room', 'Kitchenette', 'Work Area'],
-  'Presidential Suite': ['Panoramic Ocean View', 'Private Terrace', 'Jacuzzi', 'Full Bar', 'Living Room', 'Dining Room', 'Butler Service', 'Private Pool']
+  'Doble': ['City View', 'Garden View', 'Quiet Location', 'Near Elevator', 'King Bed'],
+  'Doble Deluxe': ['Partial Ocean View', 'Mountain View', 'Balcony', 'Corner Room', 'High Floor', 'King Bed'],
+  'Junior Suite': ['Ocean View', 'Balcony', 'Jacuzzi', 'Mini Bar', 'Living Room', 'King Bed', 'Work Area']
 }
 
 // Extra services categorized by type
@@ -107,21 +105,13 @@ const SERVICE_CATEGORIES = {
 
 // Room upgrade paths
 const ROOM_UPGRADES: Record<string, { target: string; attributes: string[] }> = {
-  'Standard': { 
-    target: 'Superior', 
+  'Doble': { 
+    target: 'Doble Deluxe', 
     attributes: ['Upgraded Room', 'Better View', 'More Space', 'Enhanced Amenities'] 
   },
-  'Superior': { 
-    target: 'Deluxe', 
-    attributes: ['Premium Room', 'Ocean View', 'Balcony Access', 'Luxury Bath'] 
-  },
-  'Deluxe': { 
-    target: 'Suite', 
+  'Doble Deluxe': { 
+    target: 'Junior Suite', 
     attributes: ['Suite Upgrade', 'Separate Living Area', 'Executive Benefits', 'VIP Treatment'] 
-  },
-  'Suite': { 
-    target: 'Presidential Suite', 
-    attributes: ['Presidential Upgrade', 'Butler Service', 'Private Terrace', 'Exclusive Access'] 
   }
 }
 
@@ -149,11 +139,14 @@ export function generateUniqueReservationItems(reservation: GenerateUniqueReserv
   
   // Extract count from extras (e.g., "5 reserved items" -> 5)
   const countMatch = reservation.extras.match(/^(\d+)\s+(reserved|reservados)/)
-  const requestedCount = countMatch ? parseInt(countMatch[1], 10) : 0
+  const rawCount = countMatch ? parseInt(countMatch[1], 10) : 0
   
-  if (requestedCount === 0) {
+  if (rawCount === 0) {
     return { rooms: [], extras: [], bidding: [] }
   }
+  
+  // Enforce maximum limit of 5 items
+  const requestedCount = Math.min(rawCount, 5)
 
   // Parse nights and dates
   const nights = parseInt(reservation.nights) || 1
@@ -223,11 +216,9 @@ function analyzeGuestProfile(reservation: GenerateUniqueReservationItemsInput, r
 
 function getRoomLevel(roomType: string): number {
   const levels: Record<string, number> = {
-    'Standard': 1,
-    'Superior': 2,
-    'Deluxe': 3,
-    'Suite': 4,
-    'Presidential Suite': 5
+    'Doble': 1,
+    'Doble Deluxe': 2,
+    'Junior Suite': 3
   }
   return levels[roomType] || 1
 }
@@ -296,16 +287,72 @@ function generateRoomItem(
   const floorBase = getRoomLevel(targetRoomType) + 2 // Higher categories on higher floors
   const roomNumber = `${floorBase}${rng.nextInt(10, 99)}`
   
-  // Select attributes
-  const availableAttributes = ROOM_ATTRIBUTES[targetRoomType] || ROOM_ATTRIBUTES.Standard
-  const attributeCount = Math.min(rng.nextInt(3, 5), availableAttributes.length)
-  const attributes: string[] = []
-  const attributesCopy = [...availableAttributes]
+  // First determine the scenario we want (before generating attributes)
+  const scenarioChoice = rng.nextInt(1, 4) // 1-4 for each scenario
+  let hasKey = false
+  let attributes: string[] = []
+  let alternatives: string[] = []
+  let showUpgradeArrow = false
+  let showKeyIcon = false
+  let showAlternatives = false
+  let showAttributes = false
+  let selectionScenario: RoomSelectionScenario
   
-  for (let i = 0; i < attributeCount; i++) {
-    const idx = rng.nextInt(0, attributesCopy.length - 1)
-    attributes.push(attributesCopy[idx])
-    attributesCopy.splice(idx, 1)
+  // Generate data based on chosen scenario
+  switch (scenarioChoice) {
+    case 1: // Scenario 1: Upgrade Only
+      hasKey = false
+      attributes = []
+      alternatives = [`${floorBase}${rng.nextInt(10, 99)}`, `${floorBase}${rng.nextInt(10, 99)}`]
+      showUpgradeArrow = !!upgrade
+      showKeyIcon = false
+      showAlternatives = true
+      showAttributes = false
+      selectionScenario = 'upgrade_only'
+      break
+      
+    case 2: // Scenario 2: Choose Your Room Only
+      hasKey = true
+      attributes = []
+      alternatives = []
+      showUpgradeArrow = false
+      showKeyIcon = true
+      showAlternatives = false
+      showAttributes = false
+      selectionScenario = 'choose_room_only'
+      // Remove upgrade for this scenario
+      break
+      
+    case 3: // Scenario 3: Choose Your Room + Upgrade
+      hasKey = true
+      attributes = []
+      alternatives = []
+      showUpgradeArrow = !!upgrade
+      showKeyIcon = true
+      showAlternatives = false
+      showAttributes = false
+      selectionScenario = 'choose_room_upgrade'
+      break
+      
+    case 4: // Scenario 4: Attribute Selection
+    default:
+      hasKey = false
+      // Generate attributes only for Scenario 4
+      const availableAttributes = ROOM_ATTRIBUTES[targetRoomType] || ROOM_ATTRIBUTES.Doble
+      const attributeCount = Math.min(rng.nextInt(3, 5), availableAttributes.length)
+      const attributesCopy = [...availableAttributes]
+      for (let i = 0; i < attributeCount; i++) {
+        const idx = rng.nextInt(0, attributesCopy.length - 1)
+        attributes.push(attributesCopy[idx])
+        attributesCopy.splice(idx, 1)
+      }
+      alternatives = [`${floorBase}${rng.nextInt(10, 99)}`, `${floorBase}${rng.nextInt(10, 99)}`]
+      showUpgradeArrow = false
+      showKeyIcon = false
+      showAlternatives = true
+      showAttributes = true
+      selectionScenario = 'attribute_selection'
+      break
   }
   
   // Calculate price (base room price + nights)
@@ -323,14 +370,18 @@ function generateRoomItem(
     return `${day}/${month}/${year}`
   }
   
+  // For Scenario 2, remove upgrade info to avoid conflicts
+  const finalTargetRoomType = (selectionScenario === 'choose_room_only') ? roomType : targetRoomType
+  const finalOriginalRoomType = (selectionScenario === 'choose_room_only') ? null : (upgrade ? roomType : null)
+  
   return {
     id: `room-${reservation.id}-${rng.nextInt(1000, 9999)}`,
-    roomType: targetRoomType,
-    originalRoomType: upgrade ? roomType : null,
+    roomType: finalTargetRoomType as AllowedRoomType,
+    originalRoomType: finalOriginalRoomType as AllowedRoomType | null,
     roomNumber,
     attributes,
-    hasKey: rng.next() > 0.5,
-    alternatives: [`${floorBase}${rng.nextInt(10, 99)}`],
+    hasKey,
+    alternatives,
     price: totalPrice,
     status: rng.next() > 0.3 ? 'confirmed' : 'pending_hotel',
     includesHotels: true,
@@ -339,7 +390,12 @@ function generateRoomItem(
     dateRequested: formatCompactDate(new Date(checkInDate.getTime() - rng.nextInt(1, 14) * 24 * 60 * 60 * 1000)),
     checkIn: formatCompactDate(checkInDate),
     checkOut: formatCompactDate(checkOutDate),
-    nights
+    nights,
+    selectionScenario,
+    showUpgradeArrow,
+    showKeyIcon,
+    showAlternatives,
+    showAttributes
   }
 }
 
@@ -353,7 +409,7 @@ function generateBiddingItem(
 ): BiddingItem {
   const roomType = reservation.roomType
   const upgrade = ROOM_UPGRADES[roomType]
-  const targetRoomType = upgrade ? upgrade.target : 'Presidential Suite'
+  const targetRoomType = upgrade ? upgrade.target : 'Junior Suite'
   
   // Generate bidding details
   const floorBase = getRoomLevel(targetRoomType) + 3
@@ -396,8 +452,8 @@ function generateBiddingItem(
   
   return {
     id: `bid-${reservation.id}-${rng.nextInt(1000, 9999)}`,
-    pujaType: targetRoomType,
-    originalRoomType: roomType,
+    pujaType: `${targetRoomType} Upgrade`,
+    originalRoomType: roomType as AllowedRoomType,
     pujaNumber: biddingNumber,
     roomNumber,
     hasKey: false,
@@ -598,11 +654,9 @@ function generateExtraItems(
 
 function getRoomBasePrice(roomType: string): number {
   const prices: Record<string, number> = {
-    'Standard': 120,
-    'Superior': 180,
-    'Deluxe': 280,
-    'Suite': 450,
-    'Presidential Suite': 800
+    'Doble': 120,
+    'Doble Deluxe': 180,
+    'Junior Suite': 280
   }
   return prices[roomType] || 120
 }

@@ -82,10 +82,18 @@ export const ActionButtons = ({ onConfirm, onDelete, status, loading }: ActionBu
 interface AttributesCellProps {
   attributes: string[]
   label?: string
+  showAttributes?: boolean
 }
 
-export const AttributesCell = ({ attributes, label = "Attributes" }: AttributesCellProps) => {
-  if (!attributes || attributes.length === 0) return <span className="text-sm text-gray-400">-</span>
+export const AttributesCell = ({ 
+  attributes, 
+  label = "Attributes", 
+  showAttributes = true 
+}: AttributesCellProps) => {
+  // If showAttributes is false, always show dash
+  if (!showAttributes || !attributes || attributes.length === 0) {
+    return <span className="text-sm text-gray-400">-</span>
+  }
 
   return (
     <TooltipProvider>
@@ -117,16 +125,24 @@ interface RoomNumberCellProps {
   roomNumber: string
   hasKey?: boolean
   alternatives?: string[]
+  showKeyIcon?: boolean
+  showAlternatives?: boolean
 }
 
-export const RoomNumberCell = ({ roomNumber, hasKey = false, alternatives = [] }: RoomNumberCellProps) => {
+export const RoomNumberCell = ({ 
+  roomNumber, 
+  hasKey = false, 
+  alternatives = [], 
+  showKeyIcon = hasKey,
+  showAlternatives = alternatives.length > 0 && !hasKey 
+}: RoomNumberCellProps) => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-2">
         <span className="font-medium text-gray-900">{roomNumber}</span>
-        {hasKey && <Key className="h-3 w-3 text-green-600" />}
+        {showKeyIcon && hasKey && <Key className="h-3 w-3 text-green-600" />}
       </div>
-      {alternatives.length > 0 && !hasKey && (
+      {showAlternatives && alternatives.length > 0 && (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -157,13 +173,21 @@ interface RoomTypeCellProps {
   roomType: string
   originalRoomType?: string | null
   upgradeLabel?: string
+  showUpgradeArrow?: boolean
 }
 
-export const RoomTypeCell = ({ roomType, originalRoomType, upgradeLabel = "Room Upgrade" }: RoomTypeCellProps) => {
-  if (!originalRoomType) {
+export const RoomTypeCell = ({ 
+  roomType, 
+  originalRoomType, 
+  upgradeLabel = "Room Upgrade",
+  showUpgradeArrow = !!originalRoomType 
+}: RoomTypeCellProps) => {
+  // No upgrade arrow - just show room type
+  if (!showUpgradeArrow || !originalRoomType) {
     return <span className="font-medium text-gray-900">{roomType}</span>
   }
 
+  // Show upgrade arrow with tooltip
   return (
     <TooltipProvider>
       <Tooltip>

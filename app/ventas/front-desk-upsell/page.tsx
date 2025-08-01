@@ -93,7 +93,7 @@ export default function FrontDeskUpsellPage() {
   useEffect(() => {
     const generateMockData = () => {
       const mockOrders: OrderFromAPI[] = []
-      const roomTypes = ['Standard', 'Superior', 'Deluxe', 'Suite', 'Presidential Suite']
+      const roomTypes = ['Doble', 'Doble Deluxe', 'Junior Suite']
       const guestNames = [
         'John Smith', 'Maria Garcia', 'David Wilson', 'Sarah Johnson', 'Michael Brown', 'Emma Davis', 'James Miller', 'Lisa Anderson',
         'Robert Taylor', 'Jennifer White', 'William Jones', 'Ashley Martinez', 'Christopher Lee', 'Jessica Thompson', 'Daniel Clark',
@@ -106,9 +106,9 @@ export default function FrontDeskUpsellPage() {
       const emailDomains = ['gmail.com', 'hotmail.com', 'yahoo.com', 'outlook.com', 'icloud.com']
       const occupancies = ['1/0/0', '2/0/0', '2/1/0', '3/0/0', '4/0/0', '2/2/0', '3/1/0', '4/2/0']
       const extrasTypes = [
-        '2 reserved items', '5 reserved items', '1 reserved item', '8 reserved items', '3 reserved items',
+        '2 reserved items', '5 reserved items', '1 reserved item', '4 reserved items', '3 reserved items',
         'Recommend', 'Recommend', 'Recommend', 'Recommend', 'Recommend', 'Recommend',
-        '12 reserved items', '15 reserved items', '7 reserved items', '20 reserved items'
+        '5 reserved items', '4 reserved items', '3 reserved items', '5 reserved items'
       ]
       
       for (let i = 1; i <= 50; i++) {
