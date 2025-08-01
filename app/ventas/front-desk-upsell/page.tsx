@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback, useMemo } from "react"
-import { ChevronUp, ChevronDown, X } from "lucide-react"
+import { useState, useEffect } from "react"
+import { ChevronUp, ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -15,17 +15,37 @@ import { FrontDeskHeader } from "@/components/front-desk-header"
 import ReservationDetailsTab from "@/components/reservation-details-tab"
 import { ReservationSummaryModal } from "@/components/reservation-summary-modal"
 import { cn } from "@/lib/utils/index"
-import { useReservationStore } from "@/store/use-reservation-store"
-import type { Reservation } from "@/types/reservation"
-import { DataStateWrapper } from "@/components/ui/data-state-wrapper"
-import { subscribeToOrders, unsubscribeAll } from "@/lib/supabase/realtime"
-import type { OrderUpdate } from "@/lib/supabase/realtime"
 
 
 
 
 type SortField = "locator" | "name" | "checkIn" | "nights" | "roomType" | "extras"
 type SortDirection = "asc" | "desc"
+
+const SortableHeader = ({ 
+  field, 
+  children, 
+  sortField, 
+  sortDirection, 
+  onSort 
+}: { 
+  field: SortField
+  children: React.ReactNode
+  sortField: SortField
+  sortDirection: SortDirection
+  onSort: (field: SortField) => void
+}) => (
+  <TableHead className="cursor-pointer select-none" onClick={() => onSort(field)}>
+    <div className="flex items-center gap-1">
+      {children}
+      {sortField === field && (
+        <span className="text-xs">
+          {sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+        </span>
+      )}
+    </div>
+  </TableHead>
+)
 
 interface OrderFromAPI {
   id: string
@@ -68,97 +88,68 @@ export default function FrontDeskUpsellPage() {
     setTimeout(() => setAlert(null), 4000)
   }
 
-  // Handle real-time order updates
-  const handleOrderUpdate = useCallback((update: OrderUpdate) => {
-    console.log('Received order update:', update)
-    
-    switch (update.type) {
-      case 'INSERT':
-        // Add new order to the list
-        setOrders(prevOrders => {
-          // Format date to DD/MM/YYYY
-          const checkInDate = new Date(update.order.check_in)
-          const formattedCheckIn = `${checkInDate.getDate().toString().padStart(2, '0')}/${(checkInDate.getMonth() + 1).toString().padStart(2, '0')}/${checkInDate.getFullYear()}`
-          
-          const newOrder = {
-            id: update.order.id,
-            locator: update.order.reservation_code || `loc-${update.order.id.slice(0, 8)}`,
-            name: update.order.user_name || 'Guest',
-            email: update.order.user_email,
-            checkIn: formattedCheckIn,
-            nights: update.order.check_out ? 
-              Math.ceil((new Date(update.order.check_out).getTime() - new Date(update.order.check_in).getTime()) / (1000 * 60 * 60 * 24)).toString() : 
-              '3',
-            roomType: update.order.room_type,
-            aci: update.order.occupancy || '2/0/0',
-            status: 'New',
-            extras: update.order.total_price?.toString() || '0',
-            extrasCount: update.order.order_items?.length || 0,
-            hasExtras: (update.order.order_items?.length || 0) > 0,
-            hasHotelverseRequest: true,
-            orderItems: update.order.order_items || [],
-            proposals: update.order.hotel_proposals || []
-          }
-          
-          // Show notification using setTimeout to avoid dependency issues
-          setTimeout(() => {
-            setAlert({ type: 'success', message: `New order from ${newOrder.name}!` })
-            setTimeout(() => setAlert(null), 4000)
-          }, 0)
-          
-          return [newOrder, ...prevOrders]
+
+  // Generate mock test data
+  useEffect(() => {
+    const generateMockData = () => {
+      const mockOrders: OrderFromAPI[] = []
+      const roomTypes = ['Standard', 'Superior', 'Deluxe', 'Suite', 'Presidential Suite']
+      const guestNames = [
+        'John Smith', 'Maria Garcia', 'David Wilson', 'Sarah Johnson', 'Michael Brown', 'Emma Davis', 'James Miller', 'Lisa Anderson',
+        'Robert Taylor', 'Jennifer White', 'William Jones', 'Ashley Martinez', 'Christopher Lee', 'Jessica Thompson', 'Daniel Clark',
+        'Amanda Rodriguez', 'Matthew Lewis', 'Michelle Walker', 'Joseph Hall', 'Stephanie Allen', 'Ryan Young', 'Nicole King',
+        'Andrew Wright', 'Rachel Lopez', 'Kevin Hill', 'Laura Scott', 'Brian Green', 'Kimberly Adams', 'Steven Baker', 'Rebecca Nelson',
+        'Thomas Carter', 'Donna Mitchell', 'Charles Perez', 'Catherine Roberts', 'Mark Turner', 'Sandra Phillips', 'Paul Campbell',
+        'Carol Parker', 'Donald Evans', 'Sharon Edwards', 'Kenneth Collins', 'Betty Stewart', 'Joshua Sanchez', 'Helen Morris',
+        'Jason Rogers', 'Deborah Reed', 'Frank Cook', 'Maria Morales', 'Gregory Murphy', 'Ruth Bailey'
+      ]
+      const emailDomains = ['gmail.com', 'hotmail.com', 'yahoo.com', 'outlook.com', 'icloud.com']
+      const occupancies = ['1/0/0', '2/0/0', '2/1/0', '3/0/0', '4/0/0', '2/2/0', '3/1/0', '4/2/0']
+      const extrasTypes = [
+        '2 reserved items', '5 reserved items', '1 reserved item', '8 reserved items', '3 reserved items',
+        'Recommend', 'Recommend', 'Recommend', 'Recommend', 'Recommend', 'Recommend',
+        '12 reserved items', '15 reserved items', '7 reserved items', '20 reserved items'
+      ]
+      
+      for (let i = 1; i <= 50; i++) {
+        const guestName = guestNames[i - 1] || `Guest ${i}`
+        const emailName = guestName.toLowerCase().replace(/\s+/g, '.')
+        const emailDomain = emailDomains[i % emailDomains.length]
+        const checkInDate = new Date()
+        checkInDate.setDate(checkInDate.getDate() + Math.floor(Math.random() * 30) - 15)
+        const formattedCheckIn = `${checkInDate.getDate().toString().padStart(2, '0')}/${(checkInDate.getMonth() + 1).toString().padStart(2, '0')}/${checkInDate.getFullYear()}`
+        const nights = Math.floor(Math.random() * 7) + 1
+        const extras = extrasTypes[i % extrasTypes.length]
+        
+        mockOrders.push({
+          id: `order-${i.toString().padStart(3, '0')}`,
+          locator: `LOC${(1000 + i).toString()}`,
+          name: guestName,
+          email: `${emailName}@${emailDomain}`,
+          checkIn: formattedCheckIn,
+          nights: nights.toString(),
+          roomType: roomTypes[i % roomTypes.length],
+          aci: occupancies[i % occupancies.length],
+          status: i % 3 === 0 ? 'Confirmed' : 'New',
+          extras: extras,
+          extrasCount: extras.includes('reserved') ? parseInt(extras.split(' ')[0]) : 0,
+          hasExtras: extras.includes('reserved'),
+          hasHotelverseRequest: Math.random() > 0.3,
+          orderItems: [],
+          proposals: []
         })
-        break
-        
-      case 'UPDATE':
-        // Update existing order
-        setOrders(prevOrders => 
-          prevOrders.map(order => 
-            order.id === update.order.id 
-              ? { ...order, status: update.order.status === 'confirmed' ? 'New' : update.order.status }
-              : order
-          )
-        )
-        break
-        
-      case 'DELETE':
-        // Remove order from list
-        setOrders(prevOrders => prevOrders.filter(order => order.id !== update.id))
-        break
+      }
+      
+      setOrders(mockOrders)
+      setLoading(false)
     }
+
+    setLoading(true)
+    // Simulate loading time
+    setTimeout(generateMockData, 1000)
   }, [])
 
-  // Fetch orders from Supabase API and set up real-time subscriptions
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/orders?status=confirmed')
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders')
-        }
-        const data = await response.json()
-        setOrders(data)
-      } catch (error) {
-        console.error('Error fetching orders:', error)
-        showAlert('error', 'Failed to load orders. Please refresh the page.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchOrders()
-    
-    // Set up real-time subscription
-    subscribeToOrders(handleOrderUpdate)
-    
-    // Cleanup on unmount
-    return () => {
-      unsubscribeAll()
-    }
-  }, [handleOrderUpdate])
-
-  // Use the orders from Supabase
+  // Use the mock orders
   const reservations = orders
 
   // Calculate total commission from reservations with extras
@@ -281,18 +272,6 @@ export default function FrontDeskUpsellPage() {
     }
   }
 
-  const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <TableHead className="cursor-pointer select-none" onClick={() => handleSort(field)}>
-      <div className="flex items-center gap-1">
-        {children}
-        {sortField === field && (
-          <span className="text-xs">
-            {sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-          </span>
-        )}
-      </div>
-    </TableHead>
-  )
 
   return (
     <div className="w-full h-full">
@@ -354,13 +333,13 @@ export default function FrontDeskUpsellPage() {
               <Table>
                 <TableHeader className="bg-gray-50">
                   <TableRow>
-                    <SortableHeader field="locator">{t("locator")}</SortableHeader>
-                    <SortableHeader field="name">{t("guest")}</SortableHeader>
+                    <SortableHeader field="locator" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("locator")}</SortableHeader>
+                    <SortableHeader field="name" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("guest")}</SortableHeader>
                     <TableHead>A / C / I</TableHead>
-                    <SortableHeader field="roomType">{t("roomType")}</SortableHeader>
-                    <SortableHeader field="checkIn">{t("checkIn")}</SortableHeader>
-                    <SortableHeader field="nights">{t("nights")}</SortableHeader>
-                    <SortableHeader field="extras">Extras</SortableHeader>
+                    <SortableHeader field="roomType" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("roomType")}</SortableHeader>
+                    <SortableHeader field="checkIn" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("checkIn")}</SortableHeader>
+                    <SortableHeader field="nights" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("nights")}</SortableHeader>
+                    <SortableHeader field="extras" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>Extras</SortableHeader>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -450,7 +429,10 @@ export default function FrontDeskUpsellPage() {
           .filter(tab => tab.id.startsWith('summary_'))
           .map(tab => (
             <TabsContent key={tab.id} value={tab.id} className="mt-0">
-              <ReservationSummaryModal reservation={tab.reservation} />
+              <ReservationSummaryModal 
+                reservation={tab.reservation} 
+                onCloseTab={() => handleCloseTab(tab.id)}
+              />
             </TabsContent>
           ))}
       </Tabs>

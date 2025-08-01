@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Star, Coins } from "lucide-react"
+import { Star, Coins, ArrowLeft } from "lucide-react"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { Recommendation } from "@/data/recommendations"
@@ -26,9 +26,10 @@ interface RecommendationsHeaderProps {
   }
   recommendations?: Recommendation[]
   onViewFullCatalog?: () => void
+  onCloseTab?: () => void
 }
 
-export function RecommendationsHeader({ reservation, recommendations, onViewFullCatalog }: RecommendationsHeaderProps) {
+export function RecommendationsHeader({ reservation, recommendations, onViewFullCatalog, onCloseTab }: RecommendationsHeaderProps) {
   const { t } = useReservationTranslations()
   const { acceptedRecommendations } = useReservationSummaryStore()
   const [selectedSegment, setSelectedSegment] = useState("loyalty2")
@@ -46,7 +47,18 @@ export function RecommendationsHeader({ reservation, recommendations, onViewFull
 
   return (
     <div className="space-y-4">
-      <h1 className="text-3xl font-bold tracking-tight">{t('recommendedServices')}</h1>
+      <div className="flex items-center gap-3">
+        <Button 
+          variant="default" 
+          size="sm"
+          onClick={onCloseTab}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t('back')}
+        </Button>
+        <h1 className="text-3xl font-bold tracking-tight">{t('recommendedServices')}</h1>
+      </div>
       
       {/* Booking Information Bar - Similar to items preview but as part of recommendations */}
       <div className="flex items-start justify-between">

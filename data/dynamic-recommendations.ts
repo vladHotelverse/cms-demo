@@ -160,15 +160,19 @@ export const createReservationContext = (
   aci: string, // Adult/Child/Infant format like "2/1/0"
   checkInDate: Date = new Date()
 ): ReservationContext => {
-  const [adults, children, infants] = aci.split('/').map(Number)
-  const totalGuests = adults + children + infants
+  const [adults, children, infants] = aci.split('/').map(n => parseInt(n) || 0)
+  const totalGuests = Math.max(1, adults + children + infants) // Ensure at least 1 guest
+  
+  // Ensure we have a valid room type
+  const validRoomTypes: RoomType[] = ['Standard', 'Superior', 'Deluxe', 'Suite', 'Presidential Suite']
+  const validRoomType = validRoomTypes.includes(roomType) ? roomType : 'Standard'
   
   return {
-    roomType,
-    nights,
+    roomType: validRoomType,
+    nights: Math.max(1, nights), // Ensure at least 1 night
     guests: totalGuests,
     checkInDate,
-    isBusinessGuest: roomType === 'Deluxe' || roomType === 'Suite' || roomType === 'Presidential Suite',
+    isBusinessGuest: validRoomType === 'Deluxe' || validRoomType === 'Suite' || validRoomType === 'Presidential Suite',
     isCouple: adults === 2 && children === 0 && infants === 0,
     hasChildren: children > 0 || infants > 0
   }

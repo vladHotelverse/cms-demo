@@ -88,7 +88,7 @@ export function FrontDeskHeader({
 													onCloseTab(tab.id);
 												}
 											}}
-											className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded-full p-1 cursor-pointer"
+											className="hover:bg-gray-200 rounded-full p-1 cursor-pointer"
 										>
 											<X className="h-3 w-3" />
 										</span>

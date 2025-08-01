@@ -71,11 +71,17 @@ export const roomTypeConfigs: Record<RoomType, RoomTypeConfig> = {
 }
 
 export const getRoomTypeConfig = (roomType: RoomType): RoomTypeConfig => {
-  return roomTypeConfigs[roomType]
+  const config = roomTypeConfigs[roomType]
+  if (!config) {
+    console.warn(`Room type config not found for: ${roomType}, falling back to Standard`)
+    return roomTypeConfigs['Standard']
+  }
+  return config
 }
 
 export const getAvailableUpgrades = (currentRoomType: RoomType): RoomType[] => {
-  const currentLevel = roomTypeConfigs[currentRoomType].level
+  const currentConfig = getRoomTypeConfig(currentRoomType)
+  const currentLevel = currentConfig.level
   return Object.values(roomTypeConfigs)
     .filter(config => config.level > currentLevel)
     .map(config => config.id)

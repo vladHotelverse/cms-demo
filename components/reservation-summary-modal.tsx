@@ -6,6 +6,7 @@ import { generateDynamicRecommendations, createReservationContext } from "@/data
 import { generateLimitedReservationItems } from "@/data/limited-reservation-items"
 import { RoomType } from "@/data/room-type-config"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
+import { generateUniqueReservationItems } from "@/utils/generate-unique-reservation-items"
 
 // Import view components
 import { RequestedItemsView } from "./reservation-summary/requested-items-view"
@@ -26,20 +27,29 @@ interface ReservationSummaryModalProps {
     extras: string
     hasHotelverseRequest: boolean
   }
+  onCloseTab?: () => void
 }
 
-export function ReservationSummaryModal({ reservation }: ReservationSummaryModalProps) {
+export function ReservationSummaryModal({ reservation, onCloseTab }: ReservationSummaryModalProps) {
   const { t: tLang } = useLanguage()
   const { showDetailedView } = useReservationSummaryStore()
   const hasItems = reservation.extras.includes(tLang("reserved"))
 
   // Generate dynamic data based on reservation (memoized to prevent infinite re-renders)
-  const reservationContext = useMemo(() => createReservationContext(
-    reservation.roomType as RoomType,
-    parseInt(reservation.nights),
-    reservation.aci,
-    new Date(reservation.checkIn)
-  ), [reservation.roomType, reservation.nights, reservation.aci, reservation.checkIn])
+  const reservationContext = useMemo(() => {
+    // Parse check-in date safely (DD/MM/YYYY format)
+    const dateParts = reservation.checkIn.split('/')
+    const checkInDate = dateParts.length === 3 
+      ? new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]))
+      : new Date()
+    
+    return createReservationContext(
+      reservation.roomType as RoomType,
+      parseInt(reservation.nights),
+      reservation.aci,
+      checkInDate
+    )
+  }, [reservation.roomType, reservation.nights, reservation.aci, reservation.checkIn])
   
   const dynamicRecommendations = useMemo(() => 
     generateDynamicRecommendations(reservationContext), 
@@ -51,68 +61,75 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
     [reservationContext, reservation.extras]
   )
 
-  // Convert Supabase orderItems to the format expected by the store
-  const supabaseRequestedItems = useMemo(() => {
+  // Get the actual requested items data (static or from Supabase)
+  const actualRequestedItems = useMemo(() => {
     const reservationWithItems = reservation as any
-    console.log('🔍 Reservation data in modal:', {
-      name: reservationWithItems.name,
-      extras: reservationWithItems.extras,
-      hasOrderItems: !!reservationWithItems.orderItems,
-      orderItemsCount: reservationWithItems.orderItems?.length || 0,
-      orderItems: reservationWithItems.orderItems
-    })
     
-    if (!reservationWithItems.orderItems || reservationWithItems.orderItems.length === 0) {
-      console.log('⚠️ No order items found, using dynamic recommendations')
-      return dynamicReservationItems
-    }
+    // If we have actual Supabase order items, use those
+    if (reservationWithItems.orderItems && reservationWithItems.orderItems.length > 0) {
+      const nights = parseInt(reservation.nights) || 1
+      const extras = reservationWithItems.orderItems.map((item: any) => {
+        const basePrice = item.price * (item.quantity || 1)
+        
+        // Format price based on item type and context
+        let priceDisplay = basePrice
+        let description = item.description
+        
+        // For items that are typically per-night, show per-night pricing
+        if (item.type === 'customization' && nights > 1) {
+          const perNightPrice = basePrice / nights
+          description += ` (${perNightPrice.toFixed(2)}€ per night × ${nights} nights)`
+        } else if (item.quantity > 1) {
+          const unitPrice = item.price
+          description += ` (${unitPrice}€ × ${item.quantity} units)`
+        }
+        
+        return {
+          id: item.id,
+          name: item.name,
+          description: description,
+          price: priceDisplay,
+          status: 'confirmed' as const,
+          includesHotels: true,
+          agent: 'Online',
+          commission: 0,
+          dateRequested: new Date().toISOString().split('T')[0],
+          units: item.quantity || 1,
+          type: (item.type === 'customization' ? 'service' : 'amenity') as 'service' | 'amenity' | 'transfer',
+          serviceDate: reservation.checkIn
+        }
+      })
 
-    // Convert actual order items from Supabase to RequestedItemsData format
-    const nights = parseInt(reservation.nights) || 1
-    const extras = reservationWithItems.orderItems.map((item: any) => {
-      const basePrice = item.price * (item.quantity || 1)
-      
-      // Format price based on item type and context
-      let priceDisplay = basePrice
-      let description = item.description
-      
-      // For items that are typically per-night, show per-night pricing
-      if (item.type === 'customization' && nights > 1) {
-        const perNightPrice = basePrice / nights
-        description += ` (${perNightPrice.toFixed(2)}€ per night × ${nights} nights)`
-      } else if (item.quantity > 1) {
-        const unitPrice = item.price
-        description += ` (${unitPrice}€ × ${item.quantity} units)`
-      }
-      
       return {
-        id: item.id,
-        name: item.name,
-        description: description,
-        price: priceDisplay,
-        status: 'confirmed' as const,
-        includesHotels: true
+        rooms: [], // No room items from Supabase data in this context
+        extras,
+        bidding: [] // No bidding items from Supabase data in this context
       }
-    })
-
-    return {
-      extras,
-      upsell: [],
-      atributos: []
     }
-  }, [reservation, dynamicReservationItems])
+    
+    // For demo/mock data, use the new unique generator
+    const hasReservedItems = reservation.extras.includes(tLang("reserved"))
+    if (hasReservedItems) {
+      // Use the new generator to create unique items for this reservation
+      return generateUniqueReservationItems(reservation)
+    }
+    
+    // Fallback to empty data if no reserved items
+    return { rooms: [], extras: [], bidding: [] }
+  }, [reservation, tLang])
 
-  // Initialize store with actual Supabase data on mount
+  // Initialize store with actual requested items data on mount
   useEffect(() => {
-    useReservationSummaryStore.setState({ requestedItems: supabaseRequestedItems })
-  }, [reservation.id, supabaseRequestedItems])
+    useReservationSummaryStore.setState({ requestedItems: actualRequestedItems })
+  }, [actualRequestedItems])
 
   // Route to appropriate view component
   if (hasItems) {
     return (
       <RequestedItemsView 
         reservation={reservation} 
-        dynamicReservationItems={dynamicReservationItems} 
+        dynamicReservationItems={actualRequestedItems}
+        onCloseTab={onCloseTab} 
       />
     )
   }
@@ -121,10 +138,11 @@ export function ReservationSummaryModal({ reservation }: ReservationSummaryModal
     return (
       <RecommendationsView 
         reservation={reservation} 
-        dynamicRecommendations={dynamicRecommendations} 
+        dynamicRecommendations={dynamicRecommendations}
+        onCloseTab={onCloseTab} 
       />
     )
   }
 
-  return <DetailedCatalogView reservation={reservation} />
+  return <DetailedCatalogView reservation={reservation} onCloseTab={onCloseTab} />
 }

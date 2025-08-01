@@ -16,14 +16,15 @@ interface DetailedCatalogViewProps {
     extras: string
     hasHotelverseRequest: boolean
   }
+  onCloseTab?: () => void
 }
 
-export function DetailedCatalogView({ reservation }: DetailedCatalogViewProps) {
+export function DetailedCatalogView({ reservation, onCloseTab }: DetailedCatalogViewProps) {
   return (
     <ReservationDetailsTab
       reservation={reservation}
       onShowAlert={() => {}}
-      onCloseTab={() => {}}
+      onCloseTab={onCloseTab || (() => {})}
       isInReservationMode={false}
     />
   )

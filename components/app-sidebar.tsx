@@ -393,7 +393,7 @@ export default function AppSidebar() {
 					</div>
 					<div>
 						<span className="font-semibold text-base block">Hotelverse</span>
-						<span className="text-xs text-muted-foreground block">CMS</span>
+						<span className="text-xs text-muted-foreground block">Sales</span>
 					</div>
 				</div>
 			</SidebarHeader>

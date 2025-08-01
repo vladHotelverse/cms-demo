@@ -13,14 +13,14 @@ const getConsistentAgentData = (basePrice: number, selectedAgent: string) => {
   }
 }
 
-export const generateDynamicReservationItems = (context: ReservationContext): RequestedItemsData => {
+export const generateDynamicReservationItems = (context: ReservationContext) => {
   const { roomType, nights, hasChildren, isBusinessGuest, isCouple } = context
   const roomConfig = getRoomTypeConfig(roomType)
   
   // Select ONE agent for ALL items in this reservation
   const selectedAgent = AGENTS[Math.floor(Math.random() * AGENTS.length)]
   
-  const items: RequestedItemsData = {
+  const items = {
     extras: generateExtrasForRoom(context, selectedAgent),
     upsell: generateUpsellForRoom(context, selectedAgent),
     atributos: generateAttributesForRoom(context, selectedAgent)
@@ -267,6 +267,17 @@ const getUpgradePriceForRoom = (roomType: RoomType): number => {
     case 'Suite': return 455 // to Presidential
     case 'Presidential Suite': return 0 // No upgrade available
     default: return 0
+  }
+}
+
+export const getUpgradeTargetRoom = (currentRoomType: RoomType): RoomType | null => {
+  switch (currentRoomType) {
+    case 'Standard': return 'Superior'
+    case 'Superior': return 'Deluxe'
+    case 'Deluxe': return 'Suite'
+    case 'Suite': return 'Presidential Suite'
+    case 'Presidential Suite': return null // No upgrade available
+    default: return null
   }
 }
 

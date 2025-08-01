@@ -34,7 +34,7 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
 
       {/* Items grouped by type - Only show categories with items */}
       {Object.entries(items)
-        .filter(([category, categoryItems]) => categoryItems.length > 0)
+        .filter(([, categoryItems]) => categoryItems.length > 0)
         .map(([category, categoryItems]) => {
         const config = categoryConfig[category as keyof typeof categoryConfig]
         
@@ -53,7 +53,7 @@ export function RequestedItemsTable({ items }: RequestedItemsTableProps) {
             </div>
             
             {/* Category Items */}
-            {categoryItems.map((item) => (
+            {categoryItems.map((item: RequestedItem) => (
               <RequestedItemRow 
                 key={item.id} 
                 item={item} 
