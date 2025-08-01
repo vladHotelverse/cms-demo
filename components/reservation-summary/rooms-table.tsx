@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { User, MoreHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { RoomItem } from "@/data/reservation-items"
+import { validateRoomConfiguration } from "@/data/reservation-items"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import {
   ActionButtons,
@@ -22,10 +23,19 @@ interface RoomsTableProps {
   items: RoomItem[]
 }
 
+// Local validation wrapper that returns boolean for filtering
+const isValidRoomConfiguration = (item: RoomItem): boolean => {
+  const validation = validateRoomConfiguration(item)
+  return validation.isValid
+}
+
 export function RoomsTable({ items }: RoomsTableProps) {
   const { updateItemStatus, deleteItem } = useReservationSummaryStore()
 
   if (!items || items.length === 0) return null
+  
+  // Filter out invalid configurations
+  const validItems = items.filter(isValidRoomConfiguration)
 
   return (
     <Card className="shadow-sm">
@@ -61,7 +71,7 @@ export function RoomsTable({ items }: RoomsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {items.map((item) => (
+              {validItems.map((item) => (
                 <RoomRow 
                   key={item.id} 
                   item={item} 
@@ -101,6 +111,7 @@ function RoomRow({ item, onStatusUpdate, onDelete }: RoomRowProps) {
         <RoomTypeCell 
           roomType={item.roomType}
           originalRoomType={item.originalRoomType}
+          showUpgradeArrow={item.showUpgradeArrow}
         />
       </TableCell>
       <TableCell className="py-4">
@@ -108,12 +119,15 @@ function RoomRow({ item, onStatusUpdate, onDelete }: RoomRowProps) {
           roomNumber={item.roomNumber || '101'}
           hasKey={item.hasKey || false}
           alternatives={item.alternatives || []}
+          showKeyIcon={item.showKeyIcon}
+          showAlternatives={item.showAlternatives}
         />
       </TableCell>
       <TableCell className="py-4">
         <AttributesCell 
           attributes={item.attributes || []}
           label="Room Attributes"
+          showAttributes={item.showAttributes}
         />
       </TableCell>
       <TableCell className="py-4 text-sm">
