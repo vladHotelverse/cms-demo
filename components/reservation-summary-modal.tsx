@@ -4,9 +4,9 @@ import { useEffect, useMemo } from "react"
 import { useLanguage } from "@/contexts/language-context"
 import { generateDynamicRecommendations, createReservationContext } from "@/data/dynamic-recommendations"
 import { generateLimitedReservationItems } from "@/data/limited-reservation-items"
-import { RequestedItemsData, requestedItemsData } from "@/data/reservation-items"
 import { RoomType } from "@/data/room-type-config"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
+import { generateUniqueReservationItems } from "@/utils/generate-unique-reservation-items"
 
 // Import view components
 import { RequestedItemsView } from "./reservation-summary/requested-items-view"
@@ -107,43 +107,21 @@ export function ReservationSummaryModal({ reservation, onCloseTab }: Reservation
       }
     }
     
-    // For demo/mock data, use the static data but respect the count in the button
+    // For demo/mock data, use the new unique generator
     const hasReservedItems = reservation.extras.includes(tLang("reserved"))
     if (hasReservedItems) {
-      // Extract the number from "X reserved items" and slice the static data accordingly
-      const countMatch = reservation.extras.match(/^(\d+)\s+(reserved|reservados)/)
-      const requestedCount = countMatch ? parseInt(countMatch[1], 10) : 0
-      
-      if (requestedCount > 0) {
-        // Take the exact number of items from static data
-        const allStaticItems = [
-          ...requestedItemsData.rooms,
-          ...requestedItemsData.extras,
-          ...requestedItemsData.bidding
-        ]
-        
-        // Take only the requested number of items
-        const selectedItems = allStaticItems.slice(0, requestedCount)
-        
-        // Distribute back into categories
-        const result: RequestedItemsData = {
-          rooms: selectedItems.filter(item => 'roomType' in item) as any[],
-          extras: selectedItems.filter(item => 'name' in item && 'units' in item) as any[],
-          bidding: selectedItems.filter(item => 'pujaType' in item) as any[]
-        }
-        
-        return result
-      }
+      // Use the new generator to create unique items for this reservation
+      return generateUniqueReservationItems(reservation)
     }
     
-    // Fallback to full static data
-    return requestedItemsData
+    // Fallback to empty data if no reserved items
+    return { rooms: [], extras: [], bidding: [] }
   }, [reservation, tLang])
 
   // Initialize store with actual requested items data on mount
   useEffect(() => {
     useReservationSummaryStore.setState({ requestedItems: actualRequestedItems })
-  }, [reservation.id, actualRequestedItems])
+  }, [actualRequestedItems])
 
   // Route to appropriate view component
   if (hasItems) {

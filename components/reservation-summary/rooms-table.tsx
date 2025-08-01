@@ -14,7 +14,8 @@ import {
   RoomTypeCell,
   CompactDateCell,
   StatusBadge,
-  MoneyDisplay
+  MoneyDisplay,
+  CommissionDisplay
 } from "./shared-table-components"
 
 interface RoomsTableProps {
@@ -28,7 +29,7 @@ export function RoomsTable({ items }: RoomsTableProps) {
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="pb-4">
+      <CardHeader className="p-4">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <User className="h-5 w-5 text-blue-600" />
@@ -37,7 +38,7 @@ export function RoomsTable({ items }: RoomsTableProps) {
               {items.length}
             </Badge>
           </div>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="mr-2">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </CardTitle>
@@ -46,17 +47,17 @@ export function RoomsTable({ items }: RoomsTableProps) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-200">
-                <TableHead className="font-semibold text-gray-700">Agents</TableHead>
-                <TableHead className="font-semibold text-gray-700">Commission</TableHead>
-                <TableHead className="font-semibold text-gray-700">Supplements</TableHead>
-                <TableHead className="font-semibold text-gray-700">Room Type</TableHead>
-                <TableHead className="font-semibold text-gray-700">Room Number</TableHead>
-                <TableHead className="font-semibold text-gray-700">Attributes</TableHead>
-                <TableHead className="font-semibold text-gray-700">Date Requested</TableHead>
-                <TableHead className="font-semibold text-gray-700">Date In/Out</TableHead>
-                <TableHead className="font-semibold text-gray-700">Status</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-right">Action</TableHead>
+              <TableRow className="border-gray-200 bg-gray-50">
+                <TableHead className="font-semibold text-gray-900 py-4">Agents</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Commission</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Supplements</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Room Type</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Room Number</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Attributes</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Date Requested</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Date In/Out</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Status</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4 text-right pr-6">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -89,8 +90,8 @@ function RoomRow({ item, onStatusUpdate, onDelete }: RoomRowProps) {
     <TableRow className="border-gray-100 hover:bg-gray-50/50">
       <TableCell className="py-4 text-sm">{item.agent || 'Online'}</TableCell>
       <TableCell className="py-4">
-        <MoneyDisplay 
-          amount={item.agent !== 'Online' && item.commission ? item.commission : 0} 
+        <CommissionDisplay 
+          amount={item.agent !== 'Online' ? item.price * 0.1 : 0} 
         />
       </TableCell>
       <TableCell className="py-4">
@@ -116,10 +117,7 @@ function RoomRow({ item, onStatusUpdate, onDelete }: RoomRowProps) {
         />
       </TableCell>
       <TableCell className="py-4 text-sm">
-        {item.dateRequested ? 
-          new Date(item.dateRequested).toLocaleDateString('en-CA') : 
-          '2024-01-15'
-        }
+        {item.dateRequested || '15/01/26'}
       </TableCell>
       <TableCell className="py-4">
         <CompactDateCell dateInOut={dateInOut} />

@@ -27,7 +27,7 @@ export interface ExtraItem extends BaseRequestedItem {
   descriptionKey?: string // For i18n support
   units: number
   type: 'service' | 'amenity' | 'transfer'
-  serviceDate: string
+  serviceDate: string | string[] // Support multiple service dates
 }
 
 export interface BiddingItem extends BaseRequestedItem {
@@ -41,6 +41,8 @@ export interface BiddingItem extends BaseRequestedItem {
   roomPrice?: number // Room price (usually higher than bid amount)
   dateCreated: string
   dateModified: string
+  checkIn?: string // Room check-in date for consistency
+  checkOut?: string // Room check-out date for consistency
 }
 
 // Legacy interface for backward compatibility
@@ -77,9 +79,9 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Marcus Thompson",
       commission: 67.5, // 15% commission
-      dateRequested: "2024-01-20",
-      checkIn: "2024-01-28",
-      checkOut: "2024-01-31",
+      dateRequested: "20/01/26",
+      checkIn: "28/01/26",
+      checkOut: "31/01/26",
       nights: 3
     }
   ],
@@ -94,10 +96,10 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Online",
       commission: 0,
-      dateRequested: "2024-01-20",
+      dateRequested: "20/01/26",
       units: 1,
       type: "transfer",
-      serviceDate: "2024-01-25"
+      serviceDate: "25/01/26"
     },
     {
       id: "e2",
@@ -108,10 +110,10 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Lisa Chen",
       commission: 18,
-      dateRequested: "2024-01-21",
+      dateRequested: "21/01/26",
       units: 2,
       type: "service",
-      serviceDate: "2024-01-29"
+      serviceDate: ["29/01/26", "30/01/26"] // Multiple service dates
     },
     {
       id: "e3",
@@ -122,10 +124,24 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Reception",
       commission: 0,
-      dateRequested: "2024-01-22",
+      dateRequested: "22/01/26",
       units: 1,
       type: "service",
-      serviceDate: "2024-01-27"
+      serviceDate: "27/01/26"
+    },
+    {
+      id: "e4",
+      name: "Daily Housekeeping",
+      description: "Premium cleaning service",
+      price: 120,
+      status: "confirmed",
+      includesHotels: true,
+      agent: "Emma Davis",
+      commission: 12,
+      dateRequested: "23/01/26",
+      units: 4,
+      type: "service",
+      serviceDate: ["28/01/26", "29/01/26", "30/01/26", "31/01/26"] // Consecutive dates
     }
   ],
   // Single bidding/upgrade request (only 1 item as per business rule)
@@ -145,9 +161,9 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Marcus Thompson",
       commission: 45.0,
-      dateRequested: "2024-01-21",
-      dateCreated: "2024-01-21",
-      dateModified: "2024-01-22"
+      dateRequested: "21/01/26",
+      dateCreated: "21/01/26",
+      dateModified: "22/01/26"
     }
   ]
 }

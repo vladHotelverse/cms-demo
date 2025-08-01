@@ -28,7 +28,7 @@ export function BiddingTable({ items }: BiddingTableProps) {
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="pb-4">
+      <CardHeader className="p-4">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-purple-600" />
@@ -37,7 +37,7 @@ export function BiddingTable({ items }: BiddingTableProps) {
               {items.length}
             </Badge>
           </div>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="mr-2">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </CardTitle>
@@ -46,15 +46,15 @@ export function BiddingTable({ items }: BiddingTableProps) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-200">
-                <TableHead className="font-semibold text-gray-700">Amount</TableHead>
-                <TableHead className="font-semibold text-gray-700">Room Price</TableHead>
-                <TableHead className="font-semibold text-gray-700">Requested Room</TableHead>
-                <TableHead className="font-semibold text-gray-700">Room Number</TableHead>
-                <TableHead className="font-semibold text-gray-700">Date Created</TableHead>
-                <TableHead className="font-semibold text-gray-700">Date In/Out</TableHead>
-                <TableHead className="font-semibold text-gray-700">Status</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-right">Action</TableHead>
+              <TableRow className="border-gray-200 bg-gray-50">
+                <TableHead className="font-semibold text-gray-900 py-4">Amount</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Room Price</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Requested Room</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Room Number</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Date Created</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Date In/Out</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Status</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4 text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -86,12 +86,10 @@ function BiddingRow({ item, onStatusUpdate, onDelete }: BiddingRowProps) {
   // Calculate if this bid was rejected (for demo, reject some pending items)
   const isRejected = item.status === 'pending_hotel' && item.id === 'b2'
   
-  // Generate date range for the bidding period (mock dates based on creation date)
-  const startDate = new Date(item.dateCreated)
-  const endDate = new Date(startDate)
-  endDate.setDate(startDate.getDate() + 3) // 3 days for demo
-  const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-  const dateInOut = `${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]} (${nights} nights)`
+  // Use actual room check-in/check-out dates for consistency
+  const dateInOut = item.checkIn && item.checkOut 
+    ? `${item.checkIn} - ${item.checkOut}`
+    : `${item.dateCreated || '12/01/26'} - ${item.dateCreated || '15/01/26'}`
   
   return (
     <TableRow className="border-gray-100 hover:bg-gray-50/50">
@@ -116,10 +114,7 @@ function BiddingRow({ item, onStatusUpdate, onDelete }: BiddingRowProps) {
         />
       </TableCell>
       <TableCell className="py-4 text-sm">
-        {item.dateCreated ? 
-          new Date(item.dateCreated).toLocaleDateString('en-CA') : 
-          '2024-01-12'
-        }
+        {item.dateCreated || '12/01/26'}
       </TableCell>
       <TableCell className="py-4">
         <CompactDateCell dateInOut={dateInOut} />

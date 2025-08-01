@@ -11,7 +11,9 @@ import { useReservationTranslations } from "@/hooks/use-reservation-translations
 import {
   ActionButtons,
   StatusBadge,
-  MoneyDisplay
+  MoneyDisplay,
+  CommissionDisplay,
+  ServiceDateCell
 } from "./shared-table-components"
 
 interface ExtrasTableProps {
@@ -25,7 +27,7 @@ export function ExtrasTable({ items }: ExtrasTableProps) {
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="pb-4">
+      <CardHeader className="p-4">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-green-600" />
@@ -34,7 +36,7 @@ export function ExtrasTable({ items }: ExtrasTableProps) {
               {items.length}
             </Badge>
           </div>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="mr-2">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </CardTitle>
@@ -43,17 +45,17 @@ export function ExtrasTable({ items }: ExtrasTableProps) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-200">
-                <TableHead className="font-semibold text-gray-700">Agents</TableHead>
-                <TableHead className="font-semibold text-gray-700">Commission</TableHead>
-                <TableHead className="font-semibold text-gray-700">Supplements</TableHead>
-                <TableHead className="font-semibold text-gray-700">Extras</TableHead>
-                <TableHead className="font-semibold text-gray-700">Units</TableHead>
-                <TableHead className="font-semibold text-gray-700">Type</TableHead>
-                <TableHead className="font-semibold text-gray-700">Date Requested</TableHead>
-                <TableHead className="font-semibold text-gray-700">Date Service</TableHead>
-                <TableHead className="font-semibold text-gray-700">Status</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-right">Action</TableHead>
+              <TableRow className="border-gray-200 bg-gray-50">
+                <TableHead className="font-semibold text-gray-900 py-4">Agents</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Commission</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Supplements</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Extras</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Units</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Type</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Date Requested</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Date Service</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4">Status</TableHead>
+                <TableHead className="font-semibold text-gray-900 py-4 text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -100,8 +102,8 @@ function ExtraRow({ item, onStatusUpdate, onDelete }: ExtraRowProps) {
     <TableRow className="border-gray-100 hover:bg-gray-50/50">
       <TableCell className="py-4 text-sm">{item.agent || 'Emma Davis'}</TableCell>
       <TableCell className="py-4">
-        <MoneyDisplay 
-          amount={item.agent !== 'Online' && item.commission ? item.commission : 1.5} 
+        <CommissionDisplay 
+          amount={item.agent !== 'Online' ? (item.price > 0 ? item.price : 15) * 0.1 : 0} 
         />
       </TableCell>
       <TableCell className="py-4">
@@ -111,22 +113,16 @@ function ExtraRow({ item, onStatusUpdate, onDelete }: ExtraRowProps) {
         {item.nameKey ? t(item.nameKey) : (item.name || 'Spa Service')}
       </TableCell>
       <TableCell className="py-4 text-sm">{item.units || 2}</TableCell>
-      <TableCell className="py-4">
-        <Badge variant="outline" className="text-xs">
+      <TableCell className="py-4 font-semibold">
           {getTypeDisplay(item.type, item.units || 2)}
-        </Badge>
       </TableCell>
       <TableCell className="py-4 text-sm">
-        {item.dateRequested ? 
-          new Date(item.dateRequested).toLocaleDateString('en-CA') : 
-          '2024-01-20'
-        }
+        {item.dateRequested || '20/01/26'}
       </TableCell>
-      <TableCell className="py-4 text-sm">
-        {item.serviceDate ? 
-          new Date(item.serviceDate).toLocaleDateString('en-CA') : 
-          '2024-01-22'
-        }
+      <TableCell className="py-4">
+        <ServiceDateCell 
+          serviceDates={item.serviceDate || '22/01/26'} 
+        />
       </TableCell>
       <TableCell className="py-4">
         <StatusBadge status={item.status} />

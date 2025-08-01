@@ -9,6 +9,7 @@ import {
   Key,
   ArrowUpCircle,
   Info,
+  Coins,
 } from "lucide-react"
 
 export const getStatusColor = (status: string) => {
@@ -201,23 +202,57 @@ interface CompactDateCellProps {
 }
 
 export const CompactDateCell = ({ dateInOut }: CompactDateCellProps) => {
-  // Parse date in format "checkIn - checkOut (X nights)" or just return the original if different format
-  const match = dateInOut.match(/(\d{4}-\d{2}-\d{2}) - (\d{4}-\d{2}-\d{2})/)
+  // Helper function to parse DD/MM/YY format to Date
+  const parseDate = (dateStr: string) => {
+    if (!dateStr || typeof dateStr !== 'string') {
+      return new Date('2026-01-28') // fallback date to 2026
+    }
+    
+    const parts = dateStr.split('/')
+    if (parts.length !== 3) {
+      return new Date('2026-01-28') // fallback date to 2026
+    }
+    
+    const [day, month, year] = parts
+    if (!day || !month || !year) {
+      return new Date('2026-01-28') // fallback date to 2026
+    }
+    
+    const fullYear = year.length === 2 ? `20${year}` : year
+    return new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`)
+  }
+
+  // Parse date in format "DD/MM/YY - DD/MM/YY" or "DD/MM/YY - DD/MM/YY (X nights)"
+  const compactMatch = dateInOut.match(/(\d{2}\/\d{2}\/\d{2}) - (\d{2}\/\d{2}\/\d{2})/)
   
-  if (!match) {
+  // Also try ISO format for backward compatibility
+  const isoMatch = dateInOut.match(/(\d{4}-\d{2}-\d{2}) - (\d{4}-\d{2}-\d{2})/)
+  
+  if (!compactMatch && !isoMatch) {
     return <span className="text-sm">{dateInOut}</span>
   }
 
-  const [, startDate, endDate] = match
+  let startDate: Date, endDate: Date
+  
+  if (compactMatch) {
+    // Handle compact format DD/MM/YY
+    const [, startDateStr, endDateStr] = compactMatch
+    startDate = parseDate(startDateStr)
+    endDate = parseDate(endDateStr)
+  } else if (isoMatch) {
+    // Handle ISO format for backward compatibility
+    const [, startDateStr, endDateStr] = isoMatch
+    startDate = new Date(startDateStr)
+    endDate = new Date(endDateStr)
+  } else {
+    return <span className="text-sm">{dateInOut}</span>
+  }
   
   // Calculate nights
-  const start = new Date(startDate)
-  const end = new Date(endDate)
-  const nights = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+  const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
 
   // Format dates to numeric DD/MM→DD/MM/YY format
-  const formatNumericDate = (dateStr: string, includeYear = false) => {
-    const date = new Date(dateStr)
+  const formatNumericDate = (date: Date, includeYear = false) => {
     const day = date.getDate().toString().padStart(2, "0")
     const month = (date.getMonth() + 1).toString().padStart(2, "0")
     const year = date.getFullYear().toString().slice(-2)
@@ -246,10 +281,10 @@ export const CompactDateCell = ({ dateInOut }: CompactDateCellProps) => {
             <div className="font-medium text-sm">Full Date Range</div>
             <div className="text-sm">
               <div>
-                <strong>Check-in:</strong> {startDate}
+                <strong>Check-in:</strong> {formatNumericDate(startDate, true)}
               </div>
               <div>
-                <strong>Check-out:</strong> {endDate}
+                <strong>Check-out:</strong> {formatNumericDate(endDate, true)}
               </div>
             </div>
             <div className="text-xs text-gray-600 mt-2 pt-2 border-t">Total: {nights} nights</div>
@@ -279,9 +314,140 @@ interface MoneyDisplayProps {
 }
 
 export const MoneyDisplay = ({ amount, currency = "EUR" }: MoneyDisplayProps) => {
+  const formattedAmount = amount > 0 ? Math.round(amount * 100) / 100 : 0
   return (
     <span className="text-sm font-medium text-gray-900">
-      {amount > 0 ? `${amount} ${currency}` : `0 ${currency}`}
+      {formattedAmount} {currency}
     </span>
+  )
+}
+
+interface CommissionDisplayProps {
+  amount: number
+  currency?: string
+}
+
+export const CommissionDisplay = ({ amount, currency = "EUR" }: CommissionDisplayProps) => {
+  const formattedAmount = amount > 0 ? Math.round(amount * 100) / 100 : 0
+  return (
+    <div className="text-sm font-medium text-green-600 flex items-center gap-1">
+      <div className="bg-green-100 p-1 rounded-full">
+        <Coins className="h-3 w-3 text-green-600" />
+      </div>
+      {formattedAmount} {currency}
+    </div>
+  )
+}
+
+interface ServiceDateCellProps {
+  serviceDates: string | string[]
+}
+
+export const ServiceDateCell = ({ serviceDates }: ServiceDateCellProps) => {
+  // Handle single date or array of dates
+  const dates = Array.isArray(serviceDates) ? serviceDates : [serviceDates]
+  
+  if (dates.length === 0) return <span className="text-sm text-gray-400">-</span>
+  
+  // Helper function to parse DD/MM/YY format to Date
+  const parseDate = (dateStr: string) => {
+    if (!dateStr || typeof dateStr !== 'string') {
+      return new Date('2026-01-22') // fallback date to 2026
+    }
+    
+    const parts = dateStr.split('/')
+    if (parts.length !== 3) {
+      return new Date('2026-01-22') // fallback date to 2026
+    }
+    
+    const [day, month, year] = parts
+    if (!day || !month || !year) {
+      return new Date('2026-01-22') // fallback date to 2026
+    }
+    
+    const fullYear = year.length === 2 ? `20${year}` : year
+    return new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`)
+  }
+  
+  // Single date - show as is (already in DD/MM/YY format)
+  if (dates.length === 1) {
+    return <span className="text-sm">{dates[0]}</span>
+  }
+  
+  // Multiple dates - check if consecutive for range display
+  const sortedDates = dates.map(parseDate).sort((a, b) => a.getTime() - b.getTime())
+  const firstDate = sortedDates[0]
+  const lastDate = sortedDates[sortedDates.length - 1]
+  
+  // Check if dates are consecutive
+  const isConsecutive = sortedDates.every((date, index) => {
+    if (index === 0) return true
+    const prevDate = sortedDates[index - 1]
+    const dayDiff = Math.floor((date.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24))
+    return dayDiff === 1
+  })
+  
+  const formatCompactDate = (date: Date) => 
+    `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/26`
+  
+  const formatFullDate = (date: Date) =>
+    `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/2026`
+  
+  if (isConsecutive && dates.length > 2) {
+    // Show as range
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-pointer text-center">
+              <div className="text-sm text-gray-900">
+                {formatCompactDate(firstDate)}→{formatCompactDate(lastDate)}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">
+                {dates.length} days
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="p-3">
+            <div className="space-y-1">
+              <div className="font-medium text-sm">Service Dates</div>
+              <div className="text-sm space-y-1">
+                {sortedDates.map((date) => (
+                  <div key={date.toISOString()}>{formatFullDate(date)}</div>
+                ))}
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+  
+  // Show first date + count
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="cursor-pointer text-center">
+            <div className="text-sm text-gray-900">
+              {formatCompactDate(firstDate)}
+            </div>
+            <div className="text-xs text-blue-600 mt-0.5">
+              +{dates.length - 1} more
+            </div>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="p-3">
+          <div className="space-y-1">
+            <div className="font-medium text-sm">Service Dates</div>
+            <div className="text-sm space-y-1">
+              {sortedDates.map((date) => (
+                <div key={date.toISOString()}>{formatFullDate(date)}</div>
+              ))}
+            </div>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
