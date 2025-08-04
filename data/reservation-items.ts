@@ -1,3 +1,5 @@
+import type { SelectedCustomizations } from '@/components/ABS_RoomCustomization/types'
+
 export interface BaseRequestedItem {
   id: string
   price: number
@@ -12,7 +14,7 @@ export interface BaseRequestedItem {
 export type AllowedRoomType = 'Doble' | 'Doble Deluxe' | 'Junior Suite'
 
 // Room selection scenarios
-export type RoomSelectionScenario = 'upgrade_only' | 'choose_room_only' | 'choose_room_upgrade' | 'attribute_selection'
+export type RoomSelectionScenario = 'upgrade_only' | 'choose_room_only' | 'choose_room_upgrade' | 'attribute_selection' | 'upgrade_with_attributes'
 
 // Maximum limits
 export const MAX_PRODUCTS_LIMIT = 5
@@ -39,6 +41,17 @@ export const determineRoomScenario = (item: Partial<RoomItem>): {
   const hasKey = !!(item.hasKey)
   const hasAttributes = !!(item.attributes && item.attributes.length > 0)
   const hasAlternatives = !!(item.alternatives && item.alternatives.length > 0)
+  
+  // Scenario 5: Upgrade with Attributes (merged scenario)
+  if (hasUpgrade && hasAttributes) {
+    return {
+      selectionScenario: 'upgrade_with_attributes',
+      showUpgradeArrow: true,
+      showKeyIcon: hasKey,
+      showAlternatives: hasAlternatives,
+      showAttributes: true
+    }
+  }
   
   // Scenario 4: Attribute Selection
   if (hasAttributes) {
@@ -101,10 +114,8 @@ export const validateRoomConfiguration = (item: RoomItem): {
 } => {
   const errors: string[] = []
   
-  // Rule 1: Room Type with arrow + Attributes is forbidden
-  if (item.showUpgradeArrow && item.showAttributes && item.attributes && item.attributes.length > 0) {
-    errors.push('Room upgrades cannot have attribute selection')
-  }
+  // Rule 1: Allow room upgrades with attributes for merged scenarios (upgrade_with_attributes)
+  // This rule has been updated to support the new merging functionality
   
   // Rule 2: Attributes + Room Number with key (no alternatives) is forbidden
   if (item.showAttributes && item.attributes && item.attributes.length > 0 && 
@@ -115,6 +126,21 @@ export const validateRoomConfiguration = (item: RoomItem): {
   // Rule 3: Room type must be allowed
   if (!isAllowedRoomType(item.roomType)) {
     errors.push(`Room type '${item.roomType}' is not allowed. Only Doble, Doble Deluxe, and Junior Suite are permitted.`)
+  }
+  
+  // Rule 4: Allow room upgrades with customizations for merged scenarios
+  // This rule has been removed to support the upgrade_with_attributes scenario
+  
+  // Rule 5: Customization-only rooms must have attributes visible
+  if (!item.showUpgradeArrow && item.customizations && Object.keys(item.customizations).length > 0 && 
+      (!item.attributes || item.attributes.length === 0)) {
+    errors.push('Customized rooms must have visible attributes')
+  }
+  
+  // Rule 6: Customization-only rooms should use attribute_selection scenario
+  if (item.customizations && Object.keys(item.customizations).length > 0 && 
+      !item.showUpgradeArrow && !item.showAttributes) {
+    errors.push('Rooms with customizations must show attributes (attribute_selection scenario)')
   }
   
   return {
@@ -133,6 +159,9 @@ export interface RoomItem extends BaseRequestedItem {
   checkIn: string
   checkOut: string
   nights: number
+  // Room customizations - for ABS_RoomCustomization integration
+  customizations?: SelectedCustomizations
+  customizationTotal?: number
   // Room selection scenario - determines UI behavior
   selectionScenario?: RoomSelectionScenario
   // UI control flags

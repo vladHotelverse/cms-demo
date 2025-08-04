@@ -21,6 +21,7 @@ import {
 
 interface RoomsTableProps {
   items: RoomItem[]
+  onRemove?: (roomId: string) => void
 }
 
 // Local validation wrapper that returns boolean for filtering
@@ -29,7 +30,7 @@ const isValidRoomConfiguration = (item: RoomItem): boolean => {
   return validation.isValid
 }
 
-export function RoomsTable({ items }: RoomsTableProps) {
+export function RoomsTable({ items, onRemove }: RoomsTableProps) {
   const { updateItemStatus, deleteItem } = useReservationSummaryStore()
 
   if (!items || items.length === 0) return null
@@ -76,7 +77,7 @@ export function RoomsTable({ items }: RoomsTableProps) {
                   key={item.id} 
                   item={item} 
                   onStatusUpdate={(status) => updateItemStatus('rooms', item.id, status)}
-                  onDelete={() => deleteItem('rooms', item.id)}
+                  onDelete={() => onRemove ? onRemove(item.id) : deleteItem('rooms', item.id)}
                 />
               ))}
             </TableBody>
