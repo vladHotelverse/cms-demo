@@ -14,6 +14,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { FrontDeskHeader } from "@/components/layout/front-desk-header"
 import ReservationDetailsTab from "@/components/features/reservations/reservation-details-tab"
 import { ReservationSummaryModal } from "@/components/features/reservations/reservation-summary-modal"
+import { ViewModeButtons } from "@/components/ui/view-mode-buttons"
 import { cn } from "@/lib/utils/index"
 
 
@@ -318,13 +319,14 @@ export default function FrontDeskUpsellPage() {
 
             {/* Search Bar */}
             <div className="mb-6">
-              <div className={cn("max-w-xs w-full")}>
+              <div className={cn("flex justify-between items-center w-full")}>
                 <Input
                   placeholder={t("searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn("border-gray-300 min-w-xs")}
+                  className={cn("border-gray-300 w-full max-w-xs")}
                 />
+                <ViewModeButtons />
               </div>
             </div>
 
