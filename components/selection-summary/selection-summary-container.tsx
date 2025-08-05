@@ -56,7 +56,7 @@ export function SelectionSummary({
       }}
       onReset={() => {
         // Reset component state
-        handlers.clearAll()
+        handlers.clearAllSelections()
       }}
     >
       <div className={cn('relative space-y-4', className)} data-testid="selection-summary">
@@ -108,7 +108,3 @@ export function SelectionSummary({
 }
 
 SelectionSummary.displayName = 'SelectionSummary'
-
-// Re-export types and utilities for backward compatibility
-export type { SelectionSummaryProps } from './types'
-export { useSelectionSummary } from './use-selection-summary'

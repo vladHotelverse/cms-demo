@@ -708,7 +708,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 							handleAsyncError(error, 'Selection Summary Section');
 						}}
 					>
-						<div className="space-y-6">
+						<div className="space-y-6 pb-24">
 							<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 								<div>
 									<h2 className="text-xl font-semibold text-gray-900">

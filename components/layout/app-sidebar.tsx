@@ -126,9 +126,15 @@ const menuItemsStructure: NavItem[] = [
 		titleKey: "gestion",
 		icon: ClipboardList,
 		href: "#",
-		disabled: true,
+		disabled: false,
 		defaultOpen: false,
 		children: [
+			{
+				titleKey: "frontDesk",
+				icon: Users,
+				href: "/management/front-desk",
+				disabled: false,
+			},
 			{
 				titleKey: "gestionSolicitudesGestion",
 				icon: FileText,

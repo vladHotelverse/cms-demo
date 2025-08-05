@@ -667,4 +667,4 @@ export function useSelectionNotifications() {
 }
 
 // Export additional types and utilities
-export type { NotificationGroup, QueuedNotification, DeduplicationConfig, NotificationMetrics, NotificationAction }
+export type { NotificationGroup, QueuedNotification, DeduplicationConfig, NotificationMetrics }
