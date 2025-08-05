@@ -1,7 +1,7 @@
 "use client"
 
 import { useLanguage } from "@/contexts/language-context"
-import { AppHeader } from "@/components/app-header"
+import { AppHeader } from "@/components/layout/app-header"
 
 export default function HomePage() {
   const { t } = useLanguage()

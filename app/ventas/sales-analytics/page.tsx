@@ -6,9 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarIcon, Download, RefreshCw, Filter } from "lucide-react"
-import { RevenueTab } from "@/components/sales-analytics/revenue-tab"
-import { ManagementTab } from "@/components/sales-analytics/management-tab"
-import { CommissionTab } from "@/components/sales-analytics/commission-tab"
+import { RevenueTab } from "@/components/features/sales/sales-analytics/revenue-tab"
+import { ManagementTab } from "@/components/features/sales/sales-analytics/management-tab"
+import { CommissionTab } from "@/components/features/sales/sales-analytics/commission-tab"
 import { useLanguage } from "@/contexts/language-context"
 
 export default function SalesAnalyticsPage() {

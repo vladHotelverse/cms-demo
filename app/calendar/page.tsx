@@ -1,7 +1,7 @@
 "use client"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AppHeader } from "@/components/app-header"
+import { AppHeader } from "@/components/layout/app-header"
 import YearCalendar from "@/components/year-calendar"
 import ExceptionsManager from "@/components/exceptions-manager"
 import { useLanguage } from "@/contexts/language-context"

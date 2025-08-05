@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { ABS_RoomSelectionCarousel } from "@/components/ABS_RoomSelectionCarousel";
-import { ABS_RoomCustomization } from "@/components/ABS_RoomCustomization";
-import { ABS_SpecialOffers } from "@/components/ABS_SpecialOffers";
+import { ABS_RoomSelectionCarousel } from "@/components/features/booking-system/ABS_RoomSelectionCarousel";
+import { ABS_RoomCustomization } from "@/components/features/booking-system/ABS_RoomCustomization";
+import { ABS_SpecialOffers } from "@/components/features/booking-system/ABS_SpecialOffers";
 import { useLanguage } from "@/contexts/language-context";
 import { useReservationContent } from "@/hooks/useSupabaseContent";
 import type { RoomType, CustomizationOption, SpecialOffer } from "@/hooks/useSupabaseContent";
