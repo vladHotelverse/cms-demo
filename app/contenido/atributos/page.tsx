@@ -1,7 +1,7 @@
 "use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
-import { AppHeader } from "@/components/app-header"
+import { AppHeader } from "@/components/layout/app-header"
 import EquipmentCategoryManager from "@/components/equipment-category-manager"
 import TranslationManager from "@/components/translation-manager"
 import { useLanguage } from "@/contexts/language-context"

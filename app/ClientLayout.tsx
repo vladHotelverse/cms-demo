@@ -1,7 +1,7 @@
 "use client"
 import type React from "react"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import AppSidebar from "@/components/app-sidebar"
+import AppSidebar from "@/components/layout/app-sidebar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/contexts/language-context"
 import { usePathname } from "next/navigation"

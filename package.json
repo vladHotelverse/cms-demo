@@ -8,11 +8,7 @@
     "format": "biome format --write .",
     "lint": "biome lint .",
     "start": "next start",
-    "add-recommended-orders": "tsx scripts/add-recommended-orders.ts",
-    "delete-recommended-orders": "tsx scripts/delete-recommended-orders.ts",
-    "populate-orders": "tsx scripts/populate-orders.ts",
-    "clean-all-orders": "tsx scripts/clean-all-orders.ts",
-    "count-orders": "tsx scripts/count-orders.ts"
+    "populate-orders": "tsx scripts/populate-orders.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

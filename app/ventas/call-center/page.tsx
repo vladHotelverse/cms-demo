@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CallCenterHeader } from "@/components/call-center-header"
+import { CallCenterHeader } from "@/components/layout/call-center-header"
 import { useLanguage } from "@/contexts/language-context"
 
 export default function CallCenterPage() {

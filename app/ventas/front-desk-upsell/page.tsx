@@ -11,9 +11,9 @@ import { CheckCircle, AlertCircle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
-import { FrontDeskHeader } from "@/components/front-desk-header"
-import ReservationDetailsTab from "@/components/reservation-details-tab"
-import { ReservationSummaryModal } from "@/components/reservation-summary-modal"
+import { FrontDeskHeader } from "@/components/layout/front-desk-header"
+import ReservationDetailsTab from "@/components/features/reservations/reservation-details-tab"
+import { ReservationSummaryModal } from "@/components/features/reservations/reservation-summary-modal"
 import { cn } from "@/lib/utils/index"
 
 
