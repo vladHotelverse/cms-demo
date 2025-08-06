@@ -38,8 +38,8 @@ export const useOfferBooking = ({
     return Math.max(1, diffDays)
   }
   const validateBooking = useCallback((offer: OfferType, selection: OfferSelection): string | null => {
-    // For non-date-based offers, quantity must be greater than 0
-    if (!offer.requiresDateSelection && offer.type !== 'perNight' && selection.quantity === 0) {
+    // For non-date-based offers (except All Inclusive), quantity must be greater than 0
+    if (!offer.requiresDateSelection && offer.type !== 'perNight' && !isAllInclusive(offer) && selection.quantity === 0) {
       return 'Quantity must be greater than 0'
     }
 
@@ -67,6 +67,9 @@ export const useOfferBooking = ({
       if (offer.requiresDateSelection && selection.selectedDates && selection.selectedDates.length > 0) {
         finalQuantity = selection.selectedDates.length
       } else if (offer.requiresDateSelection && selection.selectedDate) {
+        finalQuantity = 1
+      } else if (isAllInclusive(offer) && selection.quantity === 0) {
+        // All Inclusive offers should have quantity 1 when booked
         finalQuantity = 1
       }
 
@@ -126,6 +129,17 @@ export const useOfferBooking = ({
       // Create offer data and mark as booked
       const offerData = createOfferData(offer, selection)
 
+      // Update selection quantity for All Inclusive packages
+      if (isAllInclusive(offer) && selection.quantity === 0) {
+        setSelections((prev) => ({
+          ...prev,
+          [id]: {
+            ...prev[id],
+            quantity: 1,
+          },
+        }))
+      }
+
       setBookedOffers((prev) => new Set([...prev, id]))
       setBookingAttempts((prev) => {
         const newAttempts = new Set(prev)
@@ -137,7 +151,7 @@ export const useOfferBooking = ({
         onBookOffer(offerData)
       }
     },
-    [offers, selections, validateBooking, createOfferData, setBookedOffers, setBookingAttempts, onBookOffer]
+    [offers, selections, validateBooking, createOfferData, setBookedOffers, setBookingAttempts, setSelections, onBookOffer]
   )
 
   const cancelOffer = useCallback(
@@ -166,7 +180,7 @@ export const useOfferBooking = ({
       setSelections((prev) => ({
         ...prev,
         [id]: {
-          quantity: isAllInclusiveOffer ? 1 : 0, // All inclusive resets to 1, others to 0
+          quantity: 0, // All offers reset to 0 for consistent behavior
           persons: offer.type === 'perPerson' ? reservationInfo?.personCount || 1 : 1,
           nights: isAllInclusiveOffer ? nights : 1, // All inclusive uses full stay duration
           selectedDate: undefined,

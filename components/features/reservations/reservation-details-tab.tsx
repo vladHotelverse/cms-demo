@@ -297,7 +297,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 		try {
 			const roomData = {
 				id: room.id || Date.now().toString(),
-				roomType: room.name || room.roomType || 'Standard Room',
+				roomType: room.roomType || 'Standard Room',
 				price: room.price || 0,
 				amenities: room.amenities || room.attributes || [],
 				images: room.images || [room.mainImage || room.image || ''],

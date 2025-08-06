@@ -73,18 +73,15 @@ interface RoomCardProps {
 
 const RoomCard: React.FC<RoomCardProps> = ({
   room,
-  discountBadgeText,
   nightText,
   priceInfoText,
   selectedText,
-  selectText,
   removeText,
   selectedRoom,
   onSelectRoom,
   activeImageIndex,
   onImageChange,
   currencySymbol = '€',
-  instantConfirmationText = 'Instant Confirmation',
   previousImageLabel = 'Previous image',
   nextImageLabel = 'Next image',
   viewImageLabel = 'View image {index}',

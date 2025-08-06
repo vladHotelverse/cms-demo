@@ -237,45 +237,24 @@ class SmartCache<T> {
 // Room type mapping utility
 const mapToAllowedRoomType = (roomType: string): AllowedRoomType => {
   const type = roomType.toLowerCase()
-  if (type.includes('suite') || type.includes('luxury') || type.includes('premium')) {
+  
+  if (type.includes('rock suite diamond')) {
+    return 'Rock Suite Diamond'
+  } else if (type.includes('rock suite')) {
+    return 'Rock Suite'
+  } else if (type.includes('80s suite')) {
+    return '80s Suite'
+  } else if (type.includes('deluxe swim-up')) {
+    return 'Deluxe Swim-up'
+  } else if (type.includes('deluxe gold')) {
+    return 'Deluxe Gold'
+  } else if (type.includes('suite') || type.includes('luxury') || type.includes('premium')) {
     return 'Junior Suite'
   } else if (type.includes('deluxe') || type.includes('superior') || type.includes('gold')) {
     return 'Doble Deluxe'
   } else {
     return 'Doble'
   }
-}
-
-// Conflict detection algorithms
-const detectRoomConflicts = (existingRooms: SelectedRoom[], newRoom: RoomOption): SelectionError[] => {
-  const errors: SelectionError[] = []
-  
-  // Check for duplicate room types
-  const duplicateRoom = existingRooms.find(r => r.roomType === newRoom.roomType)
-  if (duplicateRoom) {
-    errors.push({
-      id: generateId('error'),
-      type: 'duplicate',
-      message: `Room type "${newRoom.roomType}" is already selected`,
-      details: JSON.stringify({ existingRoom: duplicateRoom, newRoom }),
-      timestamp: Date.now(),
-      recoverable: true
-    })
-  }
-  
-  // Check room quotas (max 1 room per reservation)
-  if (existingRooms.length >= 1) {
-    errors.push({
-      id: generateId('error'),
-      type: 'quota_exceeded',
-      message: 'Only one room can be selected per reservation. Please remove the current room first.',
-      details: JSON.stringify({ currentCount: existingRooms.length, maxAllowed: 1 }),
-      timestamp: Date.now(),
-      recoverable: false
-    })
-  }
-  
-  return errors
 }
 
 // Room merging logic for upgrades and customizations
@@ -439,30 +418,6 @@ const calculateSmartTotal = (rooms: SelectedRoom[], extras: SelectedExtra[]): nu
   return Math.round(total * 100) / 100 // Round to 2 decimal places
 }
 
-// Retry mechanism for failed operations
-const createRetryableOperation = async <T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> => {
-  let lastError: Error
-  
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation()
-    } catch (error) {
-      lastError = error as Error
-      
-      if (attempt < maxRetries) {
-        // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, backoffMs * Math.pow(2, attempt)))
-      }
-    }
-  }
-  
-  throw lastError!
-}
-
 // Global cache instance
 const globalCache = new SmartCache<any>()
 
@@ -499,12 +454,15 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
         try {
           const currentState = get()
           
+          // Use a fallback for roomName to avoid errors with incomplete data
+          const roomName = (room as any).roomType || (room as any).name || 'Standard Room';
+
           // Determine if this is a real upgrade (not just a direct selection)
           // A real upgrade must have existing rooms AND different room types
           const hasExistingRoom = currentState.selectedRooms.length > 0
           const isUpgrade = hasExistingRoom && 
             reservationInfo.originalRoomType && 
-            reservationInfo.originalRoomType !== ((room as any).roomType || (room as any).name)
+            reservationInfo.originalRoomType !== roomName
           
           // Get existing room for potential merge
           const existingRoom = hasExistingRoom ? currentState.selectedRooms[0] : null
@@ -558,33 +516,37 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
           const nights = Math.max(1, daysDiff) // Ensure at least 1 night, handle same-day bookings
 
+          // If this is an upgrade, try to preserve the room number from the previous selection
+          const roomNumber = isUpgrade && existingRoom ? existingRoom.roomNumber : '365';
+
           // Create base room data
           const baseRoomData = {
             originalRoomType: isUpgrade ? (reservationInfo.originalRoomType as AllowedRoomType || null) : null,
-            hasKey: !!reservationInfo.roomNumber,
+            hasKey: !!roomNumber,
             attributes: room.amenities ? room.amenities.slice(0, 3) : [],
-            alternatives: []
+            alternatives: ['101', '102', '103', '104', '105']
           }
 
           // Determine room scenario and UI flags
           const roomScenario = determineRoomScenario(baseRoomData)
-
+          
           // Perform optimistic update with all required fields for table
           const newRoom: SelectedRoom = {
             id: generateId('room'),
-            roomType: mapToAllowedRoomType((room as any).roomType || (room as any).name || 'Standard Room'),
+            roomType: mapToAllowedRoomType(roomName),
             price: room.price || 0,
             originalRoomType: baseRoomData.originalRoomType || undefined,
             ...roomScenario, // Apply determined scenario flags
             agent: 'Maria García', // Use Maria García as agent
-            status: 'pending_hotel',
+            status: 'confirmed',
             dateRequested: new Date().toLocaleDateString('en-GB'),
             checkIn: reservationInfo.checkIn,
             checkOut: reservationInfo.checkOut,
             nights, // Add nights field required by table
-            roomNumber: reservationInfo.roomNumber,
-            hasKey: baseRoomData.hasKey,
+            roomNumber: roomNumber,
+            hasKey: undefined,
             attributes: baseRoomData.attributes,
+            alternatives: baseRoomData.alternatives,
             // Add other fields that might be required by RoomItem interface
             customizations: undefined,
             customizationTotal: 0

@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useMemo, useCallback } from 'react'
 import type { RoomOption } from '../types'
+// import { useUserSelectionsStore } from '@/stores/user-selections-store'
 
 // State interface - removed slider-specific state
 export interface CarouselState {
@@ -158,9 +159,11 @@ export const useCarouselState = ({
   const setActiveImageIndex = useCallback((roomIndex: number, imageIndex: number) => {
     dispatch({ type: 'SET_ACTIVE_IMAGE_INDEX', payload: { roomIndex, imageIndex } })
   }, [])
-
+  
+  // const removeRoom = useUserSelectionsStore(state => state.removeRoom)
   const selectRoom = useCallback(
     (room: RoomOption | null) => {
+
       // Find the index of the selected room to sync the activeIndex
       const newIndex = room ? roomOptions.findIndex((option) => option.id === room.id) : -1
 
@@ -171,6 +174,8 @@ export const useCarouselState = ({
         })
       } else {
         // If room is deselected (null), just update the selected room
+        console.log(selectedRoom);
+        // removeRoom()
         dispatch({ type: 'SET_SELECTED_ROOM', payload: room })
       }
 
