@@ -45,7 +45,8 @@ export interface SelectionSummaryProps {
   onRoomSelectionChange?: (room: RoomOption | null) => void
   onRoomCustomizationChange?: (roomId: string, customizations: SelectedCustomizations, total: number) => void
   onSpecialOfferBooked?: (offer: OfferData) => void
-  
+  onCloseTab?: () => void
+
   // Current ABS component states for integration
   currentRoomCustomizations?: SelectedCustomizations
   

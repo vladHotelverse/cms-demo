@@ -30,7 +30,8 @@ export function SelectionSummary({
   className,
   showNotifications = true,
   notificationPosition = 'top-right',
-  translations = {}
+  translations = {},
+  onCloseTab,
 }: SelectionSummaryProps) {
   const {
     selections,
@@ -78,6 +79,7 @@ export function SelectionSummary({
           totalPrice={selections.totalPrice}
           isLoading={operations.isLoading}
           onClearAll={handlers.clearAll}
+          onCloseTab={onCloseTab}
           translations={config.translations}
         />
 
