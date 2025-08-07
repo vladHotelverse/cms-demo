@@ -166,17 +166,17 @@ export const OptionCard: React.FC<OptionCardProps> = ({
         >
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 items-center">
-              <div className="text-sm font-semibold">
-                {(option.price * 0.9).toFixed(2)} {texts.pricePerNightText}
+              <div className="text-lg ">
+                <span className='font-semibold'>{(option.price * 0.9).toFixed(2)}</span> <span className='text-neutral-600 text-base'>{texts.pricePerNightText}</span>
               </div>
               {option.price > 0 && (
-                <div className="text-xs text-gray-500 line-through">
+                <div className="text-sm text-gray-500 line-through">
                   {option.price.toFixed(2)} EUR
                 </div>
               )}
             </div>
             {option.price > 0 && (
-              <div className="text-sm font-semibold text-gray-700">
+              <div className="font-bold text-gray-700">
                 Total: €{((option.price * 0.9) * nights).toFixed(2)}
               </div>
             )}

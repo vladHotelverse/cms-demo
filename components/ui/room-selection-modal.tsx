@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface RoomSelectionModalProps {
   isOpen: boolean;
@@ -34,12 +34,12 @@ export const RoomSelectionModal: React.FC<RoomSelectionModalProps> = ({
   isOpen,
   onClose,
   onAccept,
-  title = "Select Rooms",
-  description = "Choose from the available rooms below:",
+  title = 'Select Rooms',
+  description = 'Choose from the available rooms below:',
   rooms,
   availableCount,
   maxSelection = 1,
-  type = 'room'
+  type = 'room',
 }) => {
   const [selectedRooms, setSelectedRooms] = React.useState<string[]>([]);
 
@@ -51,10 +51,10 @@ export const RoomSelectionModal: React.FC<RoomSelectionModalProps> = ({
   }, [isOpen]);
 
   const handleRoomToggle = (roomId: string) => {
-    setSelectedRooms(prev => {
+    setSelectedRooms((prev) => {
       if (prev.includes(roomId)) {
         // Remove room from selection
-        return prev.filter(id => id !== roomId);
+        return prev.filter((id) => id !== roomId);
       } else {
         // Add room to selection (respecting max selection limit)
         if (prev.length >= maxSelection) {
@@ -88,68 +88,52 @@ export const RoomSelectionModal: React.FC<RoomSelectionModalProps> = ({
             {description}
             {maxSelection > 1 && (
               <span className="block mt-1 text-sm">
-                You can select up to {maxSelection} {type === 'room' ? 'rooms' : 'options'}.
+                You can select up to {maxSelection}{' '}
+                {type === 'room' ? 'rooms' : 'options'}.
               </span>
             )}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex-1 overflow-y-auto py-4">
           <div className="grid gap-2">
             {rooms.map((room) => (
-              <div
+              <button
                 key={room.id}
+                type='button'
                 className={cn(
-                  "flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer",
-                  "hover:bg-gray-50 hover:border-gray-300",
-                  isRoomSelected(room.id) && "bg-blue-50 border-blue-200",
-                  !room.available && "opacity-50 cursor-not-allowed"
+                  'flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer',
+                  'hover:bg-gray-50 hover:border-gray-300',
+                  isRoomSelected(room.id) && 'bg-blue-50 border-blue-200',
+                  !room.available && 'opacity-50 cursor-not-allowed',
                 )}
                 onClick={() => room.available && handleRoomToggle(room.id)}
               >
                 <div className="flex items-center space-x-3">
                   <div
                     className={cn(
-                      "flex items-center justify-center min-w-6 min-h-6 rounded-full border-2 transition-colors",
+                      'flex items-center justify-center min-w-6 min-h-6 rounded-full border-2 transition-colors',
                       isRoomSelected(room.id)
-                        ? "bg-gray-600 border-gray-600 text-white"
-                        : "border-gray-300 hover:border-blue-400"
+                        ? 'bg-gray-600 border-gray-600 text-white'
+                        : 'border-gray-300 hover:border-blue-400',
                     )}
                   >
                     {isRoomSelected(room.id) && <Check className="w-4 h-4" />}
                   </div>
-                  
-                  <div>
+
                     <div className="font-medium text-gray-900">
                       {room.number}
                     </div>
-                    {room.features && room.features.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {room.features.slice(0, 3).map((feature, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {feature}
-                          </Badge>
-                        ))}
-                        {room.features.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{room.features.length - 3} more
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </div>
                 </div>
-                
+
                 {!room.available && (
-                  <Badge variant="secondary">
-                    Unavailable
-                  </Badge>
+                  <Badge variant="secondary">Unavailable</Badge>
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </div>
-        
+
         <div className="flex items-center justify-between pt-4 border-t">
           <div className="text-sm text-gray-600">
             {selectedRooms.length} of {maxSelection} selected
@@ -158,7 +142,7 @@ export const RoomSelectionModal: React.FC<RoomSelectionModalProps> = ({
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleAccept}
               disabled={selectedRooms.length === 0}
             >
