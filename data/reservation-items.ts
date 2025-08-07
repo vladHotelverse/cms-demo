@@ -11,7 +11,7 @@ export interface BaseRequestedItem {
 }
 
 // Room type enumeration - only allowed room types
-export type AllowedRoomType = 'Doble' | 'Doble Deluxe' | 'Junior Suite'
+export type AllowedRoomType = 'Doble' | 'Junior Suite' | 'Doble Deluxe' | 'Rock Suite' | 'Deluxe Gold' | 'Deluxe Swim-up' | '80s Suite' | 'Rock Suite Diamond'
 
 // Room selection scenarios
 export type RoomSelectionScenario = 'upgrade_only' | 'choose_room_only' | 'choose_room_upgrade' | 'attribute_selection' | 'upgrade_with_attributes'
@@ -25,7 +25,7 @@ export const validateProductLimit = (items: any[]): boolean => {
 }
 
 export const isAllowedRoomType = (roomType: string): roomType is AllowedRoomType => {
-  const allowedTypes: AllowedRoomType[] = ['Doble', 'Doble Deluxe', 'Junior Suite']
+  const allowedTypes: AllowedRoomType[] = ['Doble', 'Doble Deluxe', 'Junior Suite', 'Rock Suite', 'Deluxe Gold', 'Deluxe Swim-up', '80s Suite', 'Rock Suite Diamond']
   return allowedTypes.includes(roomType as AllowedRoomType)
 }
 
@@ -278,8 +278,8 @@ export const requestedItemsData: RequestedItemsData = {
       price: 450,
       status: "confirmed",
       includesHotels: true,
-      agent: "Marcus Thompson",
-      commission: 67.5,
+      agent: "Online",
+      commission: 0,
       dateRequested: "20/01/26",
       checkIn: "28/01/26",
       checkOut: "31/01/26",
@@ -353,8 +353,8 @@ export const requestedItemsData: RequestedItemsData = {
       price: 25,
       status: "confirmed",
       includesHotels: true,
-      agent: "Reception",
-      commission: 0,
+      agent: "Emma Davis",
+      commission: 2.5,
       dateRequested: "22/01/26",
       units: 1,
       type: "service",
@@ -369,7 +369,7 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Emma Davis",
       commission: 12,
-      dateRequested: "23/01/26",
+      dateRequested: "22/01/26",
       units: 4,
       type: "service",
       serviceDate: ["28/01/26", "29/01/26", "30/01/26", "31/01/26"] // Consecutive dates
@@ -390,8 +390,8 @@ export const requestedItemsData: RequestedItemsData = {
       roomPrice: 750, // €250/night × 3 nights total
       status: "pending_hotel",
       includesHotels: true,
-      agent: "Marcus Thompson",
-      commission: 45.0,
+      agent: "Lisa Chen",
+      commission: 30.0,
       dateRequested: "21/01/26",
       dateCreated: "21/01/26",
       dateModified: "22/01/26"

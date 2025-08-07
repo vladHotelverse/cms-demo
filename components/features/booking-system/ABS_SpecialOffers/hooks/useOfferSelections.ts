@@ -29,7 +29,7 @@ export const useOfferSelections = ({ offers, initialSelections, reservationInfo 
       const nights = calculateNights(reservationInfo?.checkInDate, reservationInfo?.checkOutDate)
       
       defaultSelections[offer.id] = {
-        quantity: isAllInclusiveOffer ? 1 : 0, // All inclusive starts with quantity 1
+        quantity: 0, // All offers start with quantity 0 for consistent UI behavior
         persons: offer.type === 'perPerson' ? reservationInfo?.personCount || 1 : 1,
         nights: isAllInclusiveOffer ? nights : 1, // All inclusive uses full stay duration
         selectedDate: undefined,
@@ -49,7 +49,7 @@ export const useOfferSelections = ({ offers, initialSelections, reservationInfo 
       const nights = calculateNights(reservationInfo?.checkInDate, reservationInfo?.checkOutDate)
       
       defaultSelections[offer.id] = {
-        quantity: isAllInclusiveOffer ? 1 : 0, // All inclusive starts with quantity 1
+        quantity: 0, // All offers start with quantity 0 for consistent UI behavior
         persons: offer.type === 'perPerson' ? reservationInfo?.personCount || 1 : 1,
         nights: isAllInclusiveOffer ? nights : 1, // All inclusive uses full stay duration
         selectedDate: undefined,

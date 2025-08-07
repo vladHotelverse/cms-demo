@@ -297,7 +297,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 		try {
 			const roomData = {
 				id: room.id || Date.now().toString(),
-				roomType: room.name || room.roomType || 'Standard Room',
+				roomType: room.roomType || 'Standard Room',
 				price: room.price || 0,
 				amenities: room.amenities || room.attributes || [],
 				images: room.images || [room.mainImage || room.image || ''],
@@ -720,34 +720,6 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 											: "Review and confirm selected items"}
 									</p>
 								</div>
-								
-								{/* Action Buttons */}
-								<div className="flex items-center gap-3">
-									<Button
-										variant="outline"
-										className="flex items-center gap-2"
-										onClick={handleClearAllSelections}
-										disabled={buttonStates.clearButton.disabled}
-										aria-label={t("currentLanguage") === "es" ? "Limpiar todas las selecciones" : "Clear all selections"}
-									>
-										{buttonStates.clearButton.loading ? (
-											<div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-										) : (
-											<Trash2 className="h-4 w-4" />
-										)}
-										{buttonStates.clearButton.text}
-									</Button>
-									<Button
-										variant="default"
-										className="flex items-center gap-2"
-										onClick={handleConfirmSelections}
-										disabled={buttonStates.confirmButton.disabled}
-										aria-label={t("currentLanguage") === "es" ? "Confirmar selecciones" : "Confirm selections"}
-									>
-										<Check className="h-4 w-4" />
-										{buttonStates.confirmButton.text}
-									</Button>
-								</div>
 							</div>
 
 							{/* Summary Tables - Show only user selections */}
@@ -774,6 +746,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 							customizationUpdatedText: "Customization updated",
 							selectionsCleared: "All selections have been cleared"
 						}}
+						onCloseTab={onCloseTab}
 					/>
 
 						</div>
