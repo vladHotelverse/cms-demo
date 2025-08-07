@@ -16,6 +16,7 @@ import ReservationDetailsTab from "@/components/features/reservations/reservatio
 import { ReservationSummaryModal } from "@/components/features/reservations/reservation-summary-modal"
 import { ViewModeButtons } from "@/components/ui/view-mode-buttons"
 import { cn } from "@/lib/utils/index"
+import { format } from "date-fns"
 
 
 
@@ -82,11 +83,25 @@ export default function FrontDeskUpsellPage() {
   const [isInReservationMode, setIsInReservationMode] = useState(false)
   const [orders, setOrders] = useState<OrderFromAPI[]>([])
   const [loading, setLoading] = useState(true)
+  const [viewModeFilter, setViewModeFilter] = useState<any>(null)
 
   // Alert function (moved up to avoid initialization issues)
   const showAlert = (type: "success" | "error", message: string) => {
     setAlert({ type, message })
     setTimeout(() => setAlert(null), 4000)
+  }
+
+  // Handle view mode changes
+  const handleViewModeChange = (mode: string, data?: any) => {
+    console.log('View mode changed:', mode, data)
+    setViewModeFilter({ mode, data })
+    
+    // You can add logic here to filter reservations based on the selected mode and data
+    if (mode === 'call-center' && data?.dateRange) {
+      showAlert('success', `Filtering reservations for check-in dates: ${format(data.dateRange.from, 'MMM dd')} - ${format(data.dateRange.to, 'MMM dd')}`)
+    } else if (mode === 'simulation' && data) {
+      showAlert('success', `Loading simulation for ${data.roomType} room with ${data.occupants} guest(s)`)
+    }
   }
 
 
@@ -326,7 +341,7 @@ export default function FrontDeskUpsellPage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn("border-gray-300 w-full max-w-xs")}
                 />
-                <ViewModeButtons />
+                <ViewModeButtons onModeChange={handleViewModeChange} />
               </div>
             </div>
 
