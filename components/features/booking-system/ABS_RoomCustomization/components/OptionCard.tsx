@@ -5,11 +5,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { RoomSelectionModal } from '@/components/ui/room-selection-modal';
 import clsx from 'clsx';
 import { Icon } from '@iconify/react';
 import type { CustomizationOption, RoomCustomizationTexts } from '../types';
 import { IconRenderer } from './IconRenderer';
 import { Coins } from 'lucide-react';
+import { useState } from 'react';
 
 // Helper component for loyalty badge
 const LoyaltyBadge: React.FC<{
@@ -52,10 +54,37 @@ export const OptionCard: React.FC<OptionCardProps> = ({
   mode = 'interactive',
   readonly = false,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const availableCount = Math.floor(Math.random() * 9) + 1;
+
   const handleClick = () => {
     if (isDisabled) return;
     onSelect();
   };
+
+  const handleAvailableClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDisabled) return;
+    setIsModalOpen(true);
+  };
+
+  const handleModalAccept = (selectedRooms: string[]) => {
+    // Handle the room selection
+    console.log('Selected rooms for customization:', selectedRooms);
+    onSelect(); // Select this option
+  };
+
+  // Generate mock room data for customization options
+  const mockRooms = Array.from({ length: availableCount }, (_, index) => ({
+    id: `room-${option.id}-${index + 101}`,
+    number: `Room ${index + 101}`,
+    features: [
+      option.label,
+      'Premium amenities',
+      index % 2 === 0 ? 'City view' : 'Garden view'
+    ],
+    available: true,
+  }));
 
   const cardContent = (
     <div
@@ -142,7 +171,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
         {mode !== 'consultation' && (
           <div className="flex flex-col space-y-2 mt-auto">
             <Button
-              onClick={handleClick}
+              onClick={isSelected ? handleClick : handleAvailableClick}
               variant={isSelected ? 'destructive' : 'secondary'}
               size="sm"
               className={clsx('w-full transition-all border', {
@@ -154,7 +183,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
                 ? texts.removeText
                 : isDisabled
                   ? texts.optionDisabledText
-                  : `${Math.floor(Math.random() * 9) + 1} available`}
+                  : `${availableCount} available`}
             </Button>
 
             {showFeatures && onShowFeatures && !readonly && (
@@ -196,5 +225,20 @@ export const OptionCard: React.FC<OptionCardProps> = ({
     );
   }
 
-  return cardContent;
+  return (
+    <>
+      {cardContent}
+      <RoomSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAccept={handleModalAccept}
+        title={`Available Rooms for ${option.label}`}
+        description={`Select a room to add ${option.label} customization:`}
+        rooms={mockRooms}
+        availableCount={availableCount}
+        maxSelection={1}
+        type="customization"
+      />
+    </>
+  );
 };

@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { RoomSelectionModal } from '@/components/ui/room-selection-modal';
 import type { RoomOption } from './types';
 
 // Helper component for loyalty badge
@@ -97,6 +98,8 @@ const RoomCard: React.FC<RoomCardProps> = ({
   // State for checking if description is truncated
   const [isDescriptionTruncated, setIsDescriptionTruncated] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const availableCount = Math.floor(Math.random() * 10) + 1;
 
   // Function to get room-specific selling points  
   const getSellingPointsByRoomType = (roomType: string): string[] => {
@@ -257,6 +260,29 @@ const RoomCard: React.FC<RoomCardProps> = ({
     },
     [onSelectRoom, room, selectedRoom],
   );
+
+  const handleAvailableClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsModalOpen(true);
+  }, []);
+
+  const handleModalAccept = useCallback((selectedRooms: string[]) => {
+    // Handle the room selection
+    console.log('Selected superior rooms:', selectedRooms);
+    onSelectRoom(room); // Select this room type
+  }, [onSelectRoom, room]);
+
+  // Generate mock room data for superior rooms
+  const mockRooms = Array.from({ length: availableCount }, (_, index) => ({
+    id: `superior-${room.id}-${index + 101}`,
+    number: `Room ${index + 101}`,
+    features: [
+      room.roomType,
+      ...(room.amenities?.slice(0, 2) || ['Premium amenities']),
+      index % 2 === 0 ? 'Balcony' : 'City view'
+    ],
+    available: true,
+  }));
 
 
   return (
@@ -466,9 +492,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
                     <Button
                       variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
                       className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
-                      onClick={handleSelectRoom}
+                      onClick={selectedRoom?.id === room.id ? handleSelectRoom : handleAvailableClick}
                     >
-                      {selectedRoom?.id === room.id ? removeText : `${Math.floor(Math.random() * 10) + 1} Available`}
+                      {selectedRoom?.id === room.id ? removeText : `${availableCount} Available`}
                     </Button>
                   </div>
                 </div>
@@ -495,6 +521,17 @@ const RoomCard: React.FC<RoomCardProps> = ({
           })()}
         </div>
       </div>
+      <RoomSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAccept={handleModalAccept}
+        title={`Available ${room.roomType} Rooms`}
+        description={`Select your preferred ${room.roomType.toLowerCase()} room:`}
+        rooms={mockRooms}
+        availableCount={availableCount}
+        maxSelection={1}
+        type="room"
+      />
     </div>
   );
 };

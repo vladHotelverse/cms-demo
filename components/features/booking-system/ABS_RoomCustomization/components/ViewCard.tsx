@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react'
 import { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { RoomSelectionModal } from '@/components/ui/room-selection-modal'
 import type { RoomCustomizationTexts, ExactViewOption } from '../types'
 import { Button } from '@/components/ui/button'
 
@@ -42,11 +43,37 @@ export const ViewCard: React.FC<ViewCardProps> = ({
   readonly = false,
 }) => {
   const [isZoomed, setIsZoomed] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const availableCount = Math.floor(Math.random() * 9) + 1
 
   const handleClick = () => {
     if (isDisabled) return
     onSelect()
   }
+
+  const handleAvailableClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (isDisabled) return
+    setIsModalOpen(true)
+  }
+
+  const handleModalAccept = (selectedRooms: string[]) => {
+    // Handle the room selection
+    console.log('Selected rooms for view customization:', selectedRooms)
+    onSelect() // Select this view option
+  }
+
+  // Generate mock room data for view options
+  const mockRooms = Array.from({ length: availableCount }, (_, index) => ({
+    id: `room-view-${view.id}-${index + 101}`,
+    number: `Room ${index + 101}`,
+    features: [
+      view.name,
+      'Premium view',
+      index % 3 === 0 ? 'Corner room' : index % 3 === 1 ? 'High floor' : 'Standard floor'
+    ],
+    available: true,
+  }))
 
   const cardContent = (
     <div className={clsx(
@@ -124,7 +151,7 @@ export const ViewCard: React.FC<ViewCardProps> = ({
         {mode !== 'consultation' && (
           <div className="absolute bottom-0 left-10 right-10 py-2 text-center">
             <Button
-              onClick={handleClick}
+              onClick={isSelected ? handleClick : handleAvailableClick}
               disabled={isDisabled || readonly}
               variant={isSelected ? 'destructive' : 'outline'}
               size="sm"
@@ -136,7 +163,7 @@ export const ViewCard: React.FC<ViewCardProps> = ({
                 ? texts.removeText 
                 : isDisabled 
                   ? texts.optionDisabledText
-                  : `${Math.floor(Math.random() * 9) + 1} available`}
+                  : `${availableCount} available`}
             </Button>
           </div>
         )}
@@ -174,5 +201,20 @@ export const ViewCard: React.FC<ViewCardProps> = ({
     )
   }
 
-  return cardContent
+  return (
+    <>
+      {cardContent}
+      <RoomSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAccept={handleModalAccept}
+        title={`Available Rooms for ${view.name}`}
+        description={`Select a room to add ${view.name} view:`}
+        rooms={mockRooms}
+        availableCount={availableCount}
+        maxSelection={1}
+        type="customization"
+      />
+    </>
+  )
 }
