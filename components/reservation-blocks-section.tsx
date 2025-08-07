@@ -426,6 +426,7 @@ export default function ReservationBlocksSection({
               sectionOptions={sectionOptions}
               initialSelections={roomCustomizations}
               onCustomizationChange={onRoomCustomizationChange}
+              nights={nights}
               texts={{
                 pricePerNightText: "/night",
                 selectText: "Add for", // ✅ No {price} placeholder - component adds price automatically

@@ -105,4 +105,7 @@ export interface RoomCustomizationProps {
   compatibilityRules?: CompatibilityRules
   mode?: 'interactive' | 'consultation'
   readonly?: boolean
+  nights?: number
+  commissionText?: string
+  commissionPercentage?: number
 }

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Star, Coins } from 'lucide-react';
+import { Coins, Star } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { RoomSelectionModal } from '@/components/ui/room-selection-modal';
+import { COMMISSION_PERCENTAGE } from '@/constants/reservation-summary';
 import type { RoomOption } from './types';
 
 // Helper component for loyalty badge
@@ -29,7 +30,7 @@ const CommissionBadge: React.FC<{
   commission: number;
   currencySymbol: string;
   commissionText: string;
-}> = ({ commission, currencySymbol, commissionText }) => {
+}> = ({ commission, currencySymbol }) => {
   return (
     <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
       <div className="bg-green-100 p-1 rounded-full">
@@ -39,6 +40,7 @@ const CommissionBadge: React.FC<{
     </div>
   );
 };
+
 
 interface RoomCardProps {
   room: RoomOption;
@@ -62,6 +64,7 @@ interface RoomCardProps {
   dynamicAmenities?: string[];
   // New pricing props
   commissionText?: string;
+  commissionPercentage?: number;
   totalAmountText?: string;
   nights?: number;
   // Loyalty props
@@ -74,7 +77,6 @@ interface RoomCardProps {
 
 const RoomCard: React.FC<RoomCardProps> = ({
   room,
-  nightText,
   priceInfoText,
   selectedText,
   removeText,
@@ -87,7 +89,6 @@ const RoomCard: React.FC<RoomCardProps> = ({
   nextImageLabel = 'Next image',
   viewImageLabel = 'View image {index}',
   dynamicAmenities,
-  commissionText = 'Commission',
   totalAmountText = 'Total',
   nights = 1,
   loyaltyPercentage = 10,
@@ -471,45 +472,35 @@ const RoomCard: React.FC<RoomCardProps> = ({
             // Calculate loyalty discount
             const originalPrice = room.oldPrice || Math.round(room.price / (1 - loyaltyPercentage / 100));
             const totalPrice = room.price * nights;
-            const commission = Math.round(totalPrice * 0.1 * 100) / 100; // 10% commission, rounded to 2 decimals
-            
+            const commission = Math.round(totalPrice * 0.1 * 100) / 100;
             return (
               <div>
-                {/* Badges Row: Loyalty and Commission */}
-                <div className="flex items-center justify-between gap-2">
-                  <LoyaltyBadge loyaltyPercentage={loyaltyPercentage} loyaltyText={loyaltyText} />
-                  <CommissionBadge commission={commission} currencySymbol={currencySymbol} commissionText={commissionText} />
-                </div>
                 
-                {/* Row 1: Price per night with loyalty discount */}
-                <div className="grid grid-cols-2 gap-x-2 mt-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-gray-900">{`${currencySymbol}${room.price}`}</span>
-                    <span className="text-neutral-500 line-through text-base">{`${currencySymbol}${originalPrice}`}</span>
-                    <span className="text-base text-neutral-600">{nightText}</span>
+                {/* Price layout */}
+                <div className="flex items-start justify-between mt-2">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold text-gray-900">{`${currencySymbol}${room.price}`}</span>
+                      <span className="text-neutral-500 line-through text-base">{`${currencySymbol}${originalPrice}`}</span>
+                      <span className="text-base text-neutral-600">/night</span>
+                    </div>
                   </div>
-                  <div className="flex justify-end">
-                    <Button
-                      variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
-                      className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
-                      onClick={selectedRoom?.id === room.id ? handleSelectRoom : handleAvailableClick}
-                    >
-                      {selectedRoom?.id === room.id ? removeText : `${availableCount} Available`}
-                    </Button>
+                  <div className="flex items-end gap-2">
+                    <CommissionBadge commission={commission} currencySymbol={currencySymbol} commissionText={commission} />
+                    <LoyaltyBadge loyaltyPercentage={loyaltyPercentage} loyaltyText={loyaltyText} />
                   </div>
                 </div>
 
-                {/* Row 2: Total */}
-                <div className="grid grid-cols-2 gap-x-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base font-semibold text-gray-700">{`${currencySymbol}${totalPrice}`}</span>
-                    <span className="text-sm text-neutral-600">{totalAmountText}</span>
-                  </div>
-                  {/* <div className="flex justify-end items-center">
-                    <span className="text-base font-medium text-emerald-600 whitespace-nowrap">
-                      {instantConfirmationText}
-                    </span>
-                  </div> */}
+                {/* Total Price and Button Row - Combined for space optimization */}
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-base font-semibold text-gray-700">{`${totalAmountText}: ${currencySymbol}${totalPrice}`}</span>
+                  <Button
+                    variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
+                    className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
+                    onClick={selectedRoom?.id === room.id ? handleSelectRoom : handleAvailableClick}
+                  >
+                    {selectedRoom?.id === room.id ? removeText : `${availableCount} Available`}
+                  </Button>
                 </div>
 
                 {/* Row 3: Price info */}

@@ -251,6 +251,7 @@ const RoomSelectionCarousel: React.FC<RoomSelectionCarouselProps> = ({
             nextImageLabel={resolvedTexts.nextImage}
             viewImageLabel={resolvedTexts.viewImage}
             dynamicAmenities={dynamicAmenitiesMap.get(roomOptions[0].id)}
+            nights={nights}
           />
         </div>
       </div>
