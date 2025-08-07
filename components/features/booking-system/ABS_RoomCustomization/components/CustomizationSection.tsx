@@ -29,6 +29,9 @@ interface CustomizationSectionProps {
   allSections?: SectionConfig[]
   currentSectionIndex?: number
   onSectionChange?: (index: number) => void
+  nights?: number
+  commissionText?: string
+  commissionPercentage?: number
 }
 
 const isExactViewOption = (option: CustomizationOption | ViewOption | ExactViewOption): option is ExactViewOption => {
@@ -55,6 +58,9 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
   allSections = [],
   currentSectionIndex = 0,
   onSectionChange,
+  nights = 1,
+  commissionText = 'Commission',
+  commissionPercentage,
 }) => {
   const [showInfo, setShowInfo] = useState(false)
   const [showAllOptions, setShowAllOptions] = useState(false)
@@ -192,6 +198,9 @@ export const CustomizationSection: React.FC<CustomizationSectionProps> = ({
                   onShowFeatures={readonly ? undefined : onOpenModal}
                   mode={mode}
                   readonly={readonly}
+                  nights={nights}
+                  commissionText={commissionText}
+                  commissionPercentage={commissionPercentage}
                 />
               )
             }

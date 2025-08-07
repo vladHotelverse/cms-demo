@@ -19,6 +19,9 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
   compatibilityRules,
   mode = 'interactive',
   readonly = false,
+  nights = 1,
+  commissionText = 'Commission',
+  commissionPercentage,
 }) => {
   const { 
     selectedOptions, 
@@ -82,6 +85,7 @@ const RoomCustomization: React.FC<RoomCustomizationProps> = ({
                 allSections={sectionsToShow}
                 currentSectionIndex={currentSectionIndex}
                 onSectionChange={handleSectionChange}
+                nights={nights}
               />
             )
           })}

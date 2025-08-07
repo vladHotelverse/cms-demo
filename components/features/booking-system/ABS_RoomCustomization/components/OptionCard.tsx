@@ -5,10 +5,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { RoomSelectionModal } from '@/components/ui/room-selection-modal';
+import { COMMISSION_PERCENTAGE } from '@/constants/reservation-summary';
 import clsx from 'clsx';
 import { Icon } from '@iconify/react';
 import type { CustomizationOption, RoomCustomizationTexts } from '../types';
 import { IconRenderer } from './IconRenderer';
+import { useState } from 'react';
 import { Coins } from 'lucide-react';
 
 // Helper component for loyalty badge
@@ -20,6 +23,20 @@ const LoyaltyBadge: React.FC<{
     <div className="inline-flex items-center bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold">
       <span>
         {loyaltyText} {loyaltyPercentage}%
+      </span>
+    </div>
+  );
+};
+
+// Helper component for commission badge
+const CommissionBadge: React.FC<{
+  commissionPercentage?: number;
+  commissionText?: string;
+}> = ({ commissionPercentage = COMMISSION_PERCENTAGE, commissionText = 'Commission' }) => {
+  return (
+    <div className="inline-flex items-center bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold">
+      <span>
+        {commissionText} {commissionPercentage}%
       </span>
     </div>
   );
@@ -37,6 +54,9 @@ interface OptionCardProps {
   onShowFeatures?: () => void;
   mode?: 'interactive' | 'consultation';
   readonly?: boolean;
+  nights?: number;
+  commissionText?: string;
+  commissionPercentage?: number;
 }
 
 export const OptionCard: React.FC<OptionCardProps> = ({
@@ -51,11 +71,41 @@ export const OptionCard: React.FC<OptionCardProps> = ({
   onShowFeatures,
   mode = 'interactive',
   readonly = false,
+  nights = 1,
+  commissionText = 'Commission',
+  commissionPercentage = COMMISSION_PERCENTAGE,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const availableCount = Math.floor(Math.random() * 9) + 1;
+
   const handleClick = () => {
     if (isDisabled) return;
     onSelect();
   };
+
+  const handleAvailableClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDisabled) return;
+    setIsModalOpen(true);
+  };
+
+  const handleModalAccept = (selectedRooms: string[]) => {
+    // Handle the room selection
+    console.log('Selected rooms for customization:', selectedRooms);
+    onSelect(); // Select this option
+  };
+
+  // Generate mock room data for customization options
+  const mockRooms = Array.from({ length: availableCount }, (_, index) => ({
+    id: `room-${option.id}-${index + 101}`,
+    number: `Room ${index + 101}`,
+    features: [
+      option.label,
+      'Premium amenities',
+      index % 2 === 0 ? 'City view' : 'Garden view'
+    ],
+    available: true,
+  }));
 
   const cardContent = (
     <div
@@ -107,25 +157,32 @@ export const OptionCard: React.FC<OptionCardProps> = ({
             {option.description}
           </p>
         )}
-        {/* Price display with loyalty discount */}
+        
+        {/* Price display */}
         <div
-          className={clsx('mb-2 flex items-center justify-between', {
+          className={clsx('my-2 flex items-start justify-between', {
             'text-neutral-400': isDisabled,
           })}
         >
-          <div className="flex gap-2 items-center">
-            <div className="text-sm font-semibold">
-              {(option.price * 0.9).toFixed(2)} {texts.pricePerNightText}
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 items-center">
+              <div className="text-lg ">
+                <span className='font-semibold'>{(option.price * 0.9).toFixed(2)}</span> <span className='text-neutral-600 text-base'>{texts.pricePerNightText}</span>
+              </div>
+              {option.price > 0 && (
+                <div className="text-sm text-gray-500 line-through">
+                  {option.price.toFixed(2)} EUR
+                </div>
+              )}
             </div>
             {option.price > 0 && (
-              <div className="text-xs text-gray-500 line-through">
-                {option.price.toFixed(2)} EUR
+              <div className="font-bold text-gray-700">
+                Total: €{((option.price * 0.9) * nights).toFixed(2)}
               </div>
             )}
           </div>
-        </div>
         {mode !== 'consultation' && option.price > 0 && (
-          <section className='flex items-center justify-between mb-2'>
+          <section className='flex flex-col gap-1 items-center justify-between mb-2'>
             <LoyaltyBadge loyaltyPercentage={10} loyaltyText="Loyalty" />
             <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
               <div className="bg-green-100 p-1 rounded-full">
@@ -133,16 +190,17 @@ export const OptionCard: React.FC<OptionCardProps> = ({
               </div>
               <span className="text-emerald-600">
                 {' '}
-                {(option.price * 0.1).toFixed(2)} EUR
+                {((option.price * nights) * 0.1).toFixed(2)} EUR
               </span>
             </div>
           </section>
         )}
+        </div>
 
         {mode !== 'consultation' && (
           <div className="flex flex-col space-y-2 mt-auto">
             <Button
-              onClick={handleClick}
+              onClick={isSelected ? handleClick : handleAvailableClick}
               variant={isSelected ? 'destructive' : 'secondary'}
               size="sm"
               className={clsx('w-full transition-all border', {
@@ -154,7 +212,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
                 ? texts.removeText
                 : isDisabled
                   ? texts.optionDisabledText
-                  : `${Math.floor(Math.random() * 9) + 1} available`}
+                  : `${availableCount} available`}
             </Button>
 
             {showFeatures && onShowFeatures && !readonly && (
@@ -196,5 +254,20 @@ export const OptionCard: React.FC<OptionCardProps> = ({
     );
   }
 
-  return cardContent;
+  return (
+    <>
+      {cardContent}
+      <RoomSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAccept={handleModalAccept}
+        title={`Available Rooms for ${option.label}`}
+        description={`Select a room to add ${option.label} customization:`}
+        rooms={mockRooms}
+        availableCount={availableCount}
+        maxSelection={1}
+        type="customization"
+      />
+    </>
+  );
 };

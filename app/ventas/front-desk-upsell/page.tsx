@@ -256,6 +256,37 @@ export default function FrontDeskUpsellPage() {
     }
   }
 
+  // Handler for when recommend button is clicked from summary view
+  const handleRecommendClick = (reservation: OrderFromAPI) => {
+    const summaryTabId = `summary_${reservation.id}`
+    const detailsTabId = `details_${reservation.id}`
+    
+    // Close the current summary tab
+    setOpenTabs(prev => prev.filter(tab => tab.id !== summaryTabId))
+    
+    // Check if details tab already exists
+    const existingDetailsTab = openTabs.find(tab => tab.id === detailsTabId)
+    if (existingDetailsTab) {
+      setActiveTab(detailsTabId)
+      setIsInReservationMode(true)
+      return
+    }
+
+    // Create new details tab
+    const newTab: OpenTab = {
+      id: detailsTabId,
+      reservation: {
+        ...reservation,
+        nights: reservation.nights,
+        extras: reservation.extras
+      }
+    }
+    
+    setOpenTabs(prev => prev.filter(tab => tab.id !== summaryTabId).concat([newTab]))
+    setActiveTab(detailsTabId)
+    setIsInReservationMode(true)
+  }
+
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -449,6 +480,7 @@ export default function FrontDeskUpsellPage() {
               <ReservationSummaryModal 
                 reservation={tab.reservation} 
                 onCloseTab={() => handleCloseTab(tab.id)}
+                onRecommendClick={() => handleRecommendClick(tab.reservation)}
               />
             </TabsContent>
           ))}

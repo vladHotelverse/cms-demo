@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Star, Coins } from 'lucide-react';
+import { Coins, Star } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { RoomSelectionModal } from '@/components/ui/room-selection-modal';
+import { COMMISSION_PERCENTAGE } from '@/constants/reservation-summary';
 import type { RoomOption } from './types';
 
 // Helper component for loyalty badge
@@ -27,8 +29,8 @@ const LoyaltyBadge: React.FC<{
 const CommissionBadge: React.FC<{
   commission: number;
   currencySymbol: string;
-  commissionText: string;
-}> = ({ commission, currencySymbol, commissionText }) => {
+  commissionText?: string;
+}> = ({ commission, currencySymbol }) => {
   return (
     <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
       <div className="bg-green-100 p-1 rounded-full">
@@ -38,6 +40,7 @@ const CommissionBadge: React.FC<{
     </div>
   );
 };
+
 
 interface RoomCardProps {
   room: RoomOption;
@@ -61,6 +64,7 @@ interface RoomCardProps {
   dynamicAmenities?: string[];
   // New pricing props
   commissionText?: string;
+  commissionPercentage?: number;
   totalAmountText?: string;
   nights?: number;
   // Loyalty props
@@ -73,7 +77,6 @@ interface RoomCardProps {
 
 const RoomCard: React.FC<RoomCardProps> = ({
   room,
-  nightText,
   priceInfoText,
   selectedText,
   removeText,
@@ -86,7 +89,6 @@ const RoomCard: React.FC<RoomCardProps> = ({
   nextImageLabel = 'Next image',
   viewImageLabel = 'View image {index}',
   dynamicAmenities,
-  commissionText = 'Commission',
   totalAmountText = 'Total',
   nights = 1,
   loyaltyPercentage = 10,
@@ -97,6 +99,8 @@ const RoomCard: React.FC<RoomCardProps> = ({
   // State for checking if description is truncated
   const [isDescriptionTruncated, setIsDescriptionTruncated] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const availableCount = Math.floor(Math.random() * 10) + 1;
 
   // Function to get room-specific selling points  
   const getSellingPointsByRoomType = (roomType: string): string[] => {
@@ -105,54 +109,63 @@ const RoomCard: React.FC<RoomCardProps> = ({
     // Standard Room variations
     if (normalizedRoomType.includes('standard')) {
       return [
-        "Cozy room with quality furnishings and comfortable queen bed",
-        "Great location with easy access to hotel amenities and facilities",
-        "Smart choice for travelers who value quality and convenience"
+        "Quality furnishings with queen bed",
+        "Great location with easy access",
+        "Smart choice for comfort & value"
+      ];
+    }
+    
+    // Superior Room variations
+    if (normalizedRoomType.includes('superior')) {
+      return [
+        "40% larger with king bed & marble bath",
+        "Top floor with panoramic views",
+        "Only €45 more for premium upgrade"
       ];
     }
     
     // Deluxe Room variations
     if (normalizedRoomType.includes('deluxe')) {
       return [
-        "40% larger space with premium king bed and marble bathroom",
-        "Exclusive balcony with stunning landmark views",
-        "Only €45 more per night for luxury upgrade experience"
+        "40% larger with premium king bed",
+        "Exclusive balcony with landmark views",
+        "Only €45 more for luxury upgrade"
       ];
     }
     
     // Suite variations
     if (normalizedRoomType.includes('suite')) {
       return [
-        "Spacious living area with separate bedroom and work space",
-        "Premium amenities: minibar, coffee machine, and bath robes",
-        "VIP concierge service and priority restaurant reservations"
+        "Spacious living area with separate bedroom",
+        "Premium amenities: minibar & coffee machine", 
+        "VIP concierge and priority service"
       ];
     }
     
     // Premium Room variations
     if (normalizedRoomType.includes('premium')) {
       return [
-        "Top floor location with panoramic city/ocean views",
-        "Upgraded bathroom with rain shower and luxury toiletries",
-        "Express check-in/out and late checkout until 2 PM"
+        "Top floor with panoramic city views",
+        "Rain shower and luxury toiletries",
+        "Express check-in/out & late checkout"
       ];
     }
     
     // Family Room variations
     if (normalizedRoomType.includes('family')) {
       return [
-        "Perfect for families - sleeps up to 4 with bunk bed area",
-        "Child-friendly amenities and toys provided free",
-        "Close to pool and family activities area"
+        "Perfect for families - sleeps up to 4",
+        "Child-friendly amenities & toys included",
+        "Close to pool and family activities"
       ];
     }
     
     // Fallback generic selling points for unknown room types
     console.log('Unknown room type, using fallback points:', roomType);
     return [
-      "We have a beautiful suite available with landmark views",
-      "40% larger space with king bed and private balcony", 
-      "Only €76 more per night for premium experience"
+      "Beautiful suite with landmark views",
+      "40% larger with king bed & balcony", 
+      "Only €76 more for premium experience"
     ];
   };
 
@@ -258,6 +271,29 @@ const RoomCard: React.FC<RoomCardProps> = ({
     [onSelectRoom, room, selectedRoom],
   );
 
+  const handleAvailableClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsModalOpen(true);
+  }, []);
+
+  const handleModalAccept = useCallback((selectedRooms: string[]) => {
+    // Handle the room selection
+    console.log('Selected superior rooms:', selectedRooms);
+    onSelectRoom(room); // Select this room type
+  }, [onSelectRoom, room]);
+
+  // Generate mock room data for superior rooms
+  const mockRooms = Array.from({ length: availableCount }, (_, index) => ({
+    id: `superior-${room.id}-${index + 101}`,
+    number: `Room ${index + 101}`,
+    features: [
+      room.roomType,
+      ...(room.amenities?.slice(0, 2) || ['Premium amenities']),
+      index % 2 === 0 ? 'Balcony' : 'City view'
+    ],
+    available: true,
+  }));
+
 
   return (
     <div
@@ -265,15 +301,6 @@ const RoomCard: React.FC<RoomCardProps> = ({
         'relative rounded-b-lg overflow-hidden max-w-lg transition-all duration-300',
       )}
     >
-      {/* Removed discount badge from image */}
-
-      {/* Selected Badge */}
-      {selectedRoom?.id === room.id && (
-        <div className="absolute top-2 left-2 z-10 bg-green-600 text-white text-xs flex items-center gap-1 py-1 px-2 rounded">
-          <Star className="h-3 w-3" />
-          <span>{selectedText}</span>
-        </div>
-      )}
 
       {/* Room Image Carousel */}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Drag functionality for image navigation */}
@@ -390,6 +417,14 @@ const RoomCard: React.FC<RoomCardProps> = ({
             ))}
           </div>
         )}
+
+              {/* Selected Badge */}
+      {selectedRoom?.id === room.id && (
+        <div className="absolute bottom-2 left-2 z-30 bg-green-600 text-white text-xs flex items-center gap-1 py-1 px-2 rounded shadow-lg">
+          <Star className="h-3 w-3" />
+          <span>{selectedText}</span>
+        </div>
+      )}
       </div>
 
       {/* Room Details */}
@@ -445,45 +480,38 @@ const RoomCard: React.FC<RoomCardProps> = ({
             // Calculate loyalty discount
             const originalPrice = room.oldPrice || Math.round(room.price / (1 - loyaltyPercentage / 100));
             const totalPrice = room.price * nights;
-            const commission = Math.round(totalPrice * 0.1 * 100) / 100; // 10% commission, rounded to 2 decimals
-            
+            const commission = Math.round(totalPrice * 0.1 * 100) / 100;
             return (
               <div>
-                {/* Badges Row: Loyalty and Commission */}
-                <div className="flex items-center justify-between gap-2">
-                  <LoyaltyBadge loyaltyPercentage={loyaltyPercentage} loyaltyText={loyaltyText} />
-                  <CommissionBadge commission={commission} currencySymbol={currencySymbol} commissionText={commissionText} />
-                </div>
                 
-                {/* Row 1: Price per night with loyalty discount */}
-                <div className="grid grid-cols-2 gap-x-2 mt-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-gray-900">{`${currencySymbol}${room.price}`}</span>
-                    <span className="text-neutral-500 line-through text-base">{`${currencySymbol}${originalPrice}`}</span>
-                    <span className="text-base text-neutral-600">{nightText}</span>
+                {/* Price layout */}
+                <div className="flex items-start justify-between mt-2">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-bold text-gray-900">{`${currencySymbol}${room.price}`}</span>
+                      <span className="text-neutral-500 line-through text-base">{`${currencySymbol}${originalPrice}`}</span>
+                      <span className="text-base text-neutral-600">/night</span>
+                    </div>
                   </div>
-                  <div className="flex justify-end">
-                    <Button
-                      variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
-                      className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
-                      onClick={handleSelectRoom}
-                    >
-                      {selectedRoom?.id === room.id ? removeText : `${Math.floor(Math.random() * 10) + 1} Available`}
-                    </Button>
+                  <div className="flex items-end gap-2">
+                    <CommissionBadge commission={commission} currencySymbol={currencySymbol} />
+                    <LoyaltyBadge loyaltyPercentage={loyaltyPercentage} loyaltyText={loyaltyText} />
                   </div>
                 </div>
 
-                {/* Row 2: Total */}
-                <div className="grid grid-cols-2 gap-x-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base font-semibold text-gray-700">{`${currencySymbol}${totalPrice}`}</span>
-                    <span className="text-sm text-neutral-600">{totalAmountText}</span>
-                  </div>
-                  {/* <div className="flex justify-end items-center">
-                    <span className="text-base font-medium text-emerald-600 whitespace-nowrap">
-                      {instantConfirmationText}
-                    </span>
-                  </div> */}
+                {/* Total Price and Button Row - Combined for space optimization */}
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-base text-gray-700">
+                    <span className='font-semibold text-lg'>{`${currencySymbol}${totalPrice} `}</span>
+                    {totalAmountText}
+                  </p>
+                  <Button
+                    variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
+                    className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
+                    onClick={selectedRoom?.id === room.id ? handleSelectRoom : handleAvailableClick}
+                  >
+                    {selectedRoom?.id === room.id ? removeText : `${availableCount} Available`}
+                  </Button>
                 </div>
 
                 {/* Row 3: Price info */}
@@ -495,6 +523,17 @@ const RoomCard: React.FC<RoomCardProps> = ({
           })()}
         </div>
       </div>
+      <RoomSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAccept={handleModalAccept}
+        title={`Available ${room.roomType} Rooms`}
+        description={`Select your preferred ${room.roomType.toLowerCase()} room:`}
+        rooms={mockRooms}
+        availableCount={availableCount}
+        maxSelection={1}
+        type="room"
+      />
     </div>
   );
 };

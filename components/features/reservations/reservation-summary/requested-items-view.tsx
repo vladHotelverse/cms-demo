@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { RefreshCw, Settings2 } from "lucide-react"
+import { RefreshCw, Settings2, Sparkles } from "lucide-react"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
 import { RequestedItemsHeader } from "./requested-items-header"
 import { RoomsTable } from "./rooms-table"
@@ -25,6 +25,7 @@ interface RequestedItemsViewProps {
   }
   dynamicReservationItems: RequestedItemsData | LegacyRequestedItemsData
   onCloseTab?: () => void
+  onRecommendClick?: () => void
 }
 
 // Helper function to check if data is in legacy format
@@ -79,11 +80,14 @@ function transformLegacyData(data: LegacyRequestedItemsData | RequestedItemsData
   }
 }
 
-export function RequestedItemsView({ reservation, dynamicReservationItems, onCloseTab }: RequestedItemsViewProps) {
+export function RequestedItemsView({ reservation, dynamicReservationItems, onCloseTab, onRecommendClick }: RequestedItemsViewProps) {
   const { t } = useReservationTranslations()
 
   // Transform data to ensure compatibility
   const transformedData = transformLegacyData(dynamicReservationItems || { rooms: [], extras: [], bidding: [] })
+  
+  // Check if customer has existing purchase history for recommendation button visibility
+  const hasPurchaseHistory = transformedData.rooms.length > 0 || transformedData.extras.length > 0 || transformedData.bidding.length > 0
   
   // Add debugging
   
@@ -117,6 +121,12 @@ export function RequestedItemsView({ reservation, dynamicReservationItems, onClo
             <Button variant="outline" size="icon" className="h-9 w-9">
               <RefreshCw className="h-4 w-4" />
             </Button>
+            {hasPurchaseHistory && onRecommendClick && (
+              <Button variant="default" className="gap-2" onClick={onRecommendClick}>
+                <Sparkles className="h-4 w-4" />
+                {t('recommend') || 'Get Recommendations'}
+              </Button>
+            )}
             <Button className="gap-2">
               <Settings2 className="h-4 w-4" />
               {t('manageOrder')}

@@ -10,7 +10,6 @@ import { generateUniqueReservationItems } from "@/utils/generate-unique-reservat
 
 // Import view components
 import { RequestedItemsView } from "./reservation-summary/requested-items-view"
-import { RecommendationsView } from "./reservation-summary/recommendations-view"
 import { DetailedCatalogView } from "./reservation-summary/detailed-catalog-view"
 
 interface ReservationSummaryModalProps {
@@ -28,9 +27,10 @@ interface ReservationSummaryModalProps {
     hasHotelverseRequest: boolean
   }
   onCloseTab?: () => void
+  onRecommendClick?: () => void
 }
 
-export function ReservationSummaryModal({ reservation, onCloseTab }: ReservationSummaryModalProps) {
+export function ReservationSummaryModal({ reservation, onCloseTab, onRecommendClick }: ReservationSummaryModalProps) {
   const { t: tLang } = useLanguage()
   const { showDetailedView } = useReservationSummaryStore()
   const hasItems = reservation.extras.includes(tLang("reserved"))
@@ -129,7 +129,8 @@ export function ReservationSummaryModal({ reservation, onCloseTab }: Reservation
       <RequestedItemsView 
         reservation={reservation} 
         dynamicReservationItems={actualRequestedItems}
-        onCloseTab={onCloseTab} 
+        onCloseTab={onCloseTab}
+        onRecommendClick={onRecommendClick}
       />
     )
   }
