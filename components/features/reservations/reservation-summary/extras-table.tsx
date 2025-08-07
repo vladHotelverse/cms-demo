@@ -100,7 +100,7 @@ function ExtraRow({ item, onStatusUpdate, onDelete }: ExtraRowProps) {
   
   return (
     <TableRow className="border-gray-100 hover:bg-gray-50/50">
-      <TableCell className="py-4 text-sm">{item.agent || 'Emma Davis'}</TableCell>
+      <TableCell className="py-4 text-sm">{item.agent || 'Online'}</TableCell>
       <TableCell className="py-4">
         <CommissionDisplay 
           amount={item.agent !== 'Online' ? (item.price > 0 ? item.price : 15) * 0.1 : 0} 

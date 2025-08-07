@@ -76,7 +76,7 @@ const EXTRA_SERVICES = {
 }
 
 // Agents pool
-const AGENTS = ['Maria Thompson', 'Carlos Rodriguez', 'Emma Chen', 'James Wilson', 'Online', 'Reception', 'Concierge']
+const AGENTS = ['Maria Thompson', 'Carlos Rodriguez', 'Emma Chen', 'James Wilson', 'Online']
 
 // Service categories for logical date generation
 const SERVICE_CATEGORIES = {
@@ -249,23 +249,21 @@ function generateItemsForCount(
     extrasCount = count - 2
   }
   
-  // Select agents for each category (all items in a category have the same agent)
-  const roomsAgent = rng.nextFromArray(AGENTS)
-  const extrasAgent = rng.nextFromArray(AGENTS)
-  const biddingAgent = rng.nextFromArray(AGENTS.filter(a => a !== 'Online')) // Bidding rarely done online
+  // Select one agent for the entire reservation (all items use the same agent)
+  const reservationAgent = rng.nextFromArray(AGENTS)
   
   // Generate room items
   if (roomCount > 0) {
-    result.rooms.push(generateRoomItem(reservation, profile, rng, checkInDate, checkOutDate, roomsAgent))
+    result.rooms.push(generateRoomItem(reservation, profile, rng, checkInDate, checkOutDate, reservationAgent))
   }
   
   // Generate bidding items
   if (biddingCount > 0) {
-    result.bidding.push(generateBiddingItem(reservation, profile, rng, biddingAgent, checkInDate, checkOutDate))
+    result.bidding.push(generateBiddingItem(reservation, profile, rng, reservationAgent, checkInDate, checkOutDate))
   }
   
   // Generate extra items
-  result.extras = generateExtraItems(extrasCount, reservation, profile, rng, nights, extrasAgent, checkInDate, checkOutDate)
+  result.extras = generateExtraItems(extrasCount, reservation, profile, rng, nights, reservationAgent, checkInDate, checkOutDate)
   
   return result
 }
@@ -360,7 +358,7 @@ function generateRoomItem(
   const totalPrice = basePrice * nights
   
   // Calculate commission based on agent
-  const commission = agent === 'Online' || agent === 'Reception' ? 0 : totalPrice * 0.15
+  const commission = agent === 'Online' ? 0 : totalPrice * 0.10
   
   // Helper function to format date as DD/MM/YY (force 2026)
   const formatCompactDate = (date: Date): string => {
@@ -435,7 +433,7 @@ function generateBiddingItem(
   const roomPrice = getRoomBasePrice(targetRoomType) * nights
   
   // Calculate commission
-  const commission = upgradePrice * 0.15
+  const commission = upgradePrice * 0.10
   
   // Helper function to format date as DD/MM/YY (force 2026)
   const formatCompactDate = (date: Date): string => {
@@ -641,7 +639,7 @@ function generateExtraItems(
       status: rng.next() > 0.4 ? 'confirmed' : 'pending_hotel',
       includesHotels: !extra.name.includes('Transfer') && !extra.name.includes('Experience'),
       agent,
-      commission: agent === 'Online' || agent === 'Reception' ? 0 : totalPrice * 0.1,
+      commission: agent === 'Online' ? 0 : totalPrice * 0.1,
       dateRequested: formatCompactDate(dateRequested),
       units,
       type: extra.type,
