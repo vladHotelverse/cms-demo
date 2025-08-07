@@ -43,7 +43,7 @@ function transformRoomTypesToABS(roomTypes: RoomType[], currentLanguage: string 
 
     // Extract values using proper multilingual support  
     const roomName = getMultilingualValue(room.title, "Unnamed Room");
-    const roomDescription = getMultilingualValue(room.description, "Comfortable room with modern amenities");
+    const roomDescription = getMultilingualValue(room.description, "Experience supreme luxury with divine views and premium amenities");
     const roomPrice = Number(room.base_price) || 0;
     const roomAmenities = Array.isArray(room.amenities) ? room.amenities : [];
     const roomImages = room.images && room.images.length > 0 ? room.images : [room.main_image];
@@ -89,7 +89,7 @@ function transformCustomizationOptionsToABS(options: CustomizationOption[], curr
   options.forEach(option => {
     const category = option.category || "Other";
     const optionName = getMultilingualValue(option.name || {}, "Option");
-    const optionDescription = getMultilingualValue(option.description || {}, `${optionName} upgrade`);
+    const optionDescription = getMultilingualValue(option.description || {}, `Premium ${optionName.toLowerCase()} with enhanced luxury amenities`);
     const optionPrice = Number(option.price) || 0;
     const priceType = option.price_type || 'per_night';
     
@@ -368,11 +368,11 @@ export default function ReservationBlocksSection({
       {/* Room Selection Section - Card Layout */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[max(650px,calc(100vh-350px))]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-1">
             {getABSTranslation("chooseYourSuperiorRoomLabel") || "Room Upgrades"}
           </h2>
           <p className="text-xs text-gray-600">
-            {getABSTranslation("selectRoomDescription") || "Choose from our selection of premium rooms and suites"}
+            {getABSTranslation("selectRoomDescription") || "Upgrade to supreme luxury with divine ocean views and enhanced amenities"}
           </p>
         </div>
         <div className="p-0 h-full overflow-hidden">
@@ -411,17 +411,17 @@ export default function ReservationBlocksSection({
       {/* Room Customization Section - Card Layout */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-1">
             Room Customization
           </h2>
           <p className="text-xs text-gray-600">
-            Personalize your room for the perfect experience
+            Elevate your stay with premium amenities and luxury upgrades
           </p>
         </div>
         <div className="px-4">
           <ABS_RoomCustomization
               title="Room Customization"
-              subtitle="Personalize your room for the perfect experience"
+              subtitle="Elevate your stay with premium amenities and luxury upgrades"
               sections={customizationSections}
               sectionOptions={sectionOptions}
               initialSelections={roomCustomizations}
@@ -453,11 +453,11 @@ export default function ReservationBlocksSection({
       {/* Special Offers Section - Card Layout */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 h-[max(650px,calc(100vh-350px))]">
         <div className="border-b border-gray-100 bg-gray-50/50 px-4 py-3">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-1">
             {getABSTranslation("enhanceYourStayLabel") || "Special Offers"}
           </h2>
           <p className="text-xs text-gray-600">
-            {getABSTranslation("offersDescription") || "Enhance your stay with these exclusive offers"}
+            {getABSTranslation("offersDescription") || "Experience supreme luxury with divine views and premium amenities"}
           </p>
         </div>
           {transformedOffers.length > 0 && 
