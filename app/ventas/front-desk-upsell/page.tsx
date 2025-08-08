@@ -381,7 +381,7 @@ export default function FrontDeskUpsellPage() {
               <Table>
                 <TableHeader className="bg-gray-50">
                   <TableRow>
-                    <SortableHeader field="locator" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("locator")}</SortableHeader>
+                    <SortableHeader field="locator" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("Booking ID")}</SortableHeader>
                     <SortableHeader field="name" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("guest")}</SortableHeader>
                     <TableHead>A / C / I</TableHead>
                     <SortableHeader field="roomType" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("roomType")}</SortableHeader>

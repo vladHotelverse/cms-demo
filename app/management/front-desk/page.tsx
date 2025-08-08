@@ -365,7 +365,7 @@ export default function FrontDeskTableView() {
             <Table className="min-w-full text-xs">
               <TableHeader>
                 <TableRow className="border-b-gray-200">
-                  <TableHead className="w-[100px] px-2 py-2 text-xs">Locator</TableHead>
+                  <TableHead className="w-[100px] px-2 py-2 text-xs">Booking ID</TableHead>
                   <TableHead className="w-[160px] px-2 py-2 text-xs">Guest</TableHead>
                   <TableHead className="w-[100px] px-2 py-2 text-xs">Requested</TableHead>
                   <TableHead className="w-[100px] px-2 py-2 text-xs">Stay Dates</TableHead>
