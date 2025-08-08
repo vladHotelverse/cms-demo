@@ -32,7 +32,10 @@ const LoyaltyBadge: React.FC<{
 const CommissionBadge: React.FC<{
   commissionPercentage?: number;
   commissionText?: string;
-}> = ({ commissionPercentage = COMMISSION_PERCENTAGE, commissionText = 'Commission' }) => {
+}> = ({
+  commissionPercentage = COMMISSION_PERCENTAGE,
+  commissionText = 'Commission',
+}) => {
   return (
     <div className="inline-flex items-center bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold">
       <span>
@@ -102,7 +105,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
     features: [
       option.label,
       'Premium amenities',
-      index % 2 === 0 ? 'City view' : 'Garden view'
+      index % 2 === 0 ? 'City view' : 'Garden view',
     ],
     available: true,
   }));
@@ -157,7 +160,7 @@ export const OptionCard: React.FC<OptionCardProps> = ({
             {option.description}
           </p>
         )}
-        
+
         {/* Price display */}
         <div
           className={clsx('my-2 flex items-start justify-between', {
@@ -167,7 +170,12 @@ export const OptionCard: React.FC<OptionCardProps> = ({
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 items-center">
               <div className="text-lg ">
-                <span className='font-semibold'>{(option.price * 0.9).toFixed(2)}</span> <span className='text-neutral-600 text-base'>{texts.pricePerNightText}</span>
+                <span className="font-semibold">
+                  {(option.price * 0.9).toFixed(2)}
+                </span>{' '}
+                <span className="text-neutral-600 text-base">
+                  {texts.pricePerNightText}
+                </span>
               </div>
               {option.price > 0 && (
                 <div className="text-sm text-gray-500 line-through">
@@ -177,24 +185,24 @@ export const OptionCard: React.FC<OptionCardProps> = ({
             </div>
             {option.price > 0 && (
               <div className="font-bold text-gray-700">
-                Total: €{((option.price * 0.9) * nights).toFixed(2)}
+                Total: €{(option.price * 0.9 * nights).toFixed(2)}
               </div>
             )}
           </div>
-        {mode !== 'consultation' && option.price > 0 && (
-          <section className='flex flex-col gap-1 items-center justify-between mb-2'>
-            <LoyaltyBadge loyaltyPercentage={10} loyaltyText="Loyalty" />
-            <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
-              <div className="bg-green-100 p-1 rounded-full">
-                <Coins className="h-3 w-3 text-green-600" />
+          {mode !== 'consultation' && option.price > 0 && (
+            <section className="flex flex-col gap-1 items-center justify-between mb-2">
+              <LoyaltyBadge loyaltyPercentage={10} loyaltyText="Loyalty" />
+              <div className="inline-flex items-center gap-1 px-2 py-1 rounded font-semibold">
+                <div className="bg-green-100 p-1 rounded-full">
+                  <Coins className="h-3 w-3 text-green-600" />
+                </div>
+                <span className="text-emerald-600">
+                  {' '}
+                  {(option.price * nights * 0.1).toFixed(2)} EUR
+                </span>
               </div>
-              <span className="text-emerald-600">
-                {' '}
-                {((option.price * nights) * 0.1).toFixed(2)} EUR
-              </span>
-            </div>
-          </section>
-        )}
+            </section>
+          )}
         </div>
 
         {mode !== 'consultation' && (

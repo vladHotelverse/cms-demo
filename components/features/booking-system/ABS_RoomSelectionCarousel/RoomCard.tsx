@@ -20,7 +20,9 @@ const LoyaltyBadge: React.FC<{
 }> = ({ loyaltyPercentage = 10, loyaltyText = 'Loyalty' }) => {
   return (
     <div className="inline-flex items-center bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold">
-      <span>{loyaltyText} {loyaltyPercentage}%</span>
+      <span>
+        {loyaltyText} {loyaltyPercentage}%
+      </span>
     </div>
   );
 };
@@ -32,15 +34,17 @@ const CommissionBadge: React.FC<{
   commissionText?: string;
 }> = ({ commission, currencySymbol }) => {
   return (
-    <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
+    <div className="inline-flex items-center gap-1 px-2 py-1 rounded font-semibold">
       <div className="bg-green-100 p-1 rounded-full">
         <Coins className="h-3 w-3 text-green-600" />
       </div>
-      <span className='text-emerald-600'>{currencySymbol}{commission}</span>
+      <span className="text-emerald-600">
+        {currencySymbol}
+        {commission}
+      </span>
     </div>
   );
 };
-
 
 interface RoomCardProps {
   room: RoomOption;
@@ -102,75 +106,76 @@ const RoomCard: React.FC<RoomCardProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const availableCount = Math.floor(Math.random() * 10) + 1;
 
-  // Function to get room-specific selling points  
+  // Function to get room-specific selling points
   const getSellingPointsByRoomType = (roomType: string): string[] => {
     const normalizedRoomType = roomType.toLowerCase().trim();
-    
+
     // Standard Room variations
     if (normalizedRoomType.includes('standard')) {
       return [
-        "Quality furnishings with queen bed",
-        "Great location with easy access",
-        "Smart choice for comfort & value"
+        'Quality furnishings with queen bed',
+        'Great location with easy access',
+        'Smart choice for comfort & value',
       ];
     }
-    
+
     // Superior Room variations
     if (normalizedRoomType.includes('superior')) {
       return [
-        "40% larger with king bed & marble bath",
-        "Top floor with panoramic views",
-        "Only €45 more for premium upgrade"
+        '40% larger with king bed & marble bath',
+        'Top floor with panoramic views',
+        'Only €45 more for premium upgrade',
       ];
     }
-    
+
     // Deluxe Room variations
     if (normalizedRoomType.includes('deluxe')) {
       return [
-        "40% larger with premium king bed",
-        "Exclusive balcony with landmark views",
-        "Only €45 more for luxury upgrade"
+        '40% larger with premium king bed',
+        'Exclusive balcony with landmark views',
+        'Only €45 more for luxury upgrade',
       ];
     }
-    
+
     // Suite variations
     if (normalizedRoomType.includes('suite')) {
       return [
-        "Spacious living area with separate bedroom",
-        "Premium amenities: minibar & coffee machine", 
-        "VIP concierge and priority service"
+        'Spacious living area with separate bedroom',
+        'Premium amenities: minibar & coffee machine',
+        'VIP concierge and priority service',
       ];
     }
-    
+
     // Premium Room variations
     if (normalizedRoomType.includes('premium')) {
       return [
-        "Top floor with panoramic city views",
-        "Rain shower and luxury toiletries",
-        "Express check-in/out & late checkout"
+        'Top floor with panoramic city views',
+        'Rain shower and luxury toiletries',
+        'Express check-in/out & late checkout',
       ];
     }
-    
+
     // Family Room variations
     if (normalizedRoomType.includes('family')) {
       return [
-        "Perfect for families - sleeps up to 4",
-        "Child-friendly amenities & toys included",
-        "Close to pool and family activities"
+        'Perfect for families - sleeps up to 4',
+        'Child-friendly amenities & toys included',
+        'Close to pool and family activities',
       ];
     }
-    
+
     // Fallback generic selling points for unknown room types
     console.log('Unknown room type, using fallback points:', roomType);
     return [
-      "Beautiful suite with landmark views",
-      "40% larger with king bed & balcony", 
-      "Only €76 more for premium experience"
+      'Beautiful suite with landmark views',
+      '40% larger with king bed & balcony',
+      'Only €76 more for premium experience',
     ];
   };
 
   // Use provided selling points, or get room-specific points, or use defaults
-  const currentSellingPoints = sellingPoints || getSellingPointsByRoomType(room.roomType);
+  const currentSellingPoints =
+    sellingPoints || getSellingPointsByRoomType(room.roomType);
 
   // Check if description needs truncation
   useEffect(() => {
@@ -205,31 +210,37 @@ const RoomCard: React.FC<RoomCardProps> = ({
     imageDragStartX.current = clientX;
   }, []);
 
-  const handleImageDragEnd = useCallback((clientX: number) => {
-    if (!isImageDragging.current) return;
-    
-    const dragDistance = clientX - imageDragStartX.current;
-    const threshold = 30; // Smaller threshold for image navigation
-    
-    if (Math.abs(dragDistance) > threshold && room.images.length > 1) {
-      if (dragDistance > 0) {
-        // Dragged right - go to previous image
-        handleImageNavigation('prev');
-      } else {
-        // Dragged left - go to next image
-        handleImageNavigation('next');
+  const handleImageDragEnd = useCallback(
+    (clientX: number) => {
+      if (!isImageDragging.current) return;
+
+      const dragDistance = clientX - imageDragStartX.current;
+      const threshold = 30; // Smaller threshold for image navigation
+
+      if (Math.abs(dragDistance) > threshold && room.images.length > 1) {
+        if (dragDistance > 0) {
+          // Dragged right - go to previous image
+          handleImageNavigation('prev');
+        } else {
+          // Dragged left - go to next image
+          handleImageNavigation('next');
+        }
       }
-    }
-    
-    isImageDragging.current = false;
-  }, [handleImageNavigation, room.images.length]);
+
+      isImageDragging.current = false;
+    },
+    [handleImageNavigation, room.images.length],
+  );
 
   // Image mouse events
-  const handleImageMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleImageDragStart(e.clientX);
-  }, [handleImageDragStart]);
+  const handleImageMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleImageDragStart(e.clientX);
+    },
+    [handleImageDragStart],
+  );
 
   const handleImageMouseMove = useCallback((e: React.MouseEvent) => {
     if (!isImageDragging.current) return;
@@ -237,16 +248,22 @@ const RoomCard: React.FC<RoomCardProps> = ({
     e.stopPropagation();
   }, []);
 
-  const handleImageMouseUp = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    handleImageDragEnd(e.clientX);
-  }, [handleImageDragEnd]);
+  const handleImageMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      handleImageDragEnd(e.clientX);
+    },
+    [handleImageDragEnd],
+  );
 
   // Image touch events
-  const handleImageTouchStart = useCallback((e: React.TouchEvent) => {
-    e.stopPropagation();
-    handleImageDragStart(e.touches[0].clientX);
-  }, [handleImageDragStart]);
+  const handleImageTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      e.stopPropagation();
+      handleImageDragStart(e.touches[0].clientX);
+    },
+    [handleImageDragStart],
+  );
 
   const handleImageTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isImageDragging.current) return;
@@ -254,12 +271,15 @@ const RoomCard: React.FC<RoomCardProps> = ({
     e.stopPropagation();
   }, []);
 
-  const handleImageTouchEnd = useCallback((e: React.TouchEvent) => {
-    e.stopPropagation();
-    if (e.changedTouches.length > 0) {
-      handleImageDragEnd(e.changedTouches[0].clientX);
-    }
-  }, [handleImageDragEnd]);
+  const handleImageTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      e.stopPropagation();
+      if (e.changedTouches.length > 0) {
+        handleImageDragEnd(e.changedTouches[0].clientX);
+      }
+    },
+    [handleImageDragEnd],
+  );
 
   const handleSelectRoom = useCallback(
     (e: React.MouseEvent) => {
@@ -276,11 +296,14 @@ const RoomCard: React.FC<RoomCardProps> = ({
     setIsModalOpen(true);
   }, []);
 
-  const handleModalAccept = useCallback((selectedRooms: string[]) => {
-    // Handle the room selection
-    console.log('Selected superior rooms:', selectedRooms);
-    onSelectRoom(room); // Select this room type
-  }, [onSelectRoom, room]);
+  const handleModalAccept = useCallback(
+    (selectedRooms: string[]) => {
+      // Handle the room selection
+      console.log('Selected superior rooms:', selectedRooms);
+      onSelectRoom(room); // Select this room type
+    },
+    [onSelectRoom, room],
+  );
 
   // Generate mock room data for superior rooms
   const mockRooms = Array.from({ length: availableCount }, (_, index) => ({
@@ -289,11 +312,10 @@ const RoomCard: React.FC<RoomCardProps> = ({
     features: [
       room.roomType,
       ...(room.amenities?.slice(0, 2) || ['Premium amenities']),
-      index % 2 === 0 ? 'Balcony' : 'City view'
+      index % 2 === 0 ? 'Balcony' : 'City view',
     ],
     available: true,
   }));
-
 
   return (
     <div
@@ -301,10 +323,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
         'relative rounded-b-lg overflow-hidden max-w-lg transition-all duration-300',
       )}
     >
-
       {/* Room Image Carousel */}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Drag functionality for image navigation */}
-      <div 
+      <div
         ref={imageDragRef}
         className="relative h-48 bg-neutral-100 group cursor-grab active:cursor-grabbing select-none"
         role="presentation"
@@ -418,13 +439,13 @@ const RoomCard: React.FC<RoomCardProps> = ({
           </div>
         )}
 
-              {/* Selected Badge */}
-      {selectedRoom?.id === room.id && (
-        <div className="absolute bottom-2 left-2 z-30 bg-green-600 text-white text-xs flex items-center gap-1 py-1 px-2 rounded shadow-lg">
-          <Star className="h-3 w-3" />
-          <span>{selectedText}</span>
-        </div>
-      )}
+        {/* Selected Badge */}
+        {selectedRoom?.id === room.id && (
+          <div className="absolute bottom-2 left-2 z-30 bg-green-600 text-white text-xs flex items-center gap-1 py-1 px-2 rounded shadow-lg">
+            <Star className="h-3 w-3" />
+            <span>{selectedText}</span>
+          </div>
+        )}
       </div>
 
       {/* Room Details */}
@@ -443,7 +464,10 @@ const RoomCard: React.FC<RoomCardProps> = ({
             // Selling points list
             <ul className="space-y-1 rounded-lg border bg-muted/50 p-3">
               {currentSellingPoints.map((point, index) => (
-                <li key={`selling-point-${room.id}-${index}`} className="flex items-start gap-2 text-sm">
+                <li
+                  key={`selling-point-${room.id}-${index}`}
+                  className="flex items-start gap-2 text-sm"
+                >
                   <div className="w-1.5 h-1.5 bg-gray-700 rounded-full mt-2 flex-shrink-0" />
                   <span className="text-black">{point}</span>
                 </li>
@@ -472,18 +496,18 @@ const RoomCard: React.FC<RoomCardProps> = ({
           )}
         </div>
 
-
         {/* Pricing Grid Section */}
         <div className="mt-3 mb-4">
           {/* Calculate values */}
           {(() => {
             // Calculate loyalty discount
-            const originalPrice = room.oldPrice || Math.round(room.price / (1 - loyaltyPercentage / 100));
+            const originalPrice =
+              room.oldPrice ||
+              Math.round(room.price / (1 - loyaltyPercentage / 100));
             const totalPrice = room.price * nights;
             const commission = Math.round(totalPrice * 0.1 * 100) / 100;
             return (
               <div>
-                
                 {/* Price layout */}
                 <div className="flex items-start justify-between mt-2">
                   <div className="flex flex-col gap-1">
@@ -494,30 +518,44 @@ const RoomCard: React.FC<RoomCardProps> = ({
                     </div>
                   </div>
                   <div className="flex items-end gap-2">
-                    <CommissionBadge commission={commission} currencySymbol={currencySymbol} />
-                    <LoyaltyBadge loyaltyPercentage={loyaltyPercentage} loyaltyText={loyaltyText} />
+                    <CommissionBadge
+                      commission={commission}
+                      currencySymbol={currencySymbol}
+                    />
+                    <LoyaltyBadge
+                      loyaltyPercentage={loyaltyPercentage}
+                      loyaltyText={loyaltyText}
+                    />
                   </div>
                 </div>
 
                 {/* Total Price and Button Row - Combined for space optimization */}
                 <div className="flex items-center justify-between mt-2">
                   <p className="text-base text-gray-700">
-                    <span className='font-semibold text-lg'>{`${currencySymbol}${totalPrice} `}</span>
+                    <span className="font-semibold text-lg">{`${currencySymbol}${totalPrice} `}</span>
                     {totalAmountText}
                   </p>
                   <Button
-                    variant={selectedRoom?.id === room.id ? 'destructive' : 'default'}
+                    variant={
+                      selectedRoom?.id === room.id ? 'destructive' : 'default'
+                    }
                     className="w-fit uppercase tracking-wide text-sm px-4 py-2 h-10 font-semibold whitespace-nowrap"
-                    onClick={selectedRoom?.id === room.id ? handleSelectRoom : handleAvailableClick}
+                    onClick={
+                      selectedRoom?.id === room.id
+                        ? handleSelectRoom
+                        : handleAvailableClick
+                    }
                   >
-                    {selectedRoom?.id === room.id ? removeText : `${availableCount} Available`}
+                    {selectedRoom?.id === room.id
+                      ? removeText
+                      : `${availableCount} Available`}
                   </Button>
                 </div>
 
                 {/* Row 3: Price info */}
-                  <span className="text-xs text-neutral-500 whitespace-nowrap text-start">
-                    {priceInfoText}
-                  </span>
+                <span className="text-xs text-neutral-500 whitespace-nowrap text-start">
+                  {priceInfoText}
+                </span>
               </div>
             );
           })()}

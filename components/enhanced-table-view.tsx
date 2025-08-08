@@ -52,28 +52,32 @@ const roomUpgrades = [
     type: 'DELUXE GOLD',
     price: '30€',
     features: 'Premium king bed, Private balcony, 40 sqm',
-    image: 'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt633/49a54c09-0945-4a87-893d-8d28d79e0f5b/image.webp',
+    image:
+      'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt633/49a54c09-0945-4a87-893d-8d28d79e0f5b/image.webp',
   },
   {
     id: 2,
     type: 'ROCK SUITE',
     price: '89€',
     features: 'Music-themed suite, Separate living area, Premium sound system',
-    image: 'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt640/3e7e2260-63e3-4934-9358-ebf08bb6d96a/image.webp',
+    image:
+      'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt640/3e7e2260-63e3-4934-9358-ebf08bb6d96a/image.webp',
   },
   {
     id: 3,
     type: '80S SUITE',
     price: '107€',
     features: 'Retro 80s design, Jacuzzi bathtub, VIP concierge',
-    image: 'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt641/850e6840-cc2b-48f8-9059-3a64d2b9b097/image.webp',
+    image:
+      'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt641/850e6840-cc2b-48f8-9059-3a64d2b9b097/image.webp',
   },
   {
     id: 4,
     type: 'ROCK SUITE DIAMOND',
     price: '125€',
     features: 'Private terrace with pool, Personal butler, 120 sqm penthouse',
-    image: 'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt643/5a6459fb-7a86-4d9d-9d9d-acd9a80033d5/original.webp',
+    image:
+      'https://hvdatauatstgweu.blob.core.windows.net/roomtypehotelimages/h83/rt643/5a6459fb-7a86-4d9d-9d9d-acd9a80033d5/original.webp',
   },
 ];
 
@@ -236,11 +240,13 @@ export default function EnhancedTableView({
       data.items.forEach((item, index) => {
         const itemKey = `${category}-${index}`;
         counts[itemKey] = Math.floor(Math.random() * 10) + 1;
-      })
+      }),
     );
     return counts;
   });
-  const [isAttributeModalOpen, setIsAttributeModalOpen] = useState<{ [key: string]: boolean }>({});
+  const [isAttributeModalOpen, setIsAttributeModalOpen] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   // Helper component for commission badge
   const CommissionBadge: React.FC<{
@@ -249,7 +255,7 @@ export default function EnhancedTableView({
     commissionText?: string;
   }> = ({ commission, currencySymbol }) => {
     return (
-      <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm font-semibold">
+      <div className="inline-flex items-center gap-1 px-2 py-1 rounded font-semibold">
         <div className="bg-green-100 p-1 rounded-full">
           <Coins className="h-3 w-3 text-green-600" />
         </div>
@@ -335,7 +341,10 @@ export default function EnhancedTableView({
     setSelectedGalleryRoom(null);
   };
 
-  const handleAttributeAvailableClick = (e: React.MouseEvent, itemKey: string) => {
+  const handleAttributeAvailableClick = (
+    e: React.MouseEvent,
+    itemKey: string,
+  ) => {
     e.stopPropagation();
     setIsAttributeModalOpen((prev) => ({ ...prev, [itemKey]: true }));
   };
@@ -344,7 +353,10 @@ export default function EnhancedTableView({
     setIsAttributeModalOpen((prev) => ({ ...prev, [itemKey]: false }));
   };
 
-  const handleAttributeModalAccept = (itemKey: string, selectedRooms: string[]) => {
+  const handleAttributeModalAccept = (
+    itemKey: string,
+    selectedRooms: string[],
+  ) => {
     console.log('Selected attribute rooms for', itemKey, ':', selectedRooms);
     // Select this attribute
     toggleAttributeSelection(itemKey);
@@ -355,7 +367,7 @@ export default function EnhancedTableView({
     const index = parseInt(indexStr);
     const categoryData = attributes[category as keyof typeof attributes];
     const item = categoryData?.items[index];
-    
+
     if (item) {
       if (onSelectAttribute) {
         onSelectAttribute(item, itemKey);
@@ -450,7 +462,9 @@ export default function EnhancedTableView({
                               parseFloat(room.price.replace('€', '')) * 5
                             ).toFixed(0)}
                             €
-                            <span className="text-xs text-gray-400 ml-1">total</span>
+                            <span className="text-xs text-gray-400 ml-1">
+                              total
+                            </span>
                           </div>
                         </div>
                       </TableCell>
@@ -481,7 +495,11 @@ export default function EnhancedTableView({
                       <TableCell className="text-center px-3 py-1.5">
                         <Button
                           size="sm"
-                          variant={selectedRooms.has(room.id) ? 'destructive' : 'default'}
+                          variant={
+                            selectedRooms.has(room.id)
+                              ? 'destructive'
+                              : 'default'
+                          }
                           onClick={(e) => {
                             e.stopPropagation();
                             if (selectedRooms.has(room.id)) {
@@ -582,12 +600,16 @@ export default function EnhancedTableView({
                                   ) * 5
                                 ).toFixed(0)}
                                 €
-                                <span className="text-xs text-gray-400 ml-1">total</span>
+                                <span className="text-xs text-gray-400 ml-1">
+                                  total
+                                </span>
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="text-right px-3 py-1.5" style={{ display: 'none' }}>
-                          </TableCell>
+                          <TableCell
+                            className="text-right px-3 py-1.5"
+                            style={{ display: 'none' }}
+                          ></TableCell>
                           <TableCell className="px-3 py-1.5">
                             <CommissionBadge
                               commission={parseFloat(
@@ -704,12 +726,16 @@ export default function EnhancedTableView({
                                 (extraQuantities[extra.name] || extra.units)
                               ).toFixed(0)}
                               €
-                              <span className="text-xs text-gray-400 ml-1">total</span>
+                              <span className="text-xs text-gray-400 ml-1">
+                                total
+                              </span>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right px-3 py-1.5" style={{ display: 'none' }}>
-                        </TableCell>
+                        <TableCell
+                          className="text-right px-3 py-1.5"
+                          style={{ display: 'none' }}
+                        ></TableCell>
                         <TableCell className="px-3 py-1.5">
                           <CommissionBadge
                             commission={parseFloat(
