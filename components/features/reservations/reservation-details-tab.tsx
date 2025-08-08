@@ -25,6 +25,7 @@ import { Trash2, Check } from "lucide-react";
 // Import ABS components
 import EnhancedTableView from "@/components/enhanced-table-view";
 import ReservationBlocksSection from "@/components/reservation-blocks-section";
+import ABS_RoomSelection from "@/components/features/booking-system/ABS_RoomSelection";
 import { RequestedItemsHeader } from "@/components/features/reservations/reservation-summary/requested-items-header";
 
 // Import summary tables
@@ -110,7 +111,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 }: ReservationDetailsTabProps) {
 	const [selectedSegment, setSelectedSegment] = useState("loyalty2");
 	const [selectedAgent, setSelectedAgent] = useState("agent1");
-	const [viewMode, setViewMode] = useState<"list" | "blocks">("blocks");
+	const [viewMode, setViewMode] = useState<"list" | "blocks" | "map">("blocks");
 	const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
 	const [selectedCommissionReason, setSelectedCommissionReason] = useState("");
 	const { t } = useLanguage();
@@ -815,6 +816,14 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 											>
 												{t("currentLanguage") === "es" ? "Bloques" : "Blocks"}
 											</Button>
+											<Button
+												variant={viewMode === "map" ? "default" : "outline"}
+												size="sm"
+												onClick={() => setViewMode("map")}
+												className="px-3"
+											>
+												{t("currentLanguage") === "es" ? "Mapa 3D" : "3D Map View"}
+											</Button>
 										</div>
 									</div>
 
@@ -880,7 +889,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 								/>
 							</div>
 						</div>
-					) : (
+					) : viewMode === "blocks" ? (
 						<div className="flex flex-row gap-6 overflow-hidden">
 							{/* Blocks Mode - Original Layout with Horizontal Arrangement */}
 							<ReservationBlocksSection
@@ -892,6 +901,23 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 								nights={parseInt(reservation.nights) || 1}
 								onOfferBook={handleOfferBook}
 								onShowAlert={onShowAlert}
+							/>
+						</div>
+					) : (
+						<div className="w-full">
+							{/* 3D Map View Mode */}
+							<ABS_RoomSelection
+								title={t("currentLanguage") === "es" ? "¡Elige tu Número de Habitación!" : "Choose your Room Number!"}
+								description={t("currentLanguage") === "es" ? "Selecciona la habitación exacta en la que quieres alojarte" : "Select the exact room you want to stay in"}
+								url="https://map-uat.hotelverse.tech/Webmap/en/ChooseYourRoom?config=eyJjbGllbnRJZCI6MSwiaG90ZWxJZCI6ODMsImN1cnJlbmN5IjoiRVVSIiwiYWNjZXNzVG9rZW5IViI6ImV5SnphV2R1WVhSMWNtVWlPaUk0TWpSbU5EUmtaakZqWXpneFlXUTBOelkxT1dWaVpEUTJNbVJpTXpsbVlUTTBNRFprTUdZelpHSTJNVFkwWTJZMVpqRmhNVGRrWWpZNE16Y3paVFl4WkRRM1pXVmtNekUwTXpreVpHWm1ZbVU1WXpKa00yRTFPRGsxTkRBNE1tTXhNMkk1Wm1ZM056SXpaVEE1WWpjMVpXSmhZakl6Tm1FMU1EUTVPV1k0TkNJc0luUnBiV1Z6ZEdGdGNDSTZNVGMxTVRVME9UYzFOalUwTUgwPSIsImhpZGRlbkVsZW1lbnRzIjpbXSwic291cmNlIjpudWxsfQ%3D%3D&devMode=true&language=en&booking=eyJ0eXBlIjoidXNlci1pbnB1dCIsImxvY2F0b3IiOiJ0ZXN0IiwiZXh0ZXJuYWxDaGFubmVsSWQiOjAsInBsYXRmb3JtIjoiT3Ryb3MiLCJib29raW5nRGF0YSI6eyJmaXJzdE5hbWUiOiJURVNUIiwibGFzdE5hbWUiOiJURVNUIiwiZW1haWwiOiJmcmFuY2lzY28uY29zdGlsbG9AaG90ZWx2ZXJzZS50ZWNoIiwiY2hlY2tJbiI6IjIwMjUtMTAtMTAiLCJjaGVja091dCI6IjIwMjUtMTAtMTUiLCJodlJvb21UeXBlIjo2MzIsIm9jY3VwYW5jeSI6eyJhZHVsdHMiOjIsImNoaWxkcmVuIjowLCJjaGlsZEFnZXMiOltdLCJpbmZhbnRzIjowLCJjdXJyZW5jeSI6IiJ9LCJleHRlcm5hbENoYW5uZWxJZCI6MCwiaXNPd25Ib3RlbCI6ZmFsc2V9fQ%3D%3D&noFS=true"
+								iframe={{
+									width: '100%',
+									height: '800px',
+									frameBorder: 0,
+									allowFullScreen: true,
+									title: 'Choose your room number - Interactive Hotel Map',
+								}}
+								className="mt-6"
 							/>
 						</div>
 					)}
