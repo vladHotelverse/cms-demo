@@ -858,7 +858,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
             originalRoomType: undefined, // No upgrade
             ...roomScenario, // Apply determined scenario flags (should set showAttributes: true)
             agent: 'Maria García',
-            status: 'pending_hotel',
+            status: 'confirmed',
             dateRequested: new Date().toLocaleDateString('en-GB'),
             checkIn: reservationInfo.checkIn,
             checkOut: reservationInfo.checkOut,
@@ -953,7 +953,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
             units: offer.quantity,
             type: offer.type,
             agent,
-            status: 'pending_hotel',
+            status: 'confirmed',
             dateRequested: new Date().toLocaleDateString('en-GB'),
             serviceDate: offer.selectedDates 
               ? offer.selectedDates.map(d => d.toLocaleDateString('en-GB'))

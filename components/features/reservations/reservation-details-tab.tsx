@@ -279,11 +279,62 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 		setSelectedCommissionReason("");
 	}, []);
 
-	const handleAddToCart = useCallback((item: any) => {
-		// Show success message
-		onShowAlert("success", `${item.name || 'Item'} added to selection`);
-	}, [onShowAlert]);
+	// Enhanced callback with store integration and data transformation
+	const handleAddToCart = useCallback(async (item: any) => {
+		try {
+			// Transform table item data to store-compatible OfferData format
+			const transformedOffer = {
+				id: item.id || `item_${Date.now()}`,
+				name: item.name || item.title || 'Service',
+				price: parsePrice(item.price),
+				basePrice: parsePrice(item.price),
+				quantity: item.units || 1,
+				type: item.priceType || 'perStay',
+				description: item.description,
+				// Handle different date formats from the table
+				selectedDate: new Date(),
+				selectedDates: [new Date()],
+				startDate: reservationInfo.checkIn,
+				endDate: reservationInfo.checkOut,
+				// Additional fields for compatibility
+				validUntil: undefined,
+				available: true,
+				persons: item.persons || 1,
+				nights: parseInt(reservation.nights) || 1
+			};
 
+			// Add to Zustand store via addExtra
+			const result = await addExtra(transformedOffer, 'Maria García');
+			
+			if (result.success) {
+				onShowAlert("success", `${item.name || 'Service'} added to selection`);
+			} else {
+				onShowAlert("error", result.errors?.[0]?.message || "Failed to add service");
+			}
+		} catch (error) {
+			console.error('Error adding item to cart:', error);
+			onShowAlert("error", "Failed to add service to selection");
+		}
+	}, [addExtra, reservationInfo, reservation.nights, onShowAlert]);
+
+	// Utility function to safely parse price strings
+	const parsePrice = useCallback((price: any): number => {
+		if (typeof price === 'number') {
+			return isNaN(price) ? 0 : price;
+		}
+		
+		if (typeof price === 'string') {
+			// Remove currency symbols and convert comma to dot
+			const cleanPrice = price.replace(/[€$£¥]/g, '').replace(/,/g, '.').trim();
+			const parsed = parseFloat(cleanPrice);
+			return isNaN(parsed) ? 0 : parsed;
+		}
+		
+		return 0;
+	}, []);
+
+	// Enhanced room selection callback with proper store integration
+	// Handles both table room data and ABS carousel room data
 	const handleSelectRoom = useCallback(async (room: any) => {
 		// Set the selected room for local state (ABS component needs this)
 		setSelectedRoom(room);
@@ -293,66 +344,210 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 			return;
 		}
 		
-		// Add room to Zustand store
 		try {
-			const roomData = {
-				id: room.id || Date.now().toString(),
-				roomType: room.roomType || 'Standard Room',
-				price: room.price || 0,
-				amenities: room.amenities || room.attributes || [],
-				images: room.images || [room.mainImage || room.image || ''],
-				description: room.description || 'Comfortable room with modern amenities'
-			};
+			// Determine data source and transform accordingly
+			const isCarouselData = room.title || room.name; // ABS carousel has title/name
+			const isTableData = room.type && !room.title; // Table data has type but not title
 			
-			const result = await addRoom(roomData, reservationInfo);
+			let transformedRoom;
+			
+			if (isCarouselData) {
+				// Transform ABS carousel room data to store-compatible RoomOption format
+				transformedRoom = {
+					id: room.id?.toString() || `room_${Date.now()}`,
+					roomType: room.title || room.name || room.roomType || 'Superior Room',
+					price: parsePrice(room.price),
+					originalRoomType: reservationInfo.originalRoomType,
+					available: true,
+					agent: 'Maria García',
+					checkIn: reservationInfo.checkIn,
+					checkOut: reservationInfo.checkOut,
+					nights: parseInt(reservation.nights) || 1,
+					roomNumber: reservationInfo.roomNumber,
+					// ABS carousel amenities handling
+					amenities: room.amenities || room.features || [],
+					attributes: room.attributes || [],
+					alternatives: room.alternatives || [],
+					// UI display flags
+					showKeyIcon: false,
+					showAlternatives: false,
+					showAttributes: false,
+					selectionScenario: 'upgrade_only'
+				};
+			} else {
+				// Transform table room data to store-compatible RoomOption format
+				transformedRoom = {
+					id: room.id?.toString() || `room_${Date.now()}`,
+					roomType: room.type || room.roomType || 'Standard Room',
+					price: parsePrice(room.price),
+					originalRoomType: room.originalRoomType,
+					available: true,
+					agent: 'Maria García',
+					checkIn: reservationInfo.checkIn,
+					checkOut: reservationInfo.checkOut,
+					nights: parseInt(reservation.nights) || 1,
+					roomNumber: reservationInfo.roomNumber,
+					// Transform features to amenities array
+					amenities: room.features ? room.features.split(', ').slice(0, 3) : [],
+					attributes: room.attributes || [],
+					alternatives: room.alternatives || [],
+					// UI display flags
+					showKeyIcon: room.showKeyIcon || false,
+					showAlternatives: room.showAlternatives || false,
+					showAttributes: room.showAttributes || false,
+					selectionScenario: room.selectionScenario || 'upgrade_only'
+				};
+			}
+			
+			const result = await addRoom(transformedRoom, reservationInfo);
 			
 			if (result.success) {
-				onShowAlert("success", `${room.name || 'Room'} added to selection`);
+				const roomName = transformedRoom.roomType;
+				onShowAlert("success", `${roomName} added to selection`);
 			} else {
 				onShowAlert("error", result.errors?.[0]?.message || "Failed to add room");
 			}
-		} catch {
+		} catch (error) {
+			console.error('Error selecting room:', error);
 			onShowAlert("error", "Failed to add room to selection");
 		}
-	}, [addRoom, reservationInfo, onShowAlert]);
+	}, [addRoom, reservationInfo, reservation.nights, parsePrice, onShowAlert]);
 
-	// Handlers for ABS components with useCallback optimization
-	const handleRoomCustomizationChange = useCallback((
+	// Enhanced callback for attribute selections - adds to room customizations instead of extras
+	const handleSelectAttribute = useCallback(async (attribute: any, itemKey: string) => {
+		try {
+			const { updateRoomCustomizations, addRoomFromCustomization, selectedRooms } = useUserSelectionsStore.getState();
+			
+			// Parse category and index from itemKey (format: "category-index")
+			const [category, indexStr] = itemKey.split('-');
+			
+			// Create customization object
+			const customization = {
+				[category]: {
+					id: `${category}_${indexStr}`,
+					label: attribute.name,
+					price: parsePrice(attribute.price),
+					description: attribute.description,
+					category: category
+				}
+			};
+			
+			const customizationTotal = parsePrice(attribute.price);
+			
+			// Check if there's already a selected room to add this attribute to
+			if (selectedRooms.length > 0) {
+				// Add attribute to existing room
+				const existingRoom = selectedRooms[0]; // Use first room
+				const result = await updateRoomCustomizations(
+					existingRoom.id, 
+					customization, 
+					customizationTotal
+				);
+				
+				if (result.success) {
+					onShowAlert("success", `${attribute.name} added to room attributes`);
+				} else {
+					onShowAlert("error", result.errors?.[0]?.message || "Failed to add attribute to room");
+				}
+			} else {
+				// No room exists, create a new room with this customization
+				const result = await addRoomFromCustomization(customization, reservationInfo);
+				
+				if (result.success) {
+					onShowAlert("success", `Room created with ${attribute.name} attribute`);
+				} else {
+					onShowAlert("error", result.errors?.[0]?.message || "Failed to create room with attribute");
+				}
+			}
+		} catch (error) {
+			console.error('Error selecting attribute:', error);
+			onShowAlert("error", "Failed to add attribute to room");
+		}
+	}, [parsePrice, reservationInfo, onShowAlert]);
+
+	// Enhanced room customization handler with store integration (matching table attribute logic)
+	const handleRoomCustomizationChange = useCallback(async (
 		category: string,
 		optionId: string,
 		optionLabel: string,
 		optionPrice: number,
 	) => {
-		// Update local state for ABS component compatibility
-		const updatedCustomizations = {
-			...roomCustomizations,
-			[category]: { id: optionId, label: optionLabel, price: optionPrice },
-		}
-		setRoomCustomizations(updatedCustomizations);
-		
-		// Calculate total customization price
-		const total = Object.values(updatedCustomizations).reduce((sum, customization) => {
-			return sum + (customization?.price || 0);
-		}, 0);
-		
-		// The SelectionSummary component will handle the actual store integration
-		// This local state is maintained for ABS component compatibility
-	}, [roomCustomizations]);
-
-	// Monitor customizations and trigger store updates
-	useEffect(() => {
-		const hasCustomizations = Object.keys(roomCustomizations).length > 0;
-		
-		if (hasCustomizations && reservationInfo) {
-			// Calculate total
-			const total = Object.values(roomCustomizations).reduce((sum, customization) => {
-				return sum + (customization?.price || 0);
-			}, 0);
+		try {
+			const { updateRoomCustomizations, addRoomFromCustomization, selectedRooms } = useUserSelectionsStore.getState();
 			
-			// Trigger store update through SelectionSummary's internal handler
-			// The SelectionSummary component will handle this automatically through its internal logic
+			// Update local state for ABS component compatibility
+			const updatedCustomizations = {
+				...roomCustomizations,
+				[category]: optionId ? { id: optionId, label: optionLabel, price: parsePrice(optionPrice) } : undefined,
+			};
+			
+			// Remove undefined values (when deselecting)
+			Object.keys(updatedCustomizations).forEach(key => {
+				if (updatedCustomizations[key] === undefined) {
+					delete updatedCustomizations[key];
+				}
+			});
+			
+			setRoomCustomizations(updatedCustomizations);
+			
+			// If removing customization (optionId is empty), handle deselection
+			if (!optionId) {
+				// For deselection, we still update the store to remove the customization
+				if (selectedRooms.length > 0) {
+					const existingRoom = selectedRooms[0];
+					const storeCustomization = {
+						[category]: undefined
+					};
+					await updateRoomCustomizations(existingRoom.id, storeCustomization, 0);
+				}
+				return;
+			}
+			
+			// Create store-compatible customization object
+			const storeCustomization = {
+				[category]: {
+					id: optionId,
+					label: optionLabel,
+					price: parsePrice(optionPrice),
+					description: `${optionLabel} customization`,
+					category: category
+				}
+			};
+			
+			const customizationTotal = parsePrice(optionPrice);
+			
+			// Apply the same logic as table attributes:
+			// If room exists, add customization to it. If not, create room with customization.
+			if (selectedRooms.length > 0) {
+				// Add customization to existing room
+				const existingRoom = selectedRooms[0];
+				const result = await updateRoomCustomizations(
+					existingRoom.id, 
+					storeCustomization, 
+					customizationTotal
+				);
+				
+				if (result.success) {
+					onShowAlert("success", `${optionLabel} added to room customizations`);
+				} else {
+					onShowAlert("error", result.errors?.[0]?.message || "Failed to update room customization");
+				}
+			} else {
+				// No room exists, create a new room with this customization
+				const result = await addRoomFromCustomization(storeCustomization, reservationInfo);
+				
+				if (result.success) {
+					onShowAlert("success", `Room created with ${optionLabel} customization`);
+				} else {
+					onShowAlert("error", result.errors?.[0]?.message || "Failed to create room with customization");
+				}
+			}
+		} catch (error) {
+			console.error('Error handling room customization change:', error);
+			onShowAlert("error", "Failed to apply room customization");
 		}
-	}, [roomCustomizations, reservationInfo]);
+	}, [roomCustomizations, parsePrice, reservationInfo, onShowAlert]);
+
 
 	// Bridge handler for SelectionSummary component - handles the store integration
 	const handleSelectionSummaryCustomization = useCallback((
@@ -681,6 +876,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 								<EnhancedTableView
 									onAddToCart={handleAddToCart}
 									onSelectRoom={handleSelectRoom}
+									onSelectAttribute={handleSelectAttribute}
 								/>
 							</div>
 						</div>

@@ -493,11 +493,23 @@ export function useSelectionSummary({
     
     const totalPrice = getTotalPrice()
     
+    // Calculate total commission (matching selection-tables.tsx logic)
+    const roomCommission = selectedRooms.reduce((total, room) => {
+      return total + (room.agent !== 'Online' ? room.price * 0.1 : 0)
+    }, 0)
+    
+    const extraCommission = selectedExtras.reduce((total, extra) => {
+      return total + (extra.commission || 0)
+    }, 0)
+    
+    const totalCommission = roomCommission + extraCommission
+    
     return {
       rooms: selectedRooms,
       extras: selectedExtras,
       counts,
       totalPrice,
+      totalCommission,
       hasSelections: counts.total > 0
     }
   }, [selectedRooms, selectedExtras, getTotalPrice])

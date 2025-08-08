@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Hotel, Package, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { set } from 'date-fns';
-import { useToast } from '@/hooks/use-toast';
+import { ConfirmationDialog } from '@/components/confirmation-dialog';
 
 interface SelectionHeaderProps {
   counts: {
@@ -37,17 +36,17 @@ export function SelectionHeader({
   translations,
   onCloseTab,
 }: SelectionHeaderProps) {
-  const { toast } = useToast();
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
   const handleConfirmClick = () => {
-    // Logic to confirm selections
-    toast({
-      title: 'Selections Confirmed',
-      description: 'Your selections have been successfully confirmed.',
-    });
+    setShowConfirmationDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setShowConfirmationDialog(false);
     setTimeout(() => {
       onCloseTab();
-    }, 1500);
+    }, 500);
   };
   return (
     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -96,6 +95,13 @@ export function SelectionHeader({
           </Button>
         </div>
       )}
+
+      <ConfirmationDialog
+        open={showConfirmationDialog}
+        onClose={handleDialogClose}
+        commissionAmount={totalPrice * 0.1 || 0}
+        currency="€"
+      />
     </div>
   );
 }

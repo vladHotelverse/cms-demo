@@ -147,6 +147,7 @@ export const SelectionTables = memo(function SelectionTables({
           </div>
           <ExtrasTable 
             items={extraTableItems as any}
+            onRemove={onRemoveExtra}
             className={cn(isLoading && "opacity-60")}
           />
           {/* Loading indicator for extras */}

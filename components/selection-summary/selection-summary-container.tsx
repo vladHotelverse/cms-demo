@@ -76,8 +76,10 @@ export function SelectionSummary({
         <SelectionHeader
           counts={selections.counts}
           totalPrice={selections.totalPrice}
+          totalCommission={selections.totalCommission}
           isLoading={operations.isLoading}
           onClearAll={handlers.clearAll}
+          onCloseTab={() => {}}
           translations={config.translations}
         />
 
