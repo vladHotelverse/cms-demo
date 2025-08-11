@@ -54,12 +54,7 @@ export function DataStateWrapper({
   onEmptyAction,
   className
 }: DataStateWrapperProps) {
-  // Loading state
-  if (isLoading) {
-    return <LoadingState message={loadingMessage} className={className} />
-  }
-
-  // Error state
+  // Error state first to avoid masking failures during loading
   if (error) {
     const errorMsg = error instanceof Error ? error.message : error
     return (
@@ -70,6 +65,11 @@ export function DataStateWrapper({
         className={className}
       />
     )
+  }
+
+  // Loading state
+  if (isLoading) {
+    return <LoadingState message={loadingMessage} className={className} />
   }
 
   // Empty state

@@ -38,6 +38,7 @@ export interface CacheEntry<T> {
   value: T
   timestamp: number
   dependencies: string[] // Track what this cache depends on
+  ttl: number
 }
 
 // Batch operation types
@@ -199,7 +200,8 @@ class SmartCache<T> {
     this.cache.set(key, {
       value,
       timestamp: Date.now(),
-      dependencies
+      dependencies,
+      ttl
     })
     
     // Auto-cleanup after TTL
@@ -213,7 +215,7 @@ class SmartCache<T> {
     if (!entry) return null
     
     // Check if expired
-    if (Date.now() - entry.timestamp > this.defaultTTL) {
+    if (Date.now() - entry.timestamp > entry.ttl) {
       this.cache.delete(key)
       return null
     }
@@ -517,7 +519,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           const nights = Math.max(1, daysDiff) // Ensure at least 1 night, handle same-day bookings
 
           // If this is an upgrade, try to preserve the room number from the previous selection
-          const roomNumber = isUpgrade && existingRoom ? existingRoom.roomNumber : '365';
+          const roomNumber = isUpgrade && existingRoom ? existingRoom.roomNumber : reservationInfo.roomNumber;
 
           // Create base room data
           const baseRoomData = {
@@ -543,8 +545,8 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
             checkIn: reservationInfo.checkIn,
             checkOut: reservationInfo.checkOut,
             nights, // Add nights field required by table
-            roomNumber: roomNumber,
-            hasKey: undefined,
+            roomNumber,
+            hasKey: baseRoomData.hasKey,
             attributes: baseRoomData.attributes,
             alternatives: baseRoomData.alternatives,
             // Add other fields that might be required by RoomItem interface

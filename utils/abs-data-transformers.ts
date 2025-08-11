@@ -33,7 +33,7 @@ export function transformRoomAttributes(attributeCategories: any): {
   const sectionOptions: Record<string, CustomizationOption[]> = {}
 
   Object.entries(attributeCategories).forEach(([category, data]: [string, any]) => {
-    const sectionKey = category.toLowerCase().replace(' ', '-')
+    const sectionKey = category.trim().toLowerCase().replace(/\s+/g, '-')
     
     sections.push({
       key: sectionKey,
@@ -92,7 +92,7 @@ export function transformToPricingItems(
   if (selectedRoom) {
     items.push({
       id: `room-${selectedRoom.id}`,
-      name: selectedRoom.name,
+      name: selectedRoom.roomType ?? selectedRoom.name,
       price: selectedRoom.price,
       type: 'room',
       concept: 'choose-your-room',
@@ -119,7 +119,7 @@ export function transformToPricingItems(
     bookedOffers.forEach((offer) => {
       items.push({
         id: offer.id,
-        name: offer.title,
+        name: offer.title ?? offer.name,
         price: offer.totalPrice || offer.price,
         type: 'offer',
         concept: 'enhance-your-stay',
@@ -146,8 +146,14 @@ export function transformToPricingItems(
 export function transformToBookingInfo(reservation: any) {
   return {
     checkIn: reservation.checkIn,
-    checkOut: reservation.checkIn, // Calculate based on nights
-    nights: parseInt(reservation.nights),
+    checkOut: (() => {
+      const nights = Number.parseInt(String(reservation.nights), 10) || 0
+      const inDate = new Date(reservation.checkIn)
+      const outDate = new Date(inDate)
+      outDate.setDate(inDate.getDate() + nights)
+      return outDate.toISOString()
+    })(),
+    nights: Number.parseInt(String(reservation.nights), 10) || 0,
     guests: 2, // Default value
     roomType: reservation.roomType,
     bookingReference: reservation.locator,

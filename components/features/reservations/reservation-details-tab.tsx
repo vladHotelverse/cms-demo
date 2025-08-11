@@ -280,6 +280,22 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 		setSelectedCommissionReason("");
 	}, []);
 
+	// Utility function to safely parse price strings
+	const parsePrice = useCallback((price: any): number => {
+		if (typeof price === 'number') {
+			return isNaN(price) ? 0 : price;
+		}
+		
+		if (typeof price === 'string') {
+			// Remove currency symbols and convert comma to dot
+			const cleanPrice = price.replace(/[€$£¥]/g, '').replace(/,/g, '.').trim();
+			const parsed = parseFloat(cleanPrice);
+			return isNaN(parsed) ? 0 : parsed;
+		}
+		
+		return 0;
+	}, []);
+
 	// Enhanced callback with store integration and data transformation
   const handleAddToCart = useCallback(async (item: any) => {
 		try {
@@ -316,23 +332,7 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 			console.error('Error adding item to cart:', error);
 			onShowAlert("error", "Failed to add service to selection");
 		}
-	}, [addExtra, reservationInfo, reservation.nights, onShowAlert]);
-
-	// Utility function to safely parse price strings
-	const parsePrice = useCallback((price: any): number => {
-		if (typeof price === 'number') {
-			return isNaN(price) ? 0 : price;
-		}
-		
-		if (typeof price === 'string') {
-			// Remove currency symbols and convert comma to dot
-			const cleanPrice = price.replace(/[€$£¥]/g, '').replace(/,/g, '.').trim();
-			const parsed = parseFloat(cleanPrice);
-			return isNaN(parsed) ? 0 : parsed;
-		}
-		
-		return 0;
-	}, []);
+	}, [addExtra, reservationInfo, reservation.nights, onShowAlert, parsePrice]);
 
 	// Enhanced room selection callback with proper store integration
 	// Handles both table room data and ABS carousel room data

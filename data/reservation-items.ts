@@ -13,6 +13,11 @@ export interface BaseRequestedItem {
 // Room type enumeration - only allowed room types
 export type AllowedRoomType = 'Doble' | 'Junior Suite' | 'Doble Deluxe' | 'Rock Suite' | 'Deluxe Gold' | 'Deluxe Swim-up' | '80s Suite' | 'Rock Suite Diamond'
 
+// Single source of truth for allowed room types
+export const ALLOWED_ROOM_TYPES: AllowedRoomType[] = [
+  'Doble', 'Junior Suite', 'Doble Deluxe', 'Rock Suite', 'Deluxe Gold', 'Deluxe Swim-up', '80s Suite', 'Rock Suite Diamond'
+]
+
 // Room selection scenarios
 export type RoomSelectionScenario = 'upgrade_only' | 'choose_room_only' | 'choose_room_upgrade' | 'attribute_selection' | 'upgrade_with_attributes'
 
@@ -25,8 +30,7 @@ export const validateProductLimit = (items: any[]): boolean => {
 }
 
 export const isAllowedRoomType = (roomType: string): roomType is AllowedRoomType => {
-  const allowedTypes: AllowedRoomType[] = ['Doble', 'Doble Deluxe', 'Junior Suite', 'Rock Suite', 'Deluxe Gold', 'Deluxe Swim-up', '80s Suite', 'Rock Suite Diamond']
-  return allowedTypes.includes(roomType as AllowedRoomType)
+  return ALLOWED_ROOM_TYPES.includes(roomType as AllowedRoomType)
 }
 
 // Auto-determine room selection scenario and UI flags
@@ -125,7 +129,7 @@ export const validateRoomConfiguration = (item: RoomItem): {
   
   // Rule 3: Room type must be allowed
   if (!isAllowedRoomType(item.roomType)) {
-    errors.push(`Room type '${item.roomType}' is not allowed. Only Doble, Doble Deluxe, and Junior Suite are permitted.`)
+    errors.push(`Room type '${item.roomType}' is not allowed. Allowed types: ${ALLOWED_ROOM_TYPES.join(', ')}`)
   }
   
   // Rule 4: Allow room upgrades with customizations for merged scenarios
