@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react"
 import { useLanguage } from "@/contexts/language-context"
 import { generateDynamicRecommendations, createReservationContext } from "@/data/dynamic-recommendations"
 import { generateLimitedReservationItems } from "@/data/limited-reservation-items"
-import { RoomType } from "@/data/room-type-config"
+import type { RoomType } from "@/data/room-type-config"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { generateUniqueReservationItems } from "@/utils/generate-unique-reservation-items"
 
@@ -72,7 +72,7 @@ export function ReservationSummaryModal({ reservation, onCloseTab, onRecommendCl
         const basePrice = item.price * (item.quantity || 1)
         
         // Format price based on item type and context
-        let priceDisplay = basePrice
+        const priceDisplay = basePrice
         let description = item.description
         
         // For items that are typically per-night, show per-night pricing
@@ -137,11 +137,15 @@ export function ReservationSummaryModal({ reservation, onCloseTab, onRecommendCl
 
   if (!showDetailedView) {
     return (
-      <RecommendationsView 
-        reservation={reservation} 
-        dynamicRecommendations={dynamicRecommendations}
-        onCloseTab={onCloseTab} 
-      />
+      <div className="p-6">
+        {/* Placeholder for RecommendationsView component */}
+        <RequestedItemsView 
+          reservation={reservation} 
+          dynamicReservationItems={{ rooms: [], extras: [], bidding: [] }}
+          onCloseTab={onCloseTab}
+          onRecommendClick={onRecommendClick}
+        />
+      </div>
     )
   }
 

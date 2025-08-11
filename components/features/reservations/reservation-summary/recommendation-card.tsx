@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { Recommendation } from "@/data/recommendations"
+import type { Recommendation } from "@/data/recommendations"
 import { PriceDisplay } from "./price-display"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
-import { type CarouselApi } from "@/components/ui/carousel"
+import type { CarouselApi } from "@/components/ui/carousel"
 import { RecommendationImageCarousel } from "./recommendation-image-carousel"
 import { RecommendationActions } from "./recommendation-actions"
 import { RecommendationDetails } from "./recommendation-details"
@@ -137,10 +137,10 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
               )}
             </div>
           ) : (
-            <RecommendationDetails
+              <RecommendationDetails
               title={t(recommendation.titleKey)}
               description={t(recommendation.descriptionKey)}
-              details={recommendation.detailsKey ? t(recommendation.detailsKey) as string[] : undefined}
+               details={recommendation.detailsKey ? (t(recommendation.detailsKey) as unknown as string[]) : undefined}
             />
           )}
           

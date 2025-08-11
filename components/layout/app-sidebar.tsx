@@ -229,10 +229,10 @@ export default function AppSidebar() {
 				);
 			}
 
-			const isActive = item.href && item.href !== "#" && pathname === item.href;
-			const isParentActive = item.children?.some(
+            const isActive = !!(item.href && item.href !== "#" && pathname === item.href);
+            const isParentActive = item.children?.some(
 				(child) =>
-					child.href && pathname.startsWith(child.href) && child.href !== "#",
+                !!(child.href && pathname.startsWith(child.href) && child.href !== "#"),
 			);
 
 			if (item.children && item.children.length > 0) {
@@ -247,8 +247,8 @@ export default function AppSidebar() {
 							onOpenChange={() => toggleCollapsible(item.titleKey)}
 						>
 							<CollapsibleTrigger asChild>
-								<SidebarMenuButton
-									variant="ghost"
+                <SidebarMenuButton
+                  variant={"ghost" as unknown as any}
 									className={cn(
 										"w-full justify-between h-10 px-3 mx-2 rounded-lg transition-all duration-200",
 										"hover:bg-accent/50 hover:text-accent-foreground",
@@ -314,9 +314,9 @@ export default function AppSidebar() {
 			if (isSubmenu) {
 				return (
 					<SidebarMenuSubItem key={translatedTitle}>
-						<SidebarMenuSubButton
+            <SidebarMenuSubButton
 							{...commonButtonProps}
-							href={item.disabled ? undefined : item.href}
+              href={item.disabled ? undefined : item.href}
 							className={cn(
 								commonButtonProps.className,
 								"h-9 pl-3 pr-3 ml-0 mr-2 rounded-md",
@@ -354,9 +354,9 @@ export default function AppSidebar() {
 
 			return (
 				<SidebarMenuItem key={translatedTitle} className="mb-1">
-					<SidebarMenuButton
+          <SidebarMenuButton
 						{...commonButtonProps}
-						href={item.disabled ? undefined : item.href}
+            
 						onClick={(e) => {
 							if (item.disabled && item.href === "#") e.preventDefault();
 							if (item.disabled && item.href !== "#" && item.href !== undefined)
@@ -381,12 +381,12 @@ export default function AppSidebar() {
 		});
 	};
 
-	const currentMenuItems = menuItemsStructure.map((item) => ({
+  const currentMenuItems = menuItemsStructure.map((item) => ({
 		...item,
-		active: item.href && item.href !== "#" && pathname === item.href,
+    active: !!(item.href && item.href !== "#" && pathname === item.href),
 		children: item.children?.map((child) => ({
 			...child,
-			active: child.href && child.href !== "#" && pathname === child.href,
+      active: !!(child.href && child.href !== "#" && pathname === child.href),
 		})),
 	}));
 

@@ -1,4 +1,4 @@
-import type { SelectedCustomizations } from '@/components/ABS_RoomCustomization/types'
+import type { SelectedCustomizations } from '@/components/features/booking-system/ABS_RoomCustomization/types'
 
 export interface BaseRequestedItem {
   id: string

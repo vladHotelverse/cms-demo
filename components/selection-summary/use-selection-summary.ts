@@ -6,7 +6,9 @@ import { useOperationQueue } from './hooks/use-operation-queue'
 import { useSelectionNotifications } from './selection-notifications'
 import { useOptimisticUpdates } from './hooks/use-optimistic-updates'
 import { useSelectionValidation } from './hooks/use-selection-validation'
-import type { RoomOption, SelectedCustomizations, OfferData } from './types'
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
+import type { SelectedCustomizations } from '@/components/features/booking-system/ABS_RoomCustomization/types'
+import type { OfferData } from '@/components/features/booking-system/ABS_SpecialOffers/types'
 
 interface UseSelectionSummaryProps {
   onRoomSelectionChange?: (room: RoomOption | null) => void

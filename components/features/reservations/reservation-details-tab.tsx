@@ -281,10 +281,10 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 	}, []);
 
 	// Enhanced callback with store integration and data transformation
-	const handleAddToCart = useCallback(async (item: any) => {
+  const handleAddToCart = useCallback(async (item: any) => {
 		try {
 			// Transform table item data to store-compatible OfferData format
-			const transformedOffer = {
+            const transformedOffer = {
 				id: item.id || `item_${Date.now()}`,
 				name: item.name || item.title || 'Service',
 				price: parsePrice(item.price),
@@ -293,10 +293,10 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 				type: item.priceType || 'perStay',
 				description: item.description,
 				// Handle different date formats from the table
-				selectedDate: new Date(),
-				selectedDates: [new Date()],
-				startDate: reservationInfo.checkIn,
-				endDate: reservationInfo.checkOut,
+              selectedDate: new Date(),
+              selectedDates: [new Date()],
+              startDate: new Date(reservationInfo.checkIn),
+              endDate: new Date(reservationInfo.checkOut),
 				// Additional fields for compatibility
 				validUntil: undefined,
 				available: true,
@@ -354,11 +354,10 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 			
 			if (isCarouselData) {
 				// Transform ABS carousel room data to store-compatible RoomOption format
-				transformedRoom = {
+            transformedRoom = {
 					id: room.id?.toString() || `room_${Date.now()}`,
 					roomType: room.title || room.name || room.roomType || 'Superior Room',
 					price: parsePrice(room.price),
-					originalRoomType: reservationInfo.originalRoomType,
 					available: true,
 					agent: 'Maria García',
 					checkIn: reservationInfo.checkIn,
@@ -400,7 +399,16 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
 				};
 			}
 			
-			const result = await addRoom(transformedRoom, reservationInfo);
+      			// Cast down to minimal RoomOption for store API
+      			const minimalRoom = {
+      				id: transformedRoom.id,
+      				roomType: transformedRoom.roomType,
+      				description: '',
+      				amenities: transformedRoom.amenities || [],
+      				price: transformedRoom.price,
+      				images: []
+      			}
+      			const result = await addRoom(minimalRoom as any, reservationInfo);
 			
 			if (result.success) {
 				const roomName = transformedRoom.roomType;

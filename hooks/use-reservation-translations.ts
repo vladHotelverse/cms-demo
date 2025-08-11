@@ -5,7 +5,7 @@ export function useReservationTranslations() {
   const { currentLanguage } = useLanguage()
   const translations = reservationSummaryTranslations[currentLanguage as keyof typeof reservationSummaryTranslations] || reservationSummaryTranslations.en
   
-  const t = (key: string, params?: Record<string, any>) => {
+  const t = (key: string, paramsOrFallback?: any) => {
     const keys = key.split('.')
     let value: any = translations
     
@@ -13,11 +13,11 @@ export function useReservationTranslations() {
       value = value?.[k]
     }
     
-    if (typeof value === 'string' && params) {
-      return value.replace(/\{\{(\w+)\}\}/g, (_, key) => params[key] || '')
+    if (typeof value === 'string' && paramsOrFallback && typeof paramsOrFallback === 'object') {
+      return value.replace(/\{\{(\w+)\}\}/g, (_: any, k: string) => paramsOrFallback[k] || '')
     }
     
-    return value || key
+    return (typeof value === 'string' ? value : undefined) || (typeof paramsOrFallback === 'string' ? paramsOrFallback : undefined) || key
   }
   
   return { t, translations }

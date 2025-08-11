@@ -21,7 +21,6 @@ export default function ClientLayout({
         defaultTheme="light" 
         enableSystem
         disableTransitionOnChange
-        suppressHydrationWarning
       >
         <SidebarProvider defaultOpen={!isReservationPage}>
           <div className="flex h-screen w-full overflow-hidden">

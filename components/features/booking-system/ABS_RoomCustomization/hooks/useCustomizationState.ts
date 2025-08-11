@@ -51,8 +51,8 @@ export const useCustomizationState = ({
 
   const handleSelect = useCallback(
     (category: string, optionId: string) => {
-      const options = sectionOptions[category]
-      const optionDetails = options?.find((o) => o.id === optionId)
+      const options = sectionOptions[category] as Array<CustomizationOption | ViewOption | ExactViewOption> | undefined
+      const optionDetails = options?.find((o) => (o as any).id === optionId) as (CustomizationOption | ViewOption | ExactViewOption | undefined)
 
       if (!optionDetails) return
 
@@ -110,9 +110,10 @@ export const useCustomizationState = ({
       if (!pendingConflict) return
 
       const { conflictingOption } = pendingConflict
-      const optionDetails = sectionOptions[conflictingOption.category]?.find(
-        (o) => o.id === conflictingOption.id
-      )
+      const optArray = sectionOptions[conflictingOption.category] as Array<CustomizationOption | ViewOption | ExactViewOption> | undefined
+      const optionDetails = optArray?.find(
+        (o) => (o as any).id === conflictingOption.id
+      ) as (CustomizationOption | ViewOption | ExactViewOption | undefined)
 
       if (!optionDetails) {
         setPendingConflict(null)

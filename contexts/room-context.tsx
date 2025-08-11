@@ -1,7 +1,7 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode } from 'react'
-import { RoomType } from '@/data/room-type-config'
+import { createContext, useContext, useState, type ReactNode } from 'react'
+import type { RoomType } from '@/data/room-type-config'
 
 interface RoomContextType {
   currentRoomType: RoomType
@@ -27,7 +27,7 @@ interface RoomProviderProps {
   initialRoomType?: RoomType
 }
 
-export function RoomProvider({ children, initialRoomType = 'Standard' }: RoomProviderProps) {
+export function RoomProvider({ children, initialRoomType = 'Doble' }: RoomProviderProps) {
   const [currentRoomType, setCurrentRoomType] = useState<RoomType>(initialRoomType)
   const [reservationDetails, setReservationDetails] = useState<{
     nights: number
@@ -75,7 +75,7 @@ export function useDynamicReservationData() {
       nights: reservationDetails.nights,
       guests: reservationDetails.guests,
       checkInDate: reservationDetails.checkInDate,
-      isBusinessGuest: currentRoomType === 'Deluxe' || currentRoomType === 'Suite' || currentRoomType === 'Presidential Suite',
+      isBusinessGuest: currentRoomType === 'Doble Deluxe' || currentRoomType === 'Junior Suite',
       isCouple: reservationDetails.aci.startsWith('2/0/0'),
       hasChildren: reservationDetails.aci.includes('/1/') || reservationDetails.aci.includes('/2/')
     }

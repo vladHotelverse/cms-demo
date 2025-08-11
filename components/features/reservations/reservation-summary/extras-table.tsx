@@ -18,9 +18,11 @@ import {
 
 interface ExtrasTableProps {
   items: ExtraItem[]
+  onRemove?: (extraId: string) => void
+  className?: string
 }
 
-export function ExtrasTable({ items }: ExtrasTableProps) {
+export function ExtrasTable({ items, onRemove }: ExtrasTableProps) {
   const { updateItemStatus, deleteItem } = useReservationSummaryStore()
 
   if (!items || items.length === 0) return null
@@ -64,7 +66,7 @@ export function ExtrasTable({ items }: ExtrasTableProps) {
                   key={item.id} 
                   item={item} 
                   onStatusUpdate={(status) => updateItemStatus('extras', item.id, status)}
-                  onDelete={() => deleteItem('extras', item.id)}
+                  onDelete={() => onRemove ? onRemove(item.id) : deleteItem('extras', item.id)}
                 />
               ))}
             </TableBody>

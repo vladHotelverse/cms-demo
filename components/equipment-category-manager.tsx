@@ -46,7 +46,7 @@ const dbEquipmentItems = [
 ]
 
 // Initial state with some equipment already assigned to categories
-const initialCategoryEquipment = {
+const initialCategoryEquipment: Record<string, string[]> = {
   "1": ["1", "2", "3"], // Bathroom has Towels, Hairdryer, Toiletries
   "2": ["4", "5"], // Bedroom has Pillows, Blankets
   "3": ["7", "8"], // Kitchen has Microwave, Coffee Maker
@@ -76,7 +76,7 @@ export default function EquipmentCategoryManager() {
 
     // Get equipment that can be in this category (based on categoryIds) but isn't already added
     return dbEquipmentItems.filter(
-      (item) => item.categoryIds.includes(categoryId) && !categoryEquipment[categoryId]?.includes(item.id),
+      (item) => item.categoryIds.includes(categoryId) && !(categoryEquipment[categoryId] || []).includes(item.id),
     )
   }
 
@@ -106,7 +106,7 @@ export default function EquipmentCategoryManager() {
   const handleRemoveEquipment = (categoryId: string, equipmentId: string) => {
     setCategoryEquipment((prev) => ({
       ...prev,
-      [categoryId]: prev[categoryId].filter((id) => id !== equipmentId),
+      [categoryId]: (prev[categoryId] || []).filter((id) => id !== equipmentId),
     }))
   }
 

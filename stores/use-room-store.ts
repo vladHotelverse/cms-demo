@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { RoomUpgrade, RoomAttribute } from '@/types/room';
-import { roomUpgrades, roomAttributes } from '@/data';
+// Fallback demo data removed from '@/data' export. Provide safe defaults.
+const roomUpgrades: RoomUpgrade[] = []
+const roomAttributes: RoomAttribute = {}
 
 interface RoomStore {
   // State

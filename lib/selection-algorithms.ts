@@ -4,8 +4,8 @@
  */
 
 import type { SelectedRoom, SelectedExtra } from '@/stores/user-selections-store'
-import type { RoomOption } from '@/components/ABS_RoomSelectionCarousel/types'
-import type { OfferData } from '@/components/ABS_SpecialOffers/types'
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
+import type { OfferData } from '@/components/features/booking-system/ABS_SpecialOffers/types'
 
 // Types for algorithm results
 export interface ConflictResult {
@@ -808,7 +808,7 @@ export class DuplicateDetector {
           })
           break
 
-        case 'keep_best':
+        case 'keep_best': {
           const bestItem = this.findBestItem(group.items)
           recommendations.push({
             groupId: group.id,
@@ -822,6 +822,7 @@ export class DuplicateDetector {
             }
           })
           break
+        }
       }
     })
 
