@@ -2,19 +2,7 @@
 
 import type React from "react"
 import { format } from "date-fns"
-import {
-  Mail,
-  Key,
-  KeyboardOffIcon as KeyOff,
-  Wifi,
-  Car,
-  Coffee,
-  Utensils,
-  MoreHorizontal,
-  Settings,
-  ChevronDown,
-  Info,
-} from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -22,147 +10,45 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import {
+  Mail,
+  KeyRound,
+  Wifi,
+  Car,
+  Coffee,
+  Utensils,
+  ChevronDown,
+  ArrowUpCircle,
+  Waves,
+  Dumbbell,
+  Bell,
+  Calendar,
+  Settings,
+  ExternalLink,
+} from "lucide-react"
 
-interface RoomAttribute {
-  id: string
-  name: string
-  icon: React.ReactNode
-  selected: boolean
+import { ErrorBoundary } from "@/components/shared/error-boundary"
+import { ErrorMessage } from "@/components/shared/error-message"
+import { LoadingSpinner } from "@/components/shared/loading-spinner"
+import { TableLoading } from "@/components/shared/table-loading"
+import { SearchInput } from "@/components/shared/search-input"
+import { SimpleFilters } from "@/components/shared/simple-filters"
+import { SortableHeader } from "@/components/shared/sortable-header"
+import { useBookings } from "@/lib/hooks/use-bookings"
+import { useRoomStatus } from "@/lib/hooks/use-room-status"
+import { highlightSearchTerm } from "@/lib/utils/search-highlight"
+import type { RoomData, Booking } from "@/lib/types/booking"
+
+const iconMap = {
+  wifi: <Wifi className="h-3 w-3" />,
+  car: <Car className="h-3 w-3" />,
+  coffee: <Coffee className="h-3 w-3" />,
+  utensils: <Utensils className="h-3 w-3" />,
+  waves: <Waves className="h-3 w-3" />,
+  dumbbell: <Dumbbell className="h-3 w-3" />,
+  bell: <Bell className="h-3 w-3" />,
 }
 
-interface RoomData {
-  type: string
-  number: number
-  option: string
-  status: "confirmed" | "standard" | "priority"
-  hasUpgrade: boolean
-  hasChooseRoom: boolean
-  hasKey: boolean
-  hasAlternatives: boolean
-  attributes?: RoomAttribute[]
-  alternatives?: { number: number; type: string }[]
-  originalRoom?: { type: string; number: number }
-  upgradedRoom?: { type: string; number: number }
-}
-
-const bookings = [
-  {
-    id: 1,
-    locator: "HV123456",
-    guest: { name: "John Doe", email: "john.doe@email.com" },
-    lastRequest: new Date("2025-08-10"),
-    checkIn: new Date("2025-08-15"),
-    checkOut: new Date("2025-08-20"),
-    price: 1250.0,
-    room: {
-      type: "Deluxe Suite",
-      number: 127,
-      option: "Option",
-      status: "confirmed",
-      hasUpgrade: true,
-      hasChooseRoom: false,
-      hasKey: false,
-      hasAlternatives: true,
-      originalRoom: { type: "Standard Suite", number: 125 },
-      upgradedRoom: { type: "Deluxe Suite", number: 127 },
-      alternatives: [
-        { number: 128, type: "Deluxe Suite" },
-        { number: 129, type: "Deluxe Suite" },
-        { number: 130, type: "Deluxe Suite" },
-      ],
-    } as RoomData,
-    extras: {
-      confirmed: 3,
-      pending: 2,
-      status: "standard",
-    },
-  },
-  {
-    id: 2,
-    locator: "HV789012",
-    guest: { name: "Jane Smith", email: "jane.smith@email.com" },
-    lastRequest: new Date("2025-08-11"),
-    checkIn: new Date("2025-08-18"),
-    checkOut: new Date("2025-08-22"),
-    price: 850.0,
-    room: {
-      type: "Standard King",
-      number: 127,
-      option: "Option",
-      status: "standard",
-      hasUpgrade: false,
-      hasChooseRoom: true,
-      hasKey: true,
-      hasAlternatives: false,
-    } as RoomData,
-    extras: {
-      confirmed: 1,
-      pending: 0,
-      status: "standard",
-    },
-  },
-  {
-    id: 3,
-    locator: "HV345678",
-    guest: { name: "Peter Jones", email: "peter.jones@email.com" },
-    lastRequest: new Date("2025-08-12"),
-    checkIn: new Date("2025-08-25"),
-    checkOut: new Date("2025-08-30"),
-    price: 2100.0,
-    room: {
-      type: "Presidential Suite",
-      number: 501,
-      option: "VIP",
-      status: "confirmed",
-      hasUpgrade: true,
-      hasChooseRoom: true,
-      hasKey: true,
-      hasAlternatives: false,
-      originalRoom: { type: "Executive Suite", number: 450 },
-      upgradedRoom: { type: "Presidential Suite", number: 501 },
-    } as RoomData,
-    extras: {
-      confirmed: 5,
-      pending: 1,
-      status: "priority",
-    },
-  },
-  {
-    id: 4,
-    locator: "HV901234",
-    guest: { name: "Sarah Wilson", email: "sarah.wilson@email.com" },
-    lastRequest: new Date("2025-08-13"),
-    checkIn: new Date("2025-08-28"),
-    checkOut: new Date("2025-09-02"),
-    price: 950.0,
-    room: {
-      type: "Ocean View",
-      number: 205,
-      option: "Premium",
-      status: "standard",
-      hasUpgrade: false,
-      hasChooseRoom: false,
-      hasKey: false,
-      hasAlternatives: true,
-      attributes: [
-        { id: "wifi", name: "WiFi", icon: <Wifi className="h-3 w-3" />, selected: true },
-        { id: "parking", name: "Parking", icon: <Car className="h-3 w-3" />, selected: false },
-        { id: "breakfast", name: "Breakfast", icon: <Coffee className="h-3 w-3" />, selected: true },
-        { id: "dining", name: "Dining", icon: <Utensils className="h-3 w-3" />, selected: false },
-      ],
-      alternatives: [
-        { number: 206, type: "Ocean View" },
-        { number: 207, type: "Ocean View" },
-        { number: 208, type: "Ocean View" },
-      ],
-    } as RoomData,
-    extras: {
-      confirmed: 2,
-      pending: 1,
-      status: "standard",
-    },
-  },
-]
 
 const statusColors = {
   confirmed: "bg-green-50 text-green-800 border-green-200",
@@ -177,12 +63,13 @@ const CompactRoomBlock = ({ room }: { room: RoomData }) => {
       {/* Main Room Info - Single Line */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1 min-w-0 flex-1">
-          <span className="font-medium truncate">{room.type}</span>
-          {room.hasUpgrade && room.originalRoom && room.upgradedRoom && (
+          <span className="font-semibold text-sm truncate">{room.type}</span>
+          {/* Show upgrade arrow only when no key is assigned */}
+          {room.hasUpgrade && room.originalRoom && room.upgradedRoom && !room.hasKey && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                  <Info className="h-3 w-3 text-blue-600" />
+                <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                  <ArrowUpCircle className="h-4 w-4 text-blue-600" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-3" align="start">
@@ -213,60 +100,26 @@ const CompactRoomBlock = ({ room }: { room: RoomData }) => {
         </div>
 
         <div className="flex items-center gap-1 flex-shrink-0">
-          {/* Key Status */}
-          {room.hasKey && <Key className="h-3 w-3 text-green-600" />}
-          {!room.hasKey && room.hasChooseRoom && <KeyOff className="h-3 w-3 text-gray-400" />}
-
-          {/* Alternatives Popover */}
-          {room.hasAlternatives && room.alternatives && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
-                  <MoreHorizontal className="h-3 w-3" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-56 p-3" align="end">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Alternative {room.type} Rooms</h4>
-                  <div className="space-y-1">
-                    {room.alternatives.map((alt, index) => (
-                      <Button key={index} variant="ghost" size="sm" className="w-full justify-start h-7 text-xs">
-                        #{alt.number} - {alt.type}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          )}
-
           {/* Attributes Popover */}
           {room.attributes && room.attributes.length > 0 && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
-                  <Settings className="h-3 w-3" />
+                <Button variant="outline" size="sm" className="h-6 px-2 text-xs border-dashed hover:bg-muted">
+                  {room.attributes.filter(attr => attr.selected).length} attributes
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-3" align="end">
                 <div className="space-y-2">
                   <h4 className="font-medium text-sm">Room Attributes</h4>
                   <div className="grid grid-cols-2 gap-1">
-                    {room.attributes.map((attr) => (
-                      <Button
+                    {room.attributes.filter(attr => attr.selected).map((attr) => (
+                      <div
                         key={attr.id}
-                        variant={attr.selected ? "default" : "outline"}
-                        size="sm"
-                        className={cn(
-                          "h-7 text-xs justify-start",
-                          attr.selected
-                            ? "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200"
-                            : "hover:bg-gray-50",
-                        )}
+                        className="flex items-center gap-2 p-2 bg-blue-50 rounded border border-blue-200 text-xs"
                       >
-                        {attr.icon}
-                        <span className="ml-1">{attr.name}</span>
-                      </Button>
+                        {iconMap[attr.icon as keyof typeof iconMap] || attr.icon}
+                        <span className="text-blue-800 font-medium">{attr.name}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -278,9 +131,42 @@ const CompactRoomBlock = ({ room }: { room: RoomData }) => {
 
       {/* Room Number and Badges - Second Line */}
       <div className="flex items-center justify-between mt-1">
-        <span className="text-xs opacity-70">
-          #{room.number} {room.option}
-        </span>
+        <div className="flex items-center gap-2 text-xs">
+          <div className="flex items-center gap-1">
+            {/* Only show key icon when guest actually has the key (room assigned) */}
+            {room.hasKey && <KeyRound className="h-4 w-4 text-green-600" />}
+            <span className="font-semibold text-sm text-gray-900">{room.number}</span>
+          </div>
+          
+          {/* Alternatives Button - only show if has alternatives AND no key */}
+          {room.hasAlternatives && room.alternatives && room.alternatives.filter(alt => alt.available).length > 0 && !room.hasKey && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-5 px-2 text-xs border-dashed hover:bg-muted">
+                  {room.alternatives.filter(alt => alt.available).length} alternatives
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-3" align="start">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Alternative {room.type} Rooms</h4>
+                  <div className="space-y-1">
+                    {room.alternatives.filter(alt => alt.available).map((alt) => (
+                      <Button 
+                        key={`${alt.number}-${alt.type}`} 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full justify-start h-7 text-xs"
+                      >
+                        #{alt.number} - {alt.type}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
+        
         <div className="flex gap-1">
           {room.hasChooseRoom && (
             <Badge variant="secondary" className="text-xs px-1.5 py-0 h-4">
@@ -293,126 +179,295 @@ const CompactRoomBlock = ({ room }: { room: RoomData }) => {
   )
 }
 
-const CompactExtrasBlock = ({
-  status,
-  confirmed,
-  pending,
-  isPriority,
-}: {
-  status: "confirmed" | "standard" | "priority" | "default"
-  confirmed: number
-  pending: number
-  isPriority: boolean
-}) => {
-  return (
-    <div className={cn("p-2 rounded border text-xs", statusColors[status] || statusColors.default)}>
-      <div className="flex items-center justify-between">
-        <div>
-          {isPriority && <div className="font-bold text-red-700 text-xs mb-0.5">PRIORITY</div>}
-          <div className="font-medium">{confirmed} confirmed</div>
-          {pending > 0 && <div className="opacity-70">{pending} pending</div>}
-        </div>
-
-        {(confirmed > 0 || pending > 0) && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
-                <ChevronDown className="h-3 w-3" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="end">
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm">Extras Details</h4>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span>Spa Package</span>
-                    <Badge variant="secondary" className="text-xs">
-                      Confirmed
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Airport Transfer</span>
-                    <Badge variant="secondary" className="text-xs">
-                      Confirmed
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Late Checkout</span>
-                    <Badge variant="outline" className="text-xs">
-                      Pending
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        )}
+const CompactExtrasBlock = ({ booking }: { booking: Booking }) => {
+  const { extras } = booking
+  const hasExtras = (extras.confirmed > 0 || extras.pending > 0) && extras.items
+  
+  // Don't show 0 values, only show non-zero counts
+  const confirmedText = extras.confirmed > 0 ? `${extras.confirmed} confirmed` : null
+  const pendingText = extras.pending > 0 ? `${extras.pending} pending` : null
+  
+  if (!hasExtras) {
+    return (
+      <div className={cn("p-2 rounded border text-xs h-full flex items-center", statusColors[extras.status] || statusColors.default)}>
+        <div className="font-medium opacity-70">No extras</div>
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <div className={cn("p-2 rounded border text-xs cursor-pointer hover:bg-muted/50 transition-colors h-full flex items-center", statusColors[extras.status] || statusColors.default)}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex-1">
+              {confirmedText && <div className="font-medium">{confirmedText}</div>}
+              {pendingText && <div className="opacity-70">{pendingText}</div>}
+            </div>
+            <ChevronDown className="h-3 w-3 flex-shrink-0 ml-1" />
+          </div>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-3" align="end">
+        <div className="space-y-2">
+          <h4 className="font-medium text-sm">Extras Details</h4>
+          <div className="space-y-1 text-xs">
+            {extras.items?.map((item) => (
+              <div key={item.id} className="flex justify-between items-center">
+                <span className="truncate pr-2">{item.name}</span>
+                <Badge 
+                  variant={item.status === "confirmed" ? "secondary" : "outline"} 
+                  className="text-xs flex-shrink-0"
+                >
+                  {item.status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 
 export default function FrontDeskTableView() {
+  const router = useRouter()
+  const { 
+    bookings, 
+    loading, 
+    error, 
+    filters, 
+    sortOptions, 
+    totalCount,
+    filteredCount,
+    roomTypes,
+    setFilters, 
+    setSortOptions,
+    clearError 
+  } = useBookings()
+  const { error: roomError, clearError: clearRoomError } = useRoomStatus()
+  
+  const searchTerm = filters.guestName || ""
+
+  const handleBookingRowClick = (booking: Booking) => {
+    const queryParams = new URLSearchParams({
+      locator: booking.locator,
+      guestName: booking.guest.name,
+      email: booking.guest.email,
+      checkIn: format(booking.checkIn, "dd/MM/yyyy"),
+      nights: Math.ceil((booking.checkOut.getTime() - booking.checkIn.getTime()) / (1000 * 60 * 60 * 24)).toString(),
+      roomType: booking.room.type
+    })
+    
+    router.push(`/ventas/front-desk-upsell?${queryParams.toString()}`)
+  }
+
+  if (loading) {
+    return (
+      <div className="flex flex-col h-screen">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b bg-background px-6 py-4">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Front Desk</h1>
+            <p className="text-sm text-muted-foreground">Manage your guests room requests</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <LoadingSpinner size="sm" />
+            <span className="text-sm text-muted-foreground">Loading...</span>
+          </div>
+        </div>
+        
+        <div className="flex-1 p-6">
+          <Card>
+            <div className="overflow-x-auto">
+              <TableLoading rows={10} columns={8} />
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="bg-gray-50 min-h-screen p-3">
-      <div className="max-w-screen-2xl mx-auto space-y-3">
-        <header className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-          <h1 className="text-xl font-bold text-gray-900">Front Desk</h1>
-        </header>
+    <ErrorBoundary>
+      <div className="flex flex-col h-screen">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b bg-background px-6 py-4">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Front Desk</h1>
+            <p className="text-sm text-muted-foreground">Manage your guests room requests</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Calendar className="h-4 w-4" />
+            </Button>
+            <SimpleFilters
+              filters={filters}
+              onFiltersChange={setFilters}
+              roomTypes={roomTypes}
+            />
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        
+        {/* Search Section */}
+        <div className="flex items-center justify-between border-b bg-muted/20 px-6 py-3">
+          <div className="text-sm font-medium text-gray-900">
+            Your search: {filteredCount} Booking{filteredCount !== 1 ? 's' : ''}
+          </div>
+          <div className="w-64">
+            <SearchInput
+              value={searchTerm}
+              onChange={(value) => setFilters({ ...filters, guestName: value || undefined })}
+              placeholder="Locator"
+              className="h-8"
+            />
+          </div>
+        </div>
+        
+        <div className="flex-1 p-6 overflow-auto">
+
+        {/* Error Messages */}
+        {error && (
+          <ErrorMessage 
+            message={error} 
+            onClose={clearError}
+            className="mb-4"
+          />
+        )}
+        {roomError && (
+          <ErrorMessage 
+            message={roomError} 
+            onClose={clearRoomError}
+            className="mb-4"
+          />
+        )}
 
         <Card>
           <div className="overflow-x-auto">
             <Table className="min-w-full text-xs">
               <TableHeader>
                 <TableRow className="border-b-gray-200">
-                  <TableHead className="w-[100px] px-2 py-2 text-xs">Booking ID</TableHead>
-                  <TableHead className="w-[160px] px-2 py-2 text-xs">Guest</TableHead>
-                  <TableHead className="w-[100px] px-2 py-2 text-xs">Requested</TableHead>
-                  <TableHead className="w-[100px] px-2 py-2 text-xs">Stay Dates</TableHead>
-                  <TableHead className="w-[80px] px-2 py-2 text-xs">Price</TableHead>
-                  <TableHead className="w-[200px] px-2 py-2 text-xs">Room</TableHead>
+                  <SortableHeader
+                    field="locator"
+                    label="Booking ID"
+                    sortOptions={sortOptions}
+                    onSort={setSortOptions}
+                    className="w-[100px] text-xs"
+                  />
+                  <SortableHeader
+                    field="guest.name"
+                    label="Guest"
+                    sortOptions={sortOptions}
+                    onSort={setSortOptions}
+                    className="w-[160px] text-xs"
+                  />
+                  <SortableHeader
+                    field="lastRequest"
+                    label="Requested"
+                    sortOptions={sortOptions}
+                    onSort={setSortOptions}
+                    className="w-[100px] text-xs"
+                  />
+                  <SortableHeader
+                    field="checkIn"
+                    label="Stay Dates"
+                    sortOptions={sortOptions}
+                    onSort={setSortOptions}
+                    className="w-[100px] text-xs"
+                  />
+                  <SortableHeader
+                    field="price"
+                    label="Price"
+                    sortOptions={sortOptions}
+                    onSort={setSortOptions}
+                    className="w-[80px] text-xs"
+                  />
+                  <TableHead className="w-[200px] px-2 py-2 text-xs">Room Number</TableHead>
                   <TableHead className="w-[140px] px-2 py-2 text-xs">Extras</TableHead>
-                  <TableHead className="w-[40px] px-2 py-2 text-xs">Msg</TableHead>
+                  <TableHead className="w-[60px] px-2 py-2 text-xs">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {bookings.map((booking) => (
-                  <TableRow key={booking.id} className="border-t-gray-200">
-                    <TableCell className="px-2 py-2 font-mono text-xs">{booking.locator}</TableCell>
-                    <TableCell className="px-2 py-2">
-                      <div className="font-medium text-xs">{booking.guest.name}</div>
-                      <div className="text-xs text-muted-foreground truncate">{booking.guest.email}</div>
-                    </TableCell>
-                    <TableCell className="px-2 py-2 text-xs">{format(booking.lastRequest, "MMM dd")}</TableCell>
-                    <TableCell className="px-2 py-2 text-xs">
-                      <div>{format(booking.checkIn, "MMM dd")}</div>
-                      <div className="text-muted-foreground">{format(booking.checkOut, "MMM dd")}</div>
-                    </TableCell>
-                    <TableCell className="px-2 py-2 font-medium text-xs">${booking.price.toFixed(0)}</TableCell>
-                    <TableCell className="px-2 py-2">
-                      <CompactRoomBlock room={booking.room} />
-                    </TableCell>
-                    <TableCell className="px-2 py-2">
-                      <CompactExtrasBlock
-                        status={booking.extras.status as keyof typeof statusColors}
-                        confirmed={booking.extras.confirmed}
-                        pending={booking.extras.pending}
-                        isPriority={booking.extras.status === "priority"}
-                      />
-                    </TableCell>
-                    <TableCell className="px-2 py-2">
-                      <Button size="icon" variant="ghost" className="h-6 w-6">
-                        <Mail className="h-3.5 w-3.5 text-blue-600" />
-                        <span className="sr-only">Send Message</span>
-                      </Button>
+                {bookings.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                      {filteredCount === 0 && totalCount > 0 
+                        ? "No bookings match your current filters" 
+                        : "No bookings found"
+                      }
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  bookings.map((booking) => (
+                    <TableRow 
+                      key={booking.id} 
+                      className="border-t-gray-200"
+                    >
+                      <TableCell className="px-2 py-2 font-mono text-xs">
+                        <button
+                          type="button"
+                          onClick={() => handleBookingRowClick(booking)}
+                          className="text-left hover:text-blue-600 hover:underline cursor-pointer transition-colors"
+                          title="View item summary"
+                        >
+                          {highlightSearchTerm(booking.locator, searchTerm)}
+                        </button>
+                      </TableCell>
+                      <TableCell className="px-2 py-2">
+                        <div className="font-medium text-xs flex items-center gap-1">
+                          {highlightSearchTerm(booking.guest.name, searchTerm)}
+                          {booking.guest.vipStatus && (
+                            <Badge variant="secondary" className="text-[10px] px-1 h-3">
+                              VIP
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {highlightSearchTerm(booking.guest.email, searchTerm)}
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-2 py-2 text-xs">{format(booking.lastRequest, "MMM dd")}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs">
+                        <div>{format(booking.checkIn, "MMM dd")}</div>
+                        <div className="text-muted-foreground">{format(booking.checkOut, "MMM dd")}</div>
+                      </TableCell>
+                      <TableCell className="px-2 py-2 font-medium text-xs">${booking.price.toFixed(0)}</TableCell>
+                      <TableCell className="px-2 py-2">
+                        <CompactRoomBlock room={booking.room} />
+                      </TableCell>
+                      <TableCell className="px-2 py-2">
+                        <CompactExtrasBlock booking={booking} />
+                      </TableCell>
+                      <TableCell className="px-2 py-2">
+                        <div className="flex items-center gap-1">
+                          <Button size="icon" variant="ghost" className="h-6 w-6">
+                            <Mail className="h-3.5 w-3.5 text-blue-600" />
+                            <span className="sr-only">Send Message</span>
+                          </Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-6 w-6"
+                            onClick={() => handleBookingRowClick(booking)}
+                            title="View item summary"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5 text-green-600" />
+                            <span className="sr-only">View Summary</span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
         </Card>
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   )
 }

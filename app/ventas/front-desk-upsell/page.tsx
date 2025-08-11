@@ -2,7 +2,8 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { ChevronUp, ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
@@ -72,9 +73,47 @@ interface OpenTab {
   reservation: OrderFromAPI
 }
 
+// Helper function to generate mock reservation from front desk query parameters
+const generateMockReservationFromParams = (
+  locator: string,
+  guestName: string,
+  email: string,
+  checkIn: string,
+  nights: string,
+  roomType: string
+): OrderFromAPI => {
+  // Generate a random number of reserved items (2-6 for good demo)
+  const extrasCount = Math.floor(Math.random() * 5) + 2
+  const extras = `${extrasCount} reserved items`
+  
+  // Generate default ACI based on room type (Adults/Children/Infants)
+  const defaultACI = roomType.toLowerCase().includes('suite') ? '2/1/0' : 
+                     roomType.toLowerCase().includes('deluxe') ? '2/0/0' : '1/0/0'
+  
+  return {
+    id: `mock-${locator}`,
+    locator,
+    name: guestName,
+    email,
+    checkIn,
+    nights,
+    roomType,
+    aci: defaultACI,
+    status: 'Confirmed',
+    extras,
+    extrasCount,
+    hasExtras: true,
+    hasHotelverseRequest: true,
+    orderItems: [],
+    proposals: []
+  }
+}
+
 export default function FrontDeskUpsellPage() {
+  const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState("")
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null)
+  const processedParamsRef = useRef<string | null>(null)
   const [sortField, setSortField] = useState<SortField>("checkIn")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
   const [activeTab, setActiveTab] = useState("front-desk-upsell")
@@ -91,7 +130,65 @@ export default function FrontDeskUpsellPage() {
     const mappedType: "success" | "error" = type === 'success' ? 'success' : 'error'
     setAlert({ type: mappedType, message })
     setTimeout(() => setAlert(null), 4000)
-  }
+  }, [])
+
+  // Handle query parameters from front desk navigation
+  useEffect(() => {
+    const locator = searchParams.get('locator')
+    const guestName = searchParams.get('guestName')
+    const email = searchParams.get('email')
+    const checkIn = searchParams.get('checkIn')
+    const nights = searchParams.get('nights')
+    const roomType = searchParams.get('roomType')
+    
+    if (locator && guestName && email && checkIn && nights && roomType) {
+      // Create a unique key for these parameters to prevent duplicate processing
+      const paramKey = `${locator}-${guestName}-${checkIn}`
+      
+      // Skip if we've already processed these exact parameters
+      if (processedParamsRef.current === paramKey) {
+        return
+      }
+      
+      // Mark these parameters as processed
+      processedParamsRef.current = paramKey
+      
+      // Generate mock reservation from front desk parameters
+      const mockReservation = generateMockReservationFromParams(
+        locator,
+        guestName,
+        email,
+        checkIn,
+        nights,
+        roomType
+      )
+      
+      // Auto-open summary modal for the mock reservation
+      const summaryTabId = `summary_${mockReservation.id}`
+      
+      // Create and add the summary tab
+      const newTab: OpenTab = {
+        id: summaryTabId,
+        reservation: {
+          ...mockReservation,
+          nights: mockReservation.nights,
+          extras: mockReservation.extras
+        }
+      }
+      setOpenTabs(prev => {
+        // Double-check to avoid duplicates in the state update
+        const exists = prev.find(tab => tab.id === summaryTabId)
+        if (exists) {
+          return prev
+        }
+        return [...prev, newTab]
+      })
+      setActiveTab(summaryTabId)
+      
+      // Show success alert
+      showAlert('success', `Opening item summary for ${guestName} (${locator}) from Front Desk`)
+    }
+  }, [searchParams, showAlert])
 
   // Handle view mode changes
   const handleViewModeChange = (mode: string, data?: any) => {
@@ -369,6 +466,7 @@ export default function FrontDeskUpsellPage() {
             <div className="mb-6">
               <div className={cn("flex justify-between items-center w-full")}>
                 <Input
+                  data-testid="reservations-search-input"
                   placeholder={t("searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -380,7 +478,7 @@ export default function FrontDeskUpsellPage() {
 
             {/* Reservations Table */}
             <div className="border rounded-lg overflow-hidden">
-              <Table>
+              <Table data-testid="reservations-table">
                 <TableHeader className="bg-gray-50">
                   <TableRow>
                     <SortableHeader field="locator" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("Booking ID")}</SortableHeader>
@@ -409,6 +507,7 @@ export default function FrontDeskUpsellPage() {
                     sortedReservations.map((reservation) => (
                       <TableRow
                         key={reservation.id}
+                        data-testid={`reservation-row-${reservation.locator}`}
                         className="hover:bg-gray-50"
                       >
                         <TableCell className="font-mono text-sm">{reservation.locator}</TableCell>
@@ -426,6 +525,7 @@ export default function FrontDeskUpsellPage() {
                         <TableCell className="text-sm">{reservation.nights}</TableCell>
                         <TableCell className="text-sm">
                           <Button
+                            data-testid={`extras-button-${reservation.locator}`}
                             variant={reservation.extras.includes(t("reserved")) ? "ghost" : "default"}
                             size="sm"
                             onClick={() => handleExtrasButtonClick(reservation)}
