@@ -34,8 +34,20 @@ async function globalSetup(config: FullConfig) {
 async function setupTestDatabase(page: any) {
   console.log('Setting up test database...');
   
-  // Mock API responses or setup test data
   try {
+    // Import and use database setup
+    const { DatabaseSetup } = await import('./database-setup');
+    const dbSetup = new DatabaseSetup();
+    
+    // Check database health and seed test data
+    const isHealthy = await dbSetup.healthCheck();
+    if (isHealthy) {
+      await dbSetup.seedTestData();
+      console.log('✅ Database seeded with test data');
+    } else {
+      console.warn('⚠️ Database not accessible, using mock data mode');
+    }
+
     await page.evaluate(() => {
       // Clear any existing test data
       localStorage.clear();

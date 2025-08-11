@@ -50,16 +50,29 @@ export class TestData {
   static getApiTestData() {
     return {
       order: {
-        customerName: 'API Test Customer',
-        room: 'Presidential Suite',
+        userEmail: 'api-test@example.com',
+        userName: 'API Test Customer',
+        reservationCode: 'API001',
         checkIn: '2024-08-20',
         checkOut: '2024-08-25',
-        totalAmount: 2500.00,
-        status: 'pending'
+        roomType: 'Doble Deluxe',
+        occupancy: '2/0/0',
+        status: 'confirmed',
+        totalPrice: 2500.00,
+        notes: 'Test reservation for API testing',
+        selections: [
+          {
+            type: 'customization',
+            name: 'Spa Package',
+            description: 'Relaxing spa treatment',
+            price: 150.00,
+            quantity: 1
+          }
+        ]
       },
       proposal: {
-        title: 'Test Proposal',
-        description: 'This is a test proposal',
+        title: 'Test Hotel Proposal',
+        description: 'This is a test proposal for hotel services',
         price: 1500.00,
         validUntil: '2024-12-31'
       }
@@ -76,14 +89,44 @@ export class TestData {
 
   static getMockReservationData() {
     return {
-      id: 'MOCK-001',
-      guestName: 'Mock Guest',
-      roomType: 'Deluxe Room',
-      checkIn: '2024-08-15',
-      checkOut: '2024-08-18',
-      status: 'confirmed',
+      id: 'order-001',
+      locator: 'LOC1001',
+      name: 'John Smith',
+      email: 'john.smith@example.com',
+      checkIn: '15/08/2024',
+      nights: '3',
+      roomType: 'Doble Deluxe',
+      aci: '2/0/0',
+      status: 'New',
       extras: 'Recommend',
-      reservedItems: ['Spa Treatment', 'Room Service']
+      extrasCount: 0,
+      hasExtras: false,
+      hasHotelverseRequest: true,
+      orderItems: [],
+      proposals: []
+    };
+  }
+
+  static getMockReservationWithExtras() {
+    return {
+      id: 'order-002',
+      locator: 'LOC1002',
+      name: 'Maria Garcia',
+      email: 'maria.garcia@example.com',
+      checkIn: '16/08/2024',
+      nights: '5',
+      roomType: 'Junior Suite',
+      aci: '2/1/0',
+      status: 'Confirmed',
+      extras: '3 reserved items',
+      extrasCount: 3,
+      hasExtras: true,
+      hasHotelverseRequest: true,
+      orderItems: [
+        { name: 'Spa Package', price: 150, quantity: 1 },
+        { name: 'Airport Transfer', price: 50, quantity: 2 }
+      ],
+      proposals: []
     };
   }
 

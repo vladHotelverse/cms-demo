@@ -367,6 +367,7 @@ export default function FrontDeskUpsellPage() {
             <div className="mb-6">
               <div className={cn("flex justify-between items-center w-full")}>
                 <Input
+                  data-testid="reservations-search-input"
                   placeholder={t("searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -378,7 +379,7 @@ export default function FrontDeskUpsellPage() {
 
             {/* Reservations Table */}
             <div className="border rounded-lg overflow-hidden">
-              <Table>
+              <Table data-testid="reservations-table">
                 <TableHeader className="bg-gray-50">
                   <TableRow>
                     <SortableHeader field="locator" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("Booking ID")}</SortableHeader>
@@ -407,6 +408,7 @@ export default function FrontDeskUpsellPage() {
                     sortedReservations.map((reservation) => (
                       <TableRow
                         key={reservation.id}
+                        data-testid={`reservation-row-${reservation.locator}`}
                         className="hover:bg-gray-50"
                       >
                         <TableCell className="font-mono text-sm">{reservation.locator}</TableCell>
@@ -424,6 +426,7 @@ export default function FrontDeskUpsellPage() {
                         <TableCell className="text-sm">{reservation.nights}</TableCell>
                         <TableCell className="text-sm">
                           <Button
+                            data-testid={`extras-button-${reservation.locator}`}
                             variant={reservation.extras.includes(t("reserved")) ? "ghost" : "default"}
                             size="sm"
                             onClick={() => handleExtrasButtonClick(reservation)}

@@ -2,69 +2,63 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class HomePage extends BasePage {
-  private readonly bookNowButton: Locator;
+  private readonly homepage: Locator;
+  private readonly dashboardCards: Locator;
+  private readonly quickStatsCard: Locator;
+  private readonly recentActivityCard: Locator;
+  private readonly systemStatusCard: Locator;
   private readonly navigationMenu: Locator;
-  private readonly searchForm: Locator;
-  private readonly roomCards: Locator;
-  private readonly headerLogo: Locator;
 
   constructor(page: Page) {
     super(page, '/');
-    this.bookNowButton = page.locator('[data-testid="book-now-button"]').first();
+    this.homepage = page.locator('[data-testid="homepage"]');
+    this.dashboardCards = page.locator('[data-testid="dashboard-cards"]');
+    this.quickStatsCard = page.locator('[data-testid="quick-stats-card"]');
+    this.recentActivityCard = page.locator('[data-testid="recent-activity-card"]');
+    this.systemStatusCard = page.locator('[data-testid="system-status-card"]');
     this.navigationMenu = page.locator('nav');
-    this.searchForm = page.locator('[data-testid="search-form"]');
-    this.roomCards = page.locator('[data-testid="room-card"]');
-    this.headerLogo = page.locator('[data-testid="header-logo"]');
   }
 
-  async startBooking(): Promise<void> {
+  async navigateToFrontDeskUpsell(): Promise<void> {
+    // Navigate to the actual front desk upsell page
+    await this.page.goto('/ventas/front-desk-upsell');
     await this.handleLoadingStates();
-    await this.clickWithRetry(this.bookNowButton);
   }
 
-  async searchRooms(checkIn: string, checkOut: string, guests: number): Promise<void> {
-    await this.fillWithValidation(
-      this.searchForm.locator('input[name="checkIn"]'), 
-      checkIn
-    );
-    await this.fillWithValidation(
-      this.searchForm.locator('input[name="checkOut"]'), 
-      checkOut
-    );
-    await this.searchForm.locator('select[name="guests"]').selectOption(guests.toString());
-    await this.searchForm.locator('button[type="submit"]').click();
+  async isDashboardVisible(): Promise<boolean> {
+    return await this.isElementVisible(this.dashboardCards);
   }
 
-  async navigateToSection(sectionName: string): Promise<void> {
-    const sectionLink = this.navigationMenu.locator(`a:has-text("${sectionName}")`);
-    await this.clickWithRetry(sectionLink);
+  async getQuickStatsText(): Promise<string> {
+    return await this.getElementText(this.quickStatsCard);
   }
 
-  async getRoomCardCount(): Promise<number> {
-    await this.waitForElement(this.roomCards.first());
-    return await this.roomCards.count();
+  async getRecentActivityText(): Promise<string> {
+    return await this.getElementText(this.recentActivityCard);
   }
 
-  async selectRoom(roomIndex: number): Promise<void> {
-    const roomCard = this.roomCards.nth(roomIndex);
-    const selectButton = roomCard.locator('button:has-text("Select")');
-    await this.clickWithRetry(selectButton);
+  async getSystemStatusText(): Promise<string> {
+    return await this.getElementText(this.systemStatusCard);
   }
 
-  async isHeaderLogoVisible(): Promise<boolean> {
-    return await this.isElementVisible(this.headerLogo);
+  async clickDashboardCard(cardType: 'quick-stats' | 'recent-activity' | 'system-status'): Promise<void> {
+    let card: Locator;
+    switch (cardType) {
+      case 'quick-stats':
+        card = this.quickStatsCard;
+        break;
+      case 'recent-activity':
+        card = this.recentActivityCard;
+        break;
+      case 'system-status':
+        card = this.systemStatusCard;
+        break;
+    }
+    await this.clickWithRetry(card);
   }
 
-  async getPageTitle(): Promise<string> {
-    return await this.page.title();
-  }
-
-  async scrollToRooms(): Promise<void> {
-    await this.scrollToElement(this.roomCards.first());
-  }
-
-  async waitForRoomsToLoad(): Promise<void> {
-    await this.waitForElement(this.roomCards.first());
+  async waitForDashboardToLoad(): Promise<void> {
+    await this.waitForElement(this.dashboardCards);
     await this.handleLoadingStates();
   }
 }
