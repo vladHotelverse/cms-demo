@@ -28,10 +28,10 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { DateRange } from "react-day-picker"
+import type { DateRange } from "react-day-picker"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
-import { RequestedItemsData } from "@/data/reservation-items"
+import type { RequestedItemsData } from "@/data/reservation-items"
 
 /**
  * Debounced search hook for optimized search input handling
@@ -211,7 +211,7 @@ export function SearchAndFilters({ className, showCompactView = false }: SearchA
               onCategoryFilter={handleCategoryFilter}
               onDateRangeFilter={handleDateRangeFilter}
               onClearAll={clearAllFilters}
-              t={t}
+              t={(key: string, fallback?: string) => t(key, {}) || fallback || key}
             />
           </PopoverContent>
         </Popover>
@@ -262,16 +262,16 @@ export function SearchAndFilters({ className, showCompactView = false }: SearchA
       {/* Filters Panel */}
       {showFilters && (
         <div className="p-4 border border-border rounded-lg bg-muted/5">
-          <FilterContent
+             <FilterContent
             searchFilters={searchFilters}
             uniqueAgents={uniqueAgents}
             itemCounts={itemCounts}
-            onStatusFilter={handleStatusFilter}
-            onAgentFilter={handleAgentFilter}
-            onCategoryFilter={handleCategoryFilter}
-            onDateRangeFilter={handleDateRangeFilter}
-            onClearAll={clearAllFilters}
-            t={t}
+             onStatusFilter={handleStatusFilter}
+             onAgentFilter={handleAgentFilter}
+             onCategoryFilter={handleCategoryFilter}
+             onDateRangeFilter={handleDateRangeFilter}
+             onClearAll={clearAllFilters}
+             t={(key: string, fallback?: string) => t(key, {})}
           />
         </div>
       )}

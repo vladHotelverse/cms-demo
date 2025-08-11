@@ -174,8 +174,6 @@ export const useCarouselState = ({
         })
       } else {
         // If room is deselected (null), just update the selected room
-        console.log(selectedRoom);
-        // removeRoom()
         dispatch({ type: 'SET_SELECTED_ROOM', payload: room })
       }
 

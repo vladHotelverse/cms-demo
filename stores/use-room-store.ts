@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { RoomUpgrade, RoomAttribute } from '@/types/room';
-import { roomUpgrades, roomAttributes } from '@/data';
+// Fallback demo data removed from '@/data' export. Provide safe defaults.
+const roomUpgrades: RoomUpgrade[] = []
+const roomAttributes: RoomAttribute = {}
 
 interface RoomStore {
   // State
@@ -47,10 +49,13 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   getCartTotal: () => {
     const { cart } = get();
     return cart.reduce((total, cartItem) => {
-      const priceStr = cartItem.item.price || '0€';
-      const price = parseFloat(priceStr.replace(/[€,]/g, '').replace(',', '.'));
-      return total + price;
-    }, 0);
+      const priceStr: string = cartItem.item?.price ?? '0'
+      const numeric = priceStr.replace(/[^\d.,-]/g, '')
+      // Remove thousands (.) and convert decimal (,) to dot
+      const normalized = numeric.replace(/\.(?=\d{3}(?:\D|$))/g, '').replace(',', '.')
+      const price = Number.parseFloat(normalized) || 0
+      return total + price
+    }, 0)
   },
   
   getCartCount: () => {

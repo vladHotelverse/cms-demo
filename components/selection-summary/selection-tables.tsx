@@ -52,7 +52,7 @@ export const SelectionTables = memo(function SelectionTables({
         ...room,
         nights,
         commission: room.agent !== 'Online' ? room.price * 0.1 : 0,
-        includesHotels: true, // Required by BaseRequestedItem
+        includesHotels: true,
         dateRequested: room.dateRequested || new Date().toLocaleDateString('en-GB'),
         // Ensure UI control flags are present (should come from store, but provide defaults)
         showKeyIcon: room.showKeyIcon ?? false,
@@ -68,7 +68,7 @@ export const SelectionTables = memo(function SelectionTables({
   const extraTableItems = useMemo<ExtraTableItem[]>(() => 
     extras.map(extra => ({
       ...extra,
-      nameKey: undefined // ExtrasTable expects either name or nameKey
+      nameKey: undefined
     }))
   , [extras])
 

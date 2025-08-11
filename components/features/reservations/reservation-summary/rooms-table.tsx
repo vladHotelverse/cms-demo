@@ -22,6 +22,7 @@ import {
 interface RoomsTableProps {
   items: RoomItem[]
   onRemove?: (roomId: string) => void
+  className?: string
 }
 
 // Local validation wrapper that returns boolean for filtering

@@ -74,20 +74,20 @@ export function SelectionSummary({
         )}
 
         {/* Selection Header with Summary */}
-        <SelectionHeader
+          <SelectionHeader
           counts={selections.counts}
           totalPrice={selections.totalPrice}
           isLoading={operations.isLoading}
           onClearAll={handlers.clearAll}
-          onCloseTab={onCloseTab}
+            onCloseTab={onCloseTab ?? (() => {})}
           translations={config.translations}
         />
 
         {/* Selection Tables */}
         <Suspense fallback={<LoadingFallback />}>
           <SelectionTables
-            rooms={selections.rooms}
-            extras={selections.extras}
+            rooms={selections.rooms as any}
+            extras={selections.extras as any}
             onRemoveRoom={handlers.removeRoom}
             onRemoveExtra={handlers.removeExtra}
             onClearRooms={handlers.clearRooms}

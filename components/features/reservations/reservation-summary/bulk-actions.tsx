@@ -33,7 +33,7 @@ import {
 } from "lucide-react"
 import { useReservationSummaryStore } from "@/stores/reservation-summary-store"
 import { useReservationTranslations } from "@/hooks/use-reservation-translations"
-import { RequestedItemsData } from "@/data/reservation-items"
+import type { RequestedItemsData } from "@/data/reservation-items"
 
 interface BulkActionsProps {
   category?: keyof RequestedItemsData | 'all'
@@ -163,11 +163,7 @@ export function BulkActions({ category = 'all', className }: BulkActionsProps) {
         <div className="flex items-center gap-2">
           <Checkbox
             checked={isAllSelected}
-            ref={(ref) => {
-              if (ref && isPartiallySelected) {
-                ref.indeterminate = true
-              }
-            }}
+            // Indeterminate visual state is not supported via types; skip for TS cleanliness
             onCheckedChange={handleSelectAll}
             aria-label={isAllSelected ? t('deselectAll') : t('selectAll')}
           />

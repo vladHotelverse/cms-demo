@@ -114,16 +114,18 @@ export default function AddonFormSheet({ open, onOpenChange, addon, onSave, onDe
   }
 
   const handleTranslationChange = (language: string, field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      translations: {
-        ...(prev.translations || {}),
-        [language]: {
-          ...(prev.translations?.[language] || {}),
-          [field]: value,
-        },
-      },
-    }))
+    setFormData((prev) => {
+      const existing = (prev.translations?.[language] as { name?: string; description?: string } | undefined) || {}
+      const nextForLang = {
+        name: field === 'name' ? value : existing.name ?? '',
+        description: field === 'description' ? value : existing.description ?? ''
+      }
+      const nextTranslations: NonNullable<Addon['translations']> = {
+        ...(prev.translations as any) || {},
+        [language]: nextForLang
+      }
+      return { ...prev, translations: nextTranslations }
+    })
   }
 
   const handleSave = () => {

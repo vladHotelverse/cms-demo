@@ -1,8 +1,8 @@
 import { create } from 'zustand'
-import type { RoomOption } from '@/components/ABS_RoomSelectionCarousel/types'
-import type { SelectedCustomizations } from '@/components/ABS_RoomCustomization/types'
-import type { OfferData } from '@/components/ABS_SpecialOffers/types'
-import { determineRoomScenario, validateRoomConfiguration, type AllowedRoomType } from '@/data/reservation-items'
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
+import type { SelectedCustomizations } from '@/components/features/booking-system/ABS_RoomCustomization/types'
+import type { OfferData } from '@/components/features/booking-system/ABS_SpecialOffers/types'
+import { determineRoomScenario, validateRoomConfiguration, type AllowedRoomType, type RoomSelectionScenario } from '@/data/reservation-items'
 
 // Async operation types
 export interface AsyncOperation {
@@ -38,6 +38,7 @@ export interface CacheEntry<T> {
   value: T
   timestamp: number
   dependencies: string[] // Track what this cache depends on
+  ttl: number
 }
 
 // Batch operation types
@@ -199,7 +200,8 @@ class SmartCache<T> {
     this.cache.set(key, {
       value,
       timestamp: Date.now(),
-      dependencies
+      dependencies,
+      ttl
     })
     
     // Auto-cleanup after TTL
@@ -213,7 +215,7 @@ class SmartCache<T> {
     if (!entry) return null
     
     // Check if expired
-    if (Date.now() - entry.timestamp > this.defaultTTL) {
+    if (Date.now() - entry.timestamp > entry.ttl) {
       this.cache.delete(key)
       return null
     }
@@ -222,7 +224,7 @@ class SmartCache<T> {
   }
   
   invalidateByDependency(dependency: string) {
-    for (const [key, entry] of this.cache.entries()) {
+    for (const [key, entry] of Array.from(this.cache.entries())) {
       if (entry.dependencies.includes(dependency)) {
         this.cache.delete(key)
       }
@@ -265,7 +267,7 @@ const mergeRoomUpgradeWithCustomizations = (
 ): SelectedRoom => {
   // Get customization attributes (all of them - they're important)
   const customizationAttributes = existingRoom.customizations 
-    ? Object.values(existingRoom.customizations).map(c => c!.label)
+    ? Object.values(existingRoom.customizations).filter((c): c is NonNullable<typeof c> => c !== undefined).map(c => c.label)
     : []
   
   // Get upgrade room amenities (limit to 3 most important)
@@ -323,7 +325,7 @@ const mergeCustomizationsWithUpgrade = (
   customizationTotal: number
 ): SelectedRoom => {
   // Convert new customizations to attributes
-  const newAttributes = Object.values(customizations).map(c => c!.label)
+  const newAttributes = Object.values(customizations).filter((c): c is NonNullable<typeof c> => c !== undefined).map(c => c.label)
   
   return {
     ...existingRoom,
@@ -517,7 +519,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           const nights = Math.max(1, daysDiff) // Ensure at least 1 night, handle same-day bookings
 
           // If this is an upgrade, try to preserve the room number from the previous selection
-          const roomNumber = isUpgrade && existingRoom ? existingRoom.roomNumber : '365';
+          const roomNumber = isUpgrade && existingRoom ? existingRoom.roomNumber : reservationInfo.roomNumber;
 
           // Create base room data
           const baseRoomData = {
@@ -543,8 +545,8 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
             checkIn: reservationInfo.checkIn,
             checkOut: reservationInfo.checkOut,
             nights, // Add nights field required by table
-            roomNumber: roomNumber,
-            hasKey: undefined,
+            roomNumber,
+            hasKey: baseRoomData.hasKey,
             attributes: baseRoomData.attributes,
             alternatives: baseRoomData.alternatives,
             // Add other fields that might be required by RoomItem interface
@@ -689,7 +691,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           // Update room with customizations and apply attribute_selection scenario if needed
           const updatedCustomizations = Object.keys(customizations).length > 0 ? customizations : undefined
           const customizationAttributes = updatedCustomizations 
-            ? Object.values(updatedCustomizations).filter(c => c).map(c => c!.label)
+            ? Object.values(updatedCustomizations).filter((c): c is NonNullable<typeof c> => c !== undefined).map(c => c.label)
             : []
           
           // Determine new room scenario based on customizations
@@ -774,6 +776,11 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
         try {
           const currentState = get()
           
+          // Calculate total customization price early
+          const customizationTotal = Object.values(customizations).reduce((sum, customization) => {
+            return sum + (customization?.price || 0)
+          }, 0)
+          
           // Determine if customizations are being added
           const hasCustomizations = Object.keys(customizations).length > 0
           
@@ -788,7 +795,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           
           if (shouldMerge && existingRoom) {
             // Merge customizations with existing room upgrade
-            const mergedRoom = mergeCustomizationsWithUpgrade(existingRoom, customizations, reservationInfo)
+            const mergedRoom = mergeCustomizationsWithUpgrade(existingRoom, customizations, customizationTotal)
             
             set(() => ({
               selectedRooms: [mergedRoom]
@@ -829,15 +836,12 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
           const nights = Math.max(1, daysDiff) // Ensure at least 1 night, handle same-day bookings
 
-          // Calculate total customization price
-          const customizationTotal = Object.values(customizations).reduce((sum, customization) => {
-            return sum + (customization?.price || 0)
-          }, 0)
+          // customizationTotal already calculated above
 
           // Create customization attributes for display
           const customizationAttributes = Object.values(customizations)
-            .filter(c => c) // Remove undefined values
-            .map(c => c!.label)
+            .filter((c): c is NonNullable<typeof c> => c !== undefined) // Remove undefined values
+            .map(c => c.label)
 
           // Create base room data for attribute_selection scenario
           const baseRoomData = {

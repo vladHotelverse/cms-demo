@@ -1,6 +1,6 @@
-import type { RoomOption } from '@/components/ABS_RoomSelectionCarousel/types'
-import type { CustomizationOption, SectionConfig } from '@/components/ABS_RoomCustomization/types'
-import type { SpecialOffer } from '@/components/ABS_SpecialOffers/types'
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
+import type { CustomizationOption, SectionConfig } from '@/components/features/booking-system/ABS_RoomCustomization/types'
+// SpecialOffer is not exported; use OfferType shape for transform output where needed
 // Extended PricingItem interface to include quantity
 interface ExtendedPricingItem {
   id: string
@@ -15,16 +15,12 @@ interface ExtendedPricingItem {
 export function transformRoomUpgrades(roomUpgrades: any[]): RoomOption[] {
   return roomUpgrades.map((room) => ({
     id: room.id.toString(),
-    name: room.type,
+    roomType: room.type,
     description: room.features.join(', '),
     price: parseFloat(room.priceRange.split(' - ')[0].replace('€', '')),
-    originalPrice: parseFloat(room.priceRange.split(' - ')[1].replace('€', '')),
-    discount: room.highlights.includes('Best Value') ? 20 : 0,
+    oldPrice: parseFloat(room.priceRange.split(' - ')[1].replace('€', '')),
     images: [room.image || '/placeholder.svg'],
-    availability: room.availability === 'Limited' ? 'limited' : 'available',
     amenities: room.features,
-    category: room.category,
-    rating: room.rating,
   }))
 }
 
@@ -37,14 +33,12 @@ export function transformRoomAttributes(attributeCategories: any): {
   const sectionOptions: Record<string, CustomizationOption[]> = {}
 
   Object.entries(attributeCategories).forEach(([category, data]: [string, any]) => {
-    const sectionKey = category.toLowerCase().replace(' ', '-')
+    const sectionKey = category.trim().toLowerCase().replace(/\s+/g, '-')
     
     sections.push({
       key: sectionKey,
       title: category,
-      description: `Choose your preferred ${category.toLowerCase()}`,
       icon: () => null, // We'll use the emoji from data.icon
-      iconChar: data.icon,
       hasModal: false,
     })
 
@@ -62,22 +56,12 @@ export function transformRoomAttributes(attributeCategories: any): {
 }
 
 // Transform extras to special offers
-export function transformExtras(extras: any[]): SpecialOffer[] {
+export function transformExtras(extras: any[]) {
   return extras.map((extra, index) => ({
     id: `extra-${index}`,
-    title: extra.name,
+    name: extra.name,
     description: extra.description,
     price: parseFloat(extra.price.split(' - ')[0].replace('€', '')),
-    images: [`/images/extra-${index}.jpg`], // Placeholder images
-    priceUnit: extra.priceType as 'per stay' | 'per night' | 'per person',
-    requiresPersonSelection: extra.priceType.includes('per person'),
-    requiresDateSelection: extra.name.includes('Spa') || extra.name.includes('Dinner'),
-    maxPersons: extra.priceType.includes('per person') ? 4 : undefined,
-    icon: extra.icon,
-    popular: extra.popular,
-    availableDates: extra.name.includes('Spa') || extra.name.includes('Dinner') 
-      ? generateAvailableDates() 
-      : undefined,
   }))
 }
 
@@ -108,7 +92,7 @@ export function transformToPricingItems(
   if (selectedRoom) {
     items.push({
       id: `room-${selectedRoom.id}`,
-      name: selectedRoom.name,
+      name: selectedRoom.roomType ?? selectedRoom.name,
       price: selectedRoom.price,
       type: 'room',
       concept: 'choose-your-room',
@@ -135,7 +119,7 @@ export function transformToPricingItems(
     bookedOffers.forEach((offer) => {
       items.push({
         id: offer.id,
-        name: offer.title,
+        name: offer.title ?? offer.name,
         price: offer.totalPrice || offer.price,
         type: 'offer',
         concept: 'enhance-your-stay',
@@ -162,8 +146,14 @@ export function transformToPricingItems(
 export function transformToBookingInfo(reservation: any) {
   return {
     checkIn: reservation.checkIn,
-    checkOut: reservation.checkIn, // Calculate based on nights
-    nights: parseInt(reservation.nights),
+    checkOut: (() => {
+      const nights = Number.parseInt(String(reservation.nights), 10) || 0
+      const inDate = new Date(reservation.checkIn)
+      const outDate = new Date(inDate)
+      outDate.setDate(inDate.getDate() + nights)
+      return outDate.toISOString()
+    })(),
+    nights: Number.parseInt(String(reservation.nights), 10) || 0,
     guests: 2, // Default value
     roomType: reservation.roomType,
     bookingReference: reservation.locator,

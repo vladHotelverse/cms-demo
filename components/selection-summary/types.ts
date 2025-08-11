@@ -1,43 +1,10 @@
 // Core selection types
-export interface RoomOption {
-  id: string
-  roomType: string
-  price: number
-  originalRoomType?: string
-  available?: boolean
-  agent?: string
-  checkIn?: string
-  checkOut?: string
-  nights?: number
-  roomNumber?: string
-  attributes?: string[]
-  alternatives?: string[]
-  showKeyIcon?: boolean
-  showAlternatives?: boolean
-  showAttributes?: boolean
-  selectionScenario?: 'upgrade_only' | 'choose_room_only' | 'choose_room_upgrade' | 'attribute_selection' | 'upgrade_with_attributes'
-}
+// Prefer ABS types from feature modules
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
 
-export interface SelectedCustomizations {
-  [key: string]: {
-    name: string
-    price: number
-    description?: string
-    category?: string
-  }
-}
+import type { SelectedCustomizations } from '@/components/features/booking-system/ABS_RoomCustomization/types'
 
-export interface OfferData {
-  id: string
-  name: string
-  price: number
-  type: string
-  description?: string
-  validUntil?: string
-  available?: boolean
-  units?: number
-  serviceDate?: string | string[]
-}
+import type { OfferData } from '@/components/features/booking-system/ABS_SpecialOffers/types'
 
 // Component props
 export interface SelectionSummaryProps {

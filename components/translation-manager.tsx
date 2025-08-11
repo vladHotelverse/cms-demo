@@ -86,7 +86,7 @@ export default function TranslationManager() {
     setTranslations((prev) => ({
       ...prev,
       [selectedLanguage]: {
-        ...(prev[selectedLanguage] || {}),
+        ...(prev[selectedLanguage as keyof typeof prev] || {}),
         [itemId]: value,
       },
     }))
@@ -115,7 +115,7 @@ export default function TranslationManager() {
     : dbEquipmentItems
 
   // Count translated items for the selected language
-  const translatedCount = Object.keys(translations[selectedLanguage] || {}).length
+  const translatedCount = Object.keys((translations as Record<string, Record<string, string>>)[selectedLanguage] || {}).length
   const translationProgress = Math.round((translatedCount / dbEquipmentItems.length) * 100)
 
   return (
@@ -178,7 +178,7 @@ export default function TranslationManager() {
             </TableHeader>
             <TableBody>
               {filteredEquipment.map((item) => {
-                const hasTranslation = !!translations[selectedLanguage]?.[item.id]
+                const hasTranslation = !!(translations as Record<string, Record<string, string>>)[selectedLanguage]?.[item.id]
 
                 return (
                   <TableRow key={item.id} className={hasTranslation ? "bg-muted/20" : ""}>
@@ -192,7 +192,7 @@ export default function TranslationManager() {
                     </TableCell>
                     <TableCell>
                       <Input
-                        value={translations[selectedLanguage]?.[item.id] || ""}
+                        value={(translations as Record<string, Record<string, string>>)[selectedLanguage]?.[item.id] || ""}
                         onChange={(e) => handleTranslationChange(item.id, e.target.value)}
                         placeholder={`Enter ${languages.find((l) => l.id === selectedLanguage)?.name} translation`}
                         className={hasTranslation ? "border-primary/50" : ""}

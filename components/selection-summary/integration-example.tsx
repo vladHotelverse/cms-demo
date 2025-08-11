@@ -1,12 +1,12 @@
 "use client"
 
-import { ABS_RoomSelectionCarousel } from '@/components/ABS_RoomSelectionCarousel'
-import { ABS_RoomCustomization } from '@/components/ABS_RoomCustomization'
-import { ABS_SpecialOffers } from '@/components/ABS_SpecialOffers'
+import RoomSelectionCarousel from '@/components/features/booking-system/ABS_RoomSelectionCarousel'
+import RoomCustomization from '@/components/features/booking-system/ABS_RoomCustomization'
+import SpecialOffers from '@/components/features/booking-system/ABS_SpecialOffers'
 import { SelectionSummary } from '@/components/selection-summary'
 import { useUserSelectionsStore } from '@/stores/user-selections-store'
-import type { RoomOption } from '@/components/ABS_RoomSelectionCarousel/types'
-import type { OfferData } from '@/components/ABS_SpecialOffers/types'
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
+import type { OfferData } from '@/components/features/booking-system/ABS_SpecialOffers/types'
 
 interface IntegrationExampleProps {
   reservation: {
@@ -57,7 +57,7 @@ export function SelectionSummaryIntegrationExample({ reservation, language }: In
         <h2 className="text-xl font-semibold mb-4">
           {language === 'es' ? 'Seleccionar Habitación' : 'Select Room'}
         </h2>
-        <ABS_RoomSelectionCarousel
+        <RoomSelectionCarousel
           roomOptions={[
             {
               id: '1',
@@ -71,6 +71,7 @@ export function SelectionSummaryIntegrationExample({ reservation, language }: In
           ]}
           onRoomSelected={handleRoomSelection}
           translations={{
+            learnMoreText: language === 'es' ? 'Más Información' : 'Learn More',
             selectedText: language === 'es' ? 'SELECCIONADO' : 'SELECTED',
             selectText: language === 'es' ? 'SELECCIONAR' : 'SELECT',
             nightText: language === 'es' ? '/noche' : '/night',
@@ -92,7 +93,7 @@ export function SelectionSummaryIntegrationExample({ reservation, language }: In
 
       {/* Room Customization */}
       <div className="bg-white rounded-lg shadow p-6">
-        <ABS_RoomCustomization
+        <RoomCustomization
           title={language === 'es' ? 'Personalizar Habitación' : 'Customize Room'}
           subtitle={language === 'es' ? 'Añade servicios adicionales' : 'Add additional services'}
           sections={[
@@ -137,7 +138,7 @@ export function SelectionSummaryIntegrationExample({ reservation, language }: In
         <h2 className="text-xl font-semibold mb-4">
           {language === 'es' ? 'Ofertas Especiales' : 'Special Offers'}
         </h2>
-        <ABS_SpecialOffers
+        <SpecialOffers
           offers={[
             {
               id: 1,

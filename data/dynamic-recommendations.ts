@@ -1,5 +1,5 @@
-import { Recommendation } from './recommendations'
-import { RoomType, getRoomTypeConfig, getAvailableUpgrades } from './room-type-config'
+import type { Recommendation } from './recommendations'
+import { type RoomType, getRoomTypeConfig, getAvailableUpgrades } from './room-type-config'
 import { IMAGES } from '@/constants/reservation-summary'
 
 export interface ReservationContext {
@@ -132,14 +132,10 @@ export const generateDynamicRecommendations = (context: ReservationContext): Rec
 
 const getAmenitiesForUpgrade = (roomType: RoomType): string[] => {
   switch (roomType) {
-    case 'Superior':
+    case 'Doble Deluxe':
       return ['amenities.poolView', 'amenities.balcony', 'amenities.bestViews']
-    case 'Deluxe':
+    case 'Junior Suite':
       return ['amenities.oceanView', 'amenities.balcony', 'amenities.premium']
-    case 'Suite':
-      return ['amenities.panoramicView', 'amenities.terrace', 'amenities.livingArea']
-    case 'Presidential Suite':
-      return ['amenities.privatePool', 'amenities.butler', 'amenities.luxury']
     default:
       return ['amenities.poolView', 'amenities.balcony', 'amenities.bestViews']
   }
@@ -164,15 +160,15 @@ export const createReservationContext = (
   const totalGuests = Math.max(1, adults + children + infants) // Ensure at least 1 guest
   
   // Ensure we have a valid room type
-  const validRoomTypes: RoomType[] = ['Standard', 'Superior', 'Deluxe', 'Suite', 'Presidential Suite']
-  const validRoomType = validRoomTypes.includes(roomType) ? roomType : 'Standard'
+  const validRoomTypes: RoomType[] = ['Doble', 'Doble Deluxe', 'Junior Suite']
+  const validRoomType = validRoomTypes.includes(roomType) ? roomType : 'Doble'
   
   return {
     roomType: validRoomType,
     nights: Math.max(1, nights), // Ensure at least 1 night
     guests: totalGuests,
     checkInDate,
-    isBusinessGuest: validRoomType === 'Deluxe' || validRoomType === 'Suite' || validRoomType === 'Presidential Suite',
+    isBusinessGuest: validRoomType === 'Doble Deluxe' || validRoomType === 'Junior Suite',
     isCouple: adults === 2 && children === 0 && infants === 0,
     hasChildren: children > 0 || infants > 0
   }

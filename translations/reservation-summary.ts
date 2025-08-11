@@ -10,13 +10,13 @@ export const reservationSummaryTranslations = {
     locator: "ID de Reserva",
     guest: "Huésped",
     checkIn: "Llegada",
-    roomType: "Habitación",
+    roomTypeLabel: "Habitación",
     totalOrder: "Total Pedido",
     estimatedCommission: "Comisión Est.",
     totalCommissionPotential: "Potencial de comisión total",
     services: "servicios",
-    confirmed: "Confirmados",
-    pendingHotel: "Pendiente Hotel",
+    confirmedStatus: "Confirmado",
+    pending_hotel: "Pendiente Hotel",
     totalServices: "servicios totales",
     lastUpdate: "Última actualización",
     minutesAgo: "hace {{minutes}} minutos",
@@ -35,15 +35,15 @@ export const reservationSummaryTranslations = {
     // Table Headers
     agent: "Agente",
     agents: "Agentes",
-    commission: "Comisión",
+    commissionLabel: "Comisión",
     supplements: "Suplementos",
     room: "Habitación",
-    roomType: "Tipo de Habitación",
+    roomTypeHeader: "Tipo de Habitación",
     roomNumber: "Número",
-    attributes: "Atributos",
+    attributesLabel: "Atributos",
     dateRequested: "Fecha Solicitada",
     dateInOut: "Fecha Entrada/Salida",
-    extras: "Extras",
+    extrasLabel: "Extras",
     units: "Unidades",
     type: "Tipo",
     dateService: "Fecha Servicio",
@@ -57,21 +57,21 @@ export const reservationSummaryTranslations = {
     
     // Status
     pending: "Pendiente Hotel",
-    confirmed: "Confirmado",
+    confirmedStatusAlt: "Confirmado",
     
     // Categories
     rooms: "Habitaciones",
-    extras: "Extras",
+    extrasCategory: "Extras",
     bidding: "Pujas",
     upsell: "Mejora",
-    attributes: "Atributos",
+    attributesCategory: "Atributos",
     
     // Price Labels
     perNight: "POR NOCHE",
     perPerson: "POR PERSONA",
     perService: "POR SERVICIO",
     total: "TOTAL",
-    commission: "COMISIÓN",
+    commissionPrice: "COMISIÓN",
     nights: "{{count}} noches",
     
     // Recommendations
@@ -195,12 +195,12 @@ export const reservationSummaryTranslations = {
     locator: "Booking ID",
     guest: "Guest",
     checkIn: "Check-in",
-    roomType: "Room",
+    roomTypeLabel: "Room",
     totalOrder: "Total Order",
     estimatedCommission: "Est. Commission",
     totalCommissionPotential: "Total Commission Potential",
     services: "services",
-    confirmed: "Confirmed",
+    confirmedStatus: "Confirmed",
     pendingHotel: "Pending Hotel",
     totalServices: "total services",
     lastUpdate: "Last update",
@@ -220,15 +220,15 @@ export const reservationSummaryTranslations = {
     // Table Headers
     agent: "Agent",
     agents: "Agents",
-    commission: "Commission",
+    commissionLabel: "Commission",
     supplements: "Supplements",
     room: "Room",
-    roomType: "Room Type",
+    roomTypeHeader: "Room Type",
     roomNumber: "Room Number",
-    attributes: "Attributes",
+    attributesLabel: "Attributes",
     dateRequested: "Date Requested",
     dateInOut: "Date In/Out",
-    extras: "Extras",
+    extrasLabel: "Extras",
     units: "Units",
     type: "Type",
     dateService: "Date Service",
@@ -242,21 +242,21 @@ export const reservationSummaryTranslations = {
     
     // Status
     pending: "Pending Hotel",
-    confirmed: "Confirmed",
+    confirmedStatusAlt: "Confirmed",
     
     // Categories
     rooms: "Rooms",
-    extras: "Extras",
+    extrasCategory: "Extras",
     bidding: "Bidding",
     upsell: "Upsell",
-    attributes: "Attributes",
+    attributesCategory: "Attributes",
     
     // Price Labels
     perNight: "PER NIGHT",
     perPerson: "PER PERSON",
     perService: "PER SERVICE",
     total: "TOTAL",
-    commission: "COMMISSION",
+    commissionPrice: "COMMISSION",
     nights: "{{count}} nights",
     
     // Recommendations

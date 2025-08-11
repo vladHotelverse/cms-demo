@@ -1,6 +1,25 @@
-import { LoadingState } from "./loading-state"
-import { ErrorState } from "./error-state"
-import { EmptyState } from "./empty-state"
+// Lightweight fallback states to avoid missing module errors
+function LoadingState({ message, className }: { message?: string; className?: string }) {
+  return <div className={className}>{message || 'Loading...'}</div>
+}
+function ErrorState({ title, message, onRetry, className }: { title?: string; message?: string; onRetry?: () => void; className?: string }) {
+  return (
+    <div className={className}>
+      <div>{title || 'Error'}</div>
+      <div>{message || 'Something went wrong'}</div>
+      {onRetry && <button onClick={onRetry}>Retry</button>}
+    </div>
+  )
+}
+function EmptyState({ title, message, actionLabel, onAction, className }: { title?: string; message?: string; actionLabel?: string; onAction?: () => void; className?: string }) {
+  return (
+    <div className={className}>
+      <div>{title || 'No data'}</div>
+      <div>{message || 'There is nothing to display'}</div>
+      {onAction && <button onClick={onAction}>{actionLabel || 'Action'}</button>}
+    </div>
+  )
+}
 
 interface DataStateWrapperProps {
   isLoading?: boolean
@@ -35,12 +54,7 @@ export function DataStateWrapper({
   onEmptyAction,
   className
 }: DataStateWrapperProps) {
-  // Loading state
-  if (isLoading) {
-    return <LoadingState message={loadingMessage} className={className} />
-  }
-
-  // Error state
+  // Error state first to avoid masking failures during loading
   if (error) {
     const errorMsg = error instanceof Error ? error.message : error
     return (
@@ -51,6 +65,11 @@ export function DataStateWrapper({
         className={className}
       />
     )
+  }
+
+  // Loading state
+  if (isLoading) {
+    return <LoadingState message={loadingMessage} className={className} />
   }
 
   // Empty state

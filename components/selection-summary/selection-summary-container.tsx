@@ -54,9 +54,9 @@ export function SelectionSummary({
         // Log error to monitoring service
         console.error('SelectionSummary Error:', error, errorInfo)
       }}
-      onReset={() => {
+          onReset={() => {
         // Reset component state
-        handlers.clearAllSelections()
+        handlers.clearAll()
       }}
     >
       <div className={cn('relative space-y-4', className)} data-testid="selection-summary">
@@ -73,10 +73,9 @@ export function SelectionSummary({
         )}
 
         {/* Selection Header with Summary */}
-        <SelectionHeader
+          <SelectionHeader
           counts={selections.counts}
           totalPrice={selections.totalPrice}
-          totalCommission={selections.totalCommission}
           isLoading={operations.isLoading}
           onClearAll={handlers.clearAll}
           onCloseTab={() => {}}
@@ -86,8 +85,8 @@ export function SelectionSummary({
         {/* Selection Tables */}
         <Suspense fallback={<LoadingFallback />}>
           <SelectionTables
-            rooms={selections.rooms}
-            extras={selections.extras}
+            rooms={selections.rooms as any}
+            extras={selections.extras as any}
             onRemoveRoom={handlers.removeRoom}
             onRemoveExtra={handlers.removeExtra}
             onClearRooms={handlers.clearRooms}

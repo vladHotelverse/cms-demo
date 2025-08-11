@@ -147,7 +147,7 @@ const generateUpsellForRoom = (context: ReservationContext, selectedAgent: strin
   }
 
   // Executive lounge access (for business guests in higher categories)
-  if (isBusinessGuest && roomConfig.level >= 4) {
+  if (isBusinessGuest && roomConfig.level >= 3) { // Junior Suite and above
     const executiveLoungeAgent = getConsistentAgentData(125, selectedAgent)
     upsells.push({
       id: "executive-lounge",
@@ -213,7 +213,7 @@ const generateAttributesForRoom = (context: ReservationContext, selectedAgent: s
   }
 
   // Near spa (for all room types, price varies)
-  const nearSpaPrice = roomConfig.level >= 4 ? 25 : 35
+  const nearSpaPrice = roomConfig.level >= 3 ? 25 : 35
   const nearSpaAgent = getConsistentAgentData(nearSpaPrice, selectedAgent)
   attributes.push({
     id: "near-spa",
@@ -261,22 +261,18 @@ const generateAttributesForRoom = (context: ReservationContext, selectedAgent: s
 
 const getUpgradePriceForRoom = (roomType: RoomType): number => {
   switch (roomType) {
-    case 'Standard': return 355 // to Superior
-    case 'Superior': return 285 // to Deluxe  
-    case 'Deluxe': return 245 // to Suite
-    case 'Suite': return 455 // to Presidential
-    case 'Presidential Suite': return 0 // No upgrade available
+    case 'Doble': return 355 // to Doble Deluxe
+    case 'Doble Deluxe': return 285 // to Junior Suite  
+    case 'Junior Suite': return 0 // No upgrade available
     default: return 0
   }
 }
 
 export const getUpgradeTargetRoom = (currentRoomType: RoomType): RoomType | null => {
   switch (currentRoomType) {
-    case 'Standard': return 'Superior'
-    case 'Superior': return 'Deluxe'
-    case 'Deluxe': return 'Suite'
-    case 'Suite': return 'Presidential Suite'
-    case 'Presidential Suite': return null // No upgrade available
+    case 'Doble': return 'Doble Deluxe'
+    case 'Doble Deluxe': return 'Junior Suite'
+    case 'Junior Suite': return null // No upgrade available
     default: return null
   }
 }

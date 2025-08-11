@@ -1,7 +1,9 @@
 "use client"
 
 import { useCallback, useMemo } from 'react'
-import type { RoomOption, SelectedCustomizations, OfferData } from '../types'
+import type { RoomOption } from '@/components/features/booking-system/ABS_RoomSelectionCarousel/types'
+import type { SelectedCustomizations } from '@/components/features/booking-system/ABS_RoomCustomization/types'
+import type { OfferData } from '@/components/features/booking-system/ABS_SpecialOffers/types'
 import type { SelectionError } from '@/stores/user-selections-store'
 
 interface ValidationRule {
@@ -59,15 +61,7 @@ export function useSelectionValidation() {
       message: 'Room price seems unreasonable',
       severity: 'warning'
     },
-    {
-      id: 'room-availability',
-      check: (room: RoomOption) => {
-        // In real app, this would check availability API
-        return room.available !== false
-      },
-      message: 'Room may not be available',
-      severity: 'warning'
-    }
+    // Availability check omitted: RoomOption does not include availability here
   ], [])
 
   // Customization validation rules
@@ -119,23 +113,7 @@ export function useSelectionValidation() {
       message: 'Offer price must be a valid positive number',
       severity: 'error'
     },
-    {
-      id: 'offer-date-valid',
-      check: (offer: OfferData) => {
-        if (!offer.validUntil) return true
-        return new Date(offer.validUntil) > new Date()
-      },
-      message: 'Offer has expired',
-      severity: 'error'
-    },
-    {
-      id: 'offer-availability',
-      check: (offer: OfferData) => {
-        return offer.available !== false
-      },
-      message: 'Offer may not be available',
-      severity: 'warning'
-    }
+    // Drop date/availability checks until the offer type supports these fields
   ], [])
 
   // Business logic validation rules

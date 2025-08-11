@@ -155,7 +155,7 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
     const allItems = category
       ? state.requestedItems[category]
       : Object.values(state.requestedItems).flat()
-    const newSelection = new Set([...state.selectedItems, ...allItems.map(item => item.id)])
+    const newSelection = new Set([...Array.from(state.selectedItems), ...allItems.map(item => item.id)])
     return { selectedItems: newSelection }
   }),
   
@@ -267,7 +267,7 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
               // Find item across all categories
               let category: keyof RequestedItemsData | null = null
               for (const [cat, items] of Object.entries(get().requestedItems)) {
-                if (items.some((item: BaseRequestedItem) => item.id === itemId)) {
+                if (Array.isArray(items) && items.some((item: BaseRequestedItem) => item.id === itemId)) {
                   category = cat as keyof RequestedItemsData
                   break
                 }
@@ -362,7 +362,7 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
   
   calculateActualCommission: () => {
     const state = get()
-    const allItems = Object.values(state.requestedItems).flat()
+    const allItems = Object.values(state.requestedItems).flat() as BaseRequestedItem[]
     return allItems
       .filter(item => item.agent !== 'Online' && item.commission)
       .reduce((sum, item) => sum + (item.commission || 0), 0)
@@ -432,9 +432,9 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
     
     Object.entries(state.requestedItems).forEach(([category, items]) => {
       const cat = category as keyof RequestedItemsData
-      result[cat].total = items.length
-      result[cat].confirmed = items.filter((item: any) => item.status === 'confirmed').length
-      result[cat].pending = items.filter((item: any) => item.status === 'pending_hotel').length
+      result[cat].total = Array.isArray(items) ? items.length : 0
+      result[cat].confirmed = Array.isArray(items) ? items.filter((item: any) => item.status === 'confirmed').length : 0
+      result[cat].pending = Array.isArray(items) ? items.filter((item: any) => item.status === 'pending_hotel').length : 0
     })
     
     return result
