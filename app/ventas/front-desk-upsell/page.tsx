@@ -125,7 +125,7 @@ export default function FrontDeskUpsellPage() {
   const [viewModeFilter, setViewModeFilter] = useState<any>(null)
 
   // Alert function (moved up to avoid initialization issues)
-  const showAlert = (type: "success" | "error" | "warning" | "info", message: string) => {
+  const showAlert = useCallback((type: "success" | "error" | "warning" | "info", message: string) => {
     // Only support success|error in local state; map others to closest types
     const mappedType: "success" | "error" = type === 'success' ? 'success' : 'error'
     setAlert({ type: mappedType, message })
