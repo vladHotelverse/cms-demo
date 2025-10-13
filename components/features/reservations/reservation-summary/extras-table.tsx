@@ -119,11 +119,11 @@ function ExtraRow({ item, onStatusUpdate, onDelete }: ExtraRowProps) {
           {getTypeDisplay(item.type, item.units || 2)}
       </TableCell>
       <TableCell className="py-4 text-sm">
-        {item.dateRequested || '20/01/26'}
+        {item.dateRequested || '15/05/26'}
       </TableCell>
       <TableCell className="py-4">
-        <ServiceDateCell 
-          serviceDates={item.serviceDate || '22/01/26'} 
+        <ServiceDateCell
+          serviceDates={item.serviceDate || '20/05/26'}
         />
       </TableCell>
       <TableCell className="py-4">

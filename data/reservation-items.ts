@@ -236,9 +236,9 @@ export const requestedItemsData: RequestedItemsData = {
       status: "pending_hotel",
       includesHotels: true,
       agent: "Online",
-      dateRequested: "20/01/26",
-      checkIn: "28/01/26",
-      checkOut: "31/01/26",
+      dateRequested: "15/05/26",
+      checkIn: "20/05/26",
+      checkOut: "23/05/26",
       nights: 3,
       selectionScenario: "upgrade_only",
       showUpgradeArrow: true,
@@ -260,9 +260,9 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Lisa Chen",
       commission: 25,
-      dateRequested: "21/01/26",
-      checkIn: "29/01/26",
-      checkOut: "01/02/26",
+      dateRequested: "16/05/26",
+      checkIn: "21/05/26",
+      checkOut: "24/05/26",
       nights: 3,
       selectionScenario: "choose_room_only",
       showUpgradeArrow: false,
@@ -284,9 +284,9 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Online",
       commission: 0,
-      dateRequested: "20/01/26",
-      checkIn: "28/01/26",
-      checkOut: "31/01/26",
+      dateRequested: "15/05/26",
+      checkIn: "20/05/26",
+      checkOut: "23/05/26",
       nights: 3,
       selectionScenario: "choose_room_upgrade",
       showUpgradeArrow: true,
@@ -308,9 +308,9 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Emma Davis",
       commission: 35,
-      dateRequested: "22/01/26",
-      checkIn: "30/01/26",
-      checkOut: "02/02/26",
+      dateRequested: "17/05/26",
+      checkIn: "22/05/26",
+      checkOut: "25/05/26",
       nights: 3,
       selectionScenario: "attribute_selection",
       showUpgradeArrow: false,
@@ -331,10 +331,10 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Online",
       commission: 0,
-      dateRequested: "20/01/26",
+      dateRequested: "15/05/26",
       units: 1,
       type: "transfer",
-      serviceDate: "25/01/26"
+      serviceDate: "20/05/26"
     },
     {
       id: "e2",
@@ -345,10 +345,10 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Lisa Chen",
       commission: 18,
-      dateRequested: "21/01/26",
+      dateRequested: "16/05/26",
       units: 2,
       type: "service",
-      serviceDate: ["29/01/26", "30/01/26"] // Multiple service dates
+      serviceDate: ["21/05/26", "22/05/26"] // Multiple service dates
     },
     {
       id: "e3",
@@ -359,10 +359,10 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Emma Davis",
       commission: 2.5,
-      dateRequested: "22/01/26",
+      dateRequested: "17/05/26",
       units: 1,
       type: "service",
-      serviceDate: "27/01/26"
+      serviceDate: "22/05/26"
     },
     {
       id: "e4",
@@ -373,10 +373,10 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Emma Davis",
       commission: 12,
-      dateRequested: "22/01/26",
+      dateRequested: "17/05/26",
       units: 4,
       type: "service",
-      serviceDate: ["28/01/26", "29/01/26", "30/01/26", "31/01/26"] // Consecutive dates
+      serviceDate: ["20/05/26", "21/05/26", "22/05/26", "23/05/26"] // Consecutive dates
     }
   ],
   // Single bidding/upgrade request (only 1 item as per business rule)
@@ -396,9 +396,9 @@ export const requestedItemsData: RequestedItemsData = {
       includesHotels: true,
       agent: "Lisa Chen",
       commission: 30.0,
-      dateRequested: "21/01/26",
-      dateCreated: "21/01/26",
-      dateModified: "22/01/26"
+      dateRequested: "16/05/26",
+      dateCreated: "16/05/26",
+      dateModified: "17/05/26"
     }
   ]
 }

@@ -230,8 +230,9 @@ export default function FrontDeskUpsellPage() {
         const guestName = guestNames[i - 1] || `Guest ${i}`
         const emailName = guestName.toLowerCase().replace(/\s+/g, '.')
         const emailDomain = emailDomains[i % emailDomains.length]
-        const checkInDate = new Date()
-        checkInDate.setDate(checkInDate.getDate() + Math.floor(Math.random() * 30) - 15)
+        // Set base date to May 2026
+        const checkInDate = new Date(2026, 4, 20) // May 20, 2026
+        checkInDate.setDate(checkInDate.getDate() + Math.floor(Math.random() * 10) - 5) // Spread around May 15-25
         const formattedCheckIn = `${checkInDate.getDate().toString().padStart(2, '0')}/${(checkInDate.getMonth() + 1).toString().padStart(2, '0')}/${checkInDate.getFullYear()}`
         const nights = Math.floor(Math.random() * 7) + 1
         const extras = extrasTypes[i % extrasTypes.length]

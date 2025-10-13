@@ -125,8 +125,8 @@ function RequestedItemRow({ item, onStatusUpdate, onDelete }: RequestedItemRowPr
       {/* Dates */}
       <div className="col-span-2">
         <div className="space-y-0.5">
-          <p className="text-sm">19/07/2025 - 23/07/2025</p>
-          <p className="text-xs text-muted-foreground">4 nights</p>
+          <p className="text-sm">20/05/26 - 23/05/26</p>
+          <p className="text-xs text-muted-foreground">3 nights</p>
         </div>
       </div>
 

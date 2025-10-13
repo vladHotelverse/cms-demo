@@ -87,9 +87,9 @@ function BiddingRow({ item, onStatusUpdate, onDelete }: BiddingRowProps) {
   const isRejected = item.status === 'pending_hotel' && item.id === 'b2'
   
   // Use actual room check-in/check-out dates for consistency
-  const dateInOut = item.checkIn && item.checkOut 
+  const dateInOut = item.checkIn && item.checkOut
     ? `${item.checkIn} - ${item.checkOut}`
-    : `${item.dateCreated || '12/01/26'} - ${item.dateCreated || '15/01/26'}`
+    : `${item.dateCreated || '20/05/26'} - ${item.dateCreated || '23/05/26'}`
   
   return (
     <TableRow className="border-gray-100 hover:bg-gray-50/50">
@@ -114,7 +114,7 @@ function BiddingRow({ item, onStatusUpdate, onDelete }: BiddingRowProps) {
         />
       </TableCell>
       <TableCell className="py-4 text-sm">
-        {item.dateCreated || '12/01/26'}
+        {item.dateCreated || '20/05/26'}
       </TableCell>
       <TableCell className="py-4">
         <CompactDateCell dateInOut={dateInOut} />

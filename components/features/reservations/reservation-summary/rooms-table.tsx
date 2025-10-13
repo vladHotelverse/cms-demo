@@ -133,7 +133,7 @@ function RoomRow({ item, onStatusUpdate, onDelete }: RoomRowProps) {
         />
       </TableCell>
       <TableCell className="py-4 text-sm">
-        {item.dateRequested || '15/01/26'}
+        {item.dateRequested || '15/05/26'}
       </TableCell>
       <TableCell className="py-4">
         <CompactDateCell dateInOut={dateInOut} />

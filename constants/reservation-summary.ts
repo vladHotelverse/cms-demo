@@ -43,5 +43,5 @@ export const STATUS_STYLES = {
 } as const
 
 // Date formats
-export const DEFAULT_DATE_RANGE = '19/07/2025 - 23/07/2025'
-export const DEFAULT_NIGHTS = 4
+export const DEFAULT_DATE_RANGE = '20/05/26 - 23/05/26'
+export const DEFAULT_NIGHTS = 3
