@@ -3,11 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
-    const orderId = params.id
+    const { id: orderId } = await params
 
     const { data: order, error } = await supabase
       .from('orders')
@@ -33,11 +33,11 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
-    const orderId = params.id
+    const { id: orderId } = await params
     const body = await request.json()
 
     const { data: order, error } = await supabase

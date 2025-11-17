@@ -216,14 +216,15 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
     setAsyncState('deleteItem', { loading: true, error: null })
     
     // Store item for potential rollback
-    const itemToDelete = get().requestedItems[category].find((item: any) => item.id === itemId)
+    const categoryItems = get().requestedItems[category] as BaseRequestedItem[]
+    const itemToDelete = categoryItems.find((item) => item.id === itemId)
     const originalItems = get().requestedItems
-    
+
     // Optimistic update
     set((state) => ({
       requestedItems: {
         ...state.requestedItems,
-        [category]: state.requestedItems[category].filter((item: any) => item.id !== itemId)
+        [category]: (state.requestedItems[category] as BaseRequestedItem[]).filter((item) => item.id !== itemId)
       }
     }))
     
@@ -382,7 +383,7 @@ export const useReservationSummaryStore = create<ReservationSummaryState>((set, 
           'roomType' in item ? item.roomType : '',
           'name' in item ? item.name : '',
           'pujaType' in item ? item.pujaType : '',
-          ...(item.attributes || [])
+          ...('attributes' in item && item.attributes ? item.attributes : [])
         ]
         return searchFields.some(field => 
           field && typeof field === 'string' && field.toLowerCase().includes(query)

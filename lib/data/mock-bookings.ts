@@ -106,7 +106,7 @@ export function generateMockBookings(): Booking[] {
     // When guest has key: room is assigned, no upgrades or alternatives shown
     // When guest has no key: can have upgrades and alternatives
     const hasUpgrade = hasKey ? false : (edgeCase?.hasUpgrade ?? (Math.random() > 0.6)) // 40% of no-key rooms have upgrades
-    const hasChooseRoom = edgeCase?.hasChooseRoom ?? (Math.random() > 0.6) // 40% chance can choose room
+    const hasChooseRoom = Math.random() > 0.6 // 40% chance can choose room
     
     // Generate alternatives logic: only create alternatives if no key assigned
     // This matches our Room field logic: alternatives only show when !hasKey

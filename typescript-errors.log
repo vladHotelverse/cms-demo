@@ -1,0 +1,189 @@
+.next/types/app/api/orders/[id]/route.ts(49,7): error TS2344: Type '{ __tag__: "GET"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/orders/[id]/route.ts(283,7): error TS2344: Type '{ __tag__: "PATCH"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+e2e/fixtures/mock-data.ts(1,22): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/fixtures/mock-data.ts(20,46): error TS7006: Parameter 'route' implicitly has an 'any' type.
+e2e/fixtures/mock-data.ts(30,46): error TS7006: Parameter 'route' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/flows/add-recommendations.spec.ts(7,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(13,75): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(39,83): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(63,71): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(84,76): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(122,66): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(159,69): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(200,69): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(229,74): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(266,64): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(292,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(326,70): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(359,66): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/add-recommendations.spec.ts(381,80): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/flows/preview-recommendations.spec.ts(7,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(24,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(25,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(26,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(27,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(30,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(31,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(34,77): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(71,62): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(101,60): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(136,32): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(137,34): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(150,73): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(175,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(208,66): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(238,63): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(264,77): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(288,68): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-recommendations.spec.ts(316,19): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-recommendations.spec.ts(320,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/flows/preview-reserved-items.spec.ts(7,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-reserved-items.spec.ts(21,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(22,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(23,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(24,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(28,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(34,32): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(38,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(42,69): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-reserved-items.spec.ts(62,67): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-reserved-items.spec.ts(89,60): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-reserved-items.spec.ts(119,37): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(142,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(146,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/flows/preview-reserved-items.spec.ts(185,19): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(188,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(189,26): error TS2341: Property 'page' is private and only accessible within class 'FrontDeskTestHelpers'.
+e2e/flows/preview-reserved-items.spec.ts(192,73): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/front-desk-upsell.spec.ts(1,41): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/front-desk-upsell.spec.ts(6,28): error TS7031: Binding element 'browser' implicitly has an 'any' type.
+e2e/playwright.config.ts(1,39): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/auth.setup.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/auth.setup.ts(7,48): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/support/auth.setup.ts(23,42): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/support/commands/api-helpers.ts(1,48): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/commands/test-helpers.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/commands/test-helpers.ts(56,26): error TS7006: Parameter 'items' implicitly has an 'any' type.
+e2e/support/commands/test-helpers.ts(58,35): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+e2e/support/commands/test-helpers.ts(64,33): error TS7006: Parameter 'key' implicitly has an 'any' type.
+e2e/support/database-setup.ts(155,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+e2e/support/global-setup.ts(1,38): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/global-teardown.ts(1,38): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/page-objects/AuthPage.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/page-objects/AuthPage.ts(9,20): error TS2300: Duplicate identifier 'errorMessage'.
+e2e/support/page-objects/AuthPage.ts(56,7): error TS2300: Duplicate identifier 'errorMessage'.
+e2e/support/page-objects/BasePage.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/page-objects/BookingPage.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/page-objects/FrontDeskUpsellPage.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/support/page-objects/HomePage.ts(1,31): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/a11y/accessibility.a11y.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/a11y/accessibility.a11y.spec.ts(2,24): error TS2307: Cannot find module '@axe-core/playwright' or its corresponding type declarations.
+e2e/tests/a11y/accessibility.a11y.spec.ts(5,98): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(15,73): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(26,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(41,57): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(57,71): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(78,63): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(86,58): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/a11y/accessibility.a11y.spec.ts(97,56): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/api/orders.api.spec.ts(7,65): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(40,68): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(60,63): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(81,51): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(97,49): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(112,58): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(129,65): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(146,70): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/api/orders.api.spec.ts(154,63): error TS7031: Binding element 'request' implicitly has an 'any' type.
+e2e/tests/auth/login.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/auth/login.spec.ts(8,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/auth/login.spec.ts(13,56): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/auth/login.spec.ts(20,54): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/auth/login.spec.ts(22,27): error TS2341: Property 'errorMessage' is private and only accessible within class 'AuthPage'.
+e2e/tests/auth/login.spec.ts(25,47): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/components/shadcn-ui-integration.spec.ts(7,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(11,60): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(32,63): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(49,73): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(71,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(109,50): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(134,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(156,52): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(182,50): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(210,58): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(224,42): error TS7006: Parameter 'el' implicitly has an 'any' type.
+e2e/tests/components/shadcn-ui-integration.spec.ts(238,57): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/performance/lighthouse.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/performance/lighthouse.spec.ts(5,67): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/performance/lighthouse.spec.ts(48,51): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/performance/lighthouse.spec.ts(65,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/performance/lighthouse.spec.ts(74,25): error TS7006: Parameter 'response' implicitly has an 'any' type.
+e2e/tests/performance/lighthouse.spec.ts(92,58): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/performance/lighthouse.spec.ts(94,36): error TS7006: Parameter 'route' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/security/security.spec.ts(4,59): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(18,47): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(32,60): error TS2339: Property 'xssTest' does not exist on type 'Window & typeof globalThis'.
+e2e/tests/security/security.spec.ts(37,58): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(50,48): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(78,55): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(102,56): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(120,55): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(126,21): error TS7006: Parameter 'cookie' implicitly has an 'any' type.
+e2e/tests/security/security.spec.ts(136,58): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/booking-journey.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/user-flows/booking-journey.spec.ts(2,10): error TS2305: Module '"../../support/page-objects/BookingPage"' has no exported member 'BookingPage'.
+e2e/tests/user-flows/booking-journey.spec.ts(10,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/booking-journey.spec.ts(16,60): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/booking-journey.spec.ts(20,20): error TS2339: Property 'startBooking' does not exist on type 'HomePage'.
+e2e/tests/user-flows/booking-journey.spec.ts(41,61): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/booking-journey.spec.ts(44,20): error TS2339: Property 'startBooking' does not exist on type 'HomePage'.
+e2e/tests/user-flows/booking-journey.spec.ts(52,56): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/booking-journey.spec.ts(53,20): error TS2339: Property 'startBooking' does not exist on type 'HomePage'.
+e2e/tests/user-flows/reservation-management.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/user-flows/reservation-management.spec.ts(10,28): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(15,75): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(28,64): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(39,61): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(60,56): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(72,58): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(84,71): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(109,66): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(130,60): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(154,67): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/user-flows/reservation-management.spec.ts(172,66): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/visual/homepage.visual.spec.ts(1,30): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/tests/visual/homepage.visual.spec.ts(4,69): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/visual/homepage.visual.spec.ts(25,68): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/visual/homepage.visual.spec.ts(36,54): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/visual/homepage.visual.spec.ts(43,54): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/tests/visual/homepage.visual.spec.ts(43,60): error TS7031: Binding element 'browserName' implicitly has an 'any' type.
+e2e/tests/visual/homepage.visual.spec.ts(55,57): error TS7031: Binding element 'page' implicitly has an 'any' type.
+e2e/utils/test-helpers.ts(1,35): error TS2307: Cannot find module '@playwright/test' or its corresponding type declarations.
+e2e/utils/test-helpers.ts(350,26): error TS7006: Parameter 'reservations' implicitly has an 'any' type.
+lib/data/mock-bookings.ts(109,37): error TS2339: Property 'hasChooseRoom' does not exist on type '{ hasKey: boolean; hasAlternatives: boolean; hasUpgrade: boolean; roomType: string; }'.
+stores/reservation-summary-store.ts(219,57): error TS2349: This expression is not callable.
+  Each member of the union type '{ <S extends BiddingItem>(predicate: (value: BiddingItem, index: number, obj: BiddingItem[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: BiddingItem, index: number, obj: BiddingItem[]) => unknown, thisArg?: any): BiddingItem | undefined; } | { ...; } | { ...; }' has signatures, but none of those signatures are compatible with each other.
+stores/reservation-summary-store.ts(226,52): error TS2349: This expression is not callable.
+  Each member of the union type '{ <S extends BiddingItem>(predicate: (value: BiddingItem, index: number, array: BiddingItem[]) => value is S, thisArg?: any): S[]; (predicate: (value: BiddingItem, index: number, array: BiddingItem[]) => unknown, thisArg?: any): BiddingItem[]; } | { ...; } | { ...; }' has signatures, but none of those signatures are compatible with each other.
+stores/reservation-summary-store.ts(385,20): error TS2339: Property 'attributes' does not exist on type 'RoomItem | ExtraItem | BiddingItem'.
+  Property 'attributes' does not exist on type 'ExtraItem'.
+stores/user-selections-store.ts(291,46): error TS2345: Argument of type '{ originalRoomType: string; hasKey: boolean; attributes: string[]; alternatives: string[]; }' is not assignable to parameter of type 'Partial<RoomItem>'.
+  Types of property 'originalRoomType' are incompatible.
+    Type 'string' is not assignable to type 'AllowedRoomType | null | undefined'.
+stores/user-selections-store.ts(295,73): error TS2339: Property 'name' does not exist on type 'RoomOption'.
+stores/user-selections-store.ts(705,54): error TS2345: Argument of type '{ originalRoomType: string | null; hasKey: boolean; attributes: string[]; alternatives: string[]; }' is not assignable to parameter of type 'Partial<RoomItem>'.
+  Types of property 'originalRoomType' are incompatible.
+    Type 'string | null' is not assignable to type 'AllowedRoomType | null | undefined'.
+      Type 'string' is not assignable to type 'AllowedRoomType | null | undefined'.
+utils/test-unique-reservation-items.ts(81,36): error TS18048: 'room.attributes' is possibly 'undefined'.
+utils/test-unique-reservation-items.ts(95,36): error TS18048: 'bid.attributes' is possibly 'undefined'.

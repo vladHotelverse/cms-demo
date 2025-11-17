@@ -78,7 +78,7 @@ testReservations.forEach((reservation, index) => {
   items.rooms.forEach(room => {
     console.log(`  - ${room.roomType} (Room ${room.roomNumber})`)
     console.log(`    Price: €${room.price} | Status: ${room.status}`)
-    console.log(`    Attributes: ${room.attributes.join(', ')}`)
+    console.log(`    Attributes: ${room.attributes?.join(', ') || 'None'}`)
   })
   
   console.log(`\nGenerated ${items.extras.length} extra items:`)
@@ -92,7 +92,7 @@ testReservations.forEach((reservation, index) => {
   items.bidding.forEach(bid => {
     console.log(`  - Upgrade to ${bid.pujaType} (${bid.pujaNumber})`)
     console.log(`    Bid Price: €${bid.price} | Room Price: €${bid.roomPrice}`)
-    console.log(`    Attributes: ${bid.attributes.join(', ')}`)
+    console.log(`    Attributes: ${bid.attributes?.join(', ') || 'None'}`)
   })
   
   const totalItems = items.rooms.length + items.extras.length + items.bidding.length

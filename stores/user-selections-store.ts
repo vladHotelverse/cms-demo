@@ -281,7 +281,7 @@ const mergeRoomUpgradeWithCustomizations = (
   
   // Create base data for scenario determination
   const baseRoomData = {
-    originalRoomType: existingRoom.roomType, // Show this is an upgrade
+    originalRoomType: mapToAllowedRoomType(existingRoom.roomType), // Show this is an upgrade
     hasKey: true, // Keep room assignment but with alternatives
     attributes: combinedAttributes,
     alternatives: ['Alternative rooms available'] // Provide alternatives for room assignment
@@ -292,8 +292,8 @@ const mergeRoomUpgradeWithCustomizations = (
   
   const mergedRoom = {
     ...existingRoom,
-    roomType: mapToAllowedRoomType((upgradeRoom.roomType || upgradeRoom.name || 'Standard Room')),
-    originalRoomType: existingRoom.roomType, // Preserve original for upgrade arrow
+    roomType: mapToAllowedRoomType((upgradeRoom.roomType || 'Standard Room')),
+    originalRoomType: mapToAllowedRoomType(existingRoom.roomType), // Preserve original for upgrade arrow
     price: upgradeRoom.price || 0,
     ...roomScenario, // Apply proper scenario flags (should be upgrade_with_attributes)
     attributes: combinedAttributes,
@@ -696,7 +696,7 @@ export const useUserSelectionsStore = create<UserSelectionsState>()((set, get) =
           
           // Determine new room scenario based on customizations
           const baseRoomData = {
-            originalRoomType: currentRoom.originalRoomType || null,
+            originalRoomType: currentRoom.originalRoomType ? mapToAllowedRoomType(currentRoom.originalRoomType) : null,
             hasKey: currentRoom.hasKey || false,
             attributes: customizationAttributes,
             alternatives: customizationAttributes.length > 0 ? ['Various rooms available'] : []

@@ -1,10 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+// Temporarily disabled due to network issues - will use system fonts
+// import { Inter } from "next/font/google"
 import ClientLayout from "./ClientLayout"
 import './globals.css'
 
-const inter = Inter({ subsets: ["latin"] })
+// const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Hotel Management System",
@@ -19,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
