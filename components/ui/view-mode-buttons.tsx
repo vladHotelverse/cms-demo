@@ -114,7 +114,7 @@ export function ViewModeButtons({ className, onModeChange }: ViewModeButtonsProp
 
   return (
     <>
-      <div className={cn("flex gap-2", className)}>
+      <div className={cn("flex flex-wrap gap-2", className)}>
         {buttons.map((button) => {
           const Icon = button.icon
           const isActive = activeMode === button.id

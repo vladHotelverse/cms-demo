@@ -124,7 +124,7 @@ export function RequestedItemsView({ reservation, dynamicReservationItems, onClo
             {hasPurchaseHistory && onRecommendClick && (
               <Button variant="default" className="gap-2" onClick={onRecommendClick}>
                 <Sparkles className="h-4 w-4" />
-                {t('recommend') || 'Get Recommendations'}
+                {t('recommend')}
               </Button>
             )}
             <Button className="gap-2">

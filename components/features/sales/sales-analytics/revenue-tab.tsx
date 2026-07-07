@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress"
 import { ChartContainer } from "@/components/ui/chart"
 import { TrendingUp, DollarSign, Users, Target, Award, ArrowUpRight, ArrowDownRight, BarChart3 } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
+import { formatCurrencyCompact } from "@/lib/utils/format-currency"
 
 const monthlyData = [
   { month: "Jan", upsell: 250, abs: 180, roomNumber: 120, extras: 200, total: 750 },
@@ -39,7 +40,7 @@ export function RevenueTab() {
     },
     {
       title: t("totalRevenue"),
-      value: "$45,892",
+      value: formatCurrencyCompact(45892),
       change: "+8.2%",
       trend: "up",
       icon: DollarSign,
@@ -49,7 +50,7 @@ export function RevenueTab() {
     },
     {
       title: t("averageRequest"),
-      value: "$161.20",
+      value: "€161.20",
       change: "-2.1%",
       trend: "down",
       icon: Target,
@@ -130,7 +131,7 @@ export function RevenueTab() {
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
                 <span>{t('progress')}</span>
-                <span>$38,908 / $45,750</span>
+                <span>€38,908 / €45,750</span>
               </div>
               <Progress value={85} className="h-2 sm:h-3" />
             </div>

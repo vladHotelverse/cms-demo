@@ -45,7 +45,7 @@ export function ManagementTab() {
     },
     {
       title: t("totalAmount"),
-      value: "$52,890",
+      value: "€52,890",
       change: "+12.5%",
       trend: "up",
       icon: CheckCircle,
@@ -55,7 +55,7 @@ export function ManagementTab() {
     },
     {
       title: t("amountAccepted"),
-      value: "$41,230",
+      value: "€41,230",
       change: "+15.8%",
       trend: "up",
       icon: CheckCircle,
@@ -65,7 +65,7 @@ export function ManagementTab() {
     },
     {
       title: t("amountCancelled"),
-      value: "$11,660",
+      value: "€11,660",
       change: "-8.3%",
       trend: "down",
       icon: XCircle,

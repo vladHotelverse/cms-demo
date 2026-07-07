@@ -57,7 +57,7 @@ interface NavItem {
 }
 
 const menuItemsStructure: NavItem[] = [
-	{ titleKey: "inicio", icon: Home, href: "#", disabled: true },
+	{ titleKey: "inicio", icon: Home, href: "/", disabled: false },
 	{ titleKey: "admin", icon: FileText, href: "#", disabled: true },
 	{ titleKey: "maestros", icon: Database, href: "#", disabled: true },
 	{
@@ -185,33 +185,38 @@ const menuItemsStructure: NavItem[] = [
 export default function AppSidebar() {
 	const pathname = usePathname();
 	const { currentLanguage, toggleLanguage, t } = useLanguage();
-	const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
-
-	// Initialize open states based on defaultOpen and active children
-	useEffect(() => {
-		const initialOpenStates: Record<string, boolean> = {};
-		function checkActiveChildren(items: NavItem[], parentKey?: string) {
-			items.forEach((item) => {
-				const itemTitle = t(item.titleKey);
-				if (item.children) {
-					const hasActiveChild = item.children.some(
-						(child) =>
-							child.href &&
-							pathname.startsWith(child.href) &&
-							child.href !== "#",
-					);
-					initialOpenStates[itemTitle] = item.defaultOpen || hasActiveChild;
-					checkActiveChildren(item.children, itemTitle);
-				}
-			});
+	const [openStates, setOpenStates] = useState<Record<string, boolean>>(() => {
+		const initial: Record<string, boolean> = {};
+		for (const item of menuItemsStructure) {
+			if (item.children?.length) {
+				initial[item.titleKey] = item.defaultOpen ?? false;
+			}
 		}
-		checkActiveChildren(menuItemsStructure);
-		setOpenStates(initialOpenStates);
-	}, [pathname, t]);
+		return initial;
+	});
+
+	// Sync open states when route changes
+	useEffect(() => {
+		setOpenStates((prev) => {
+			const next = { ...prev };
+			for (const item of menuItemsStructure) {
+				if (!item.children?.length) continue;
+				const hasActiveChild = item.children.some(
+					(child) =>
+						child.href &&
+						pathname.startsWith(child.href) &&
+						child.href !== "#",
+				);
+				if (hasActiveChild) {
+					next[item.titleKey] = true;
+				}
+			}
+			return next;
+		});
+	}, [pathname]);
 
 	const toggleCollapsible = (titleKey: string) => {
-		const title = t(titleKey);
-		setOpenStates((prev) => ({ ...prev, [title]: !prev[title] }));
+		setOpenStates((prev) => ({ ...prev, [titleKey]: !prev[titleKey] }));
 	};
 
 	const renderNavItems = (items: NavItem[], isSubmenu = false) => {
@@ -236,7 +241,7 @@ export default function AppSidebar() {
 			);
 
 			if (item.children && item.children.length > 0) {
-				const isOpen = openStates[translatedTitle];
+				const isOpen = openStates[item.titleKey];
 				return (
 					<SidebarMenuItem
 						key={translatedTitle}
@@ -289,56 +294,47 @@ export default function AppSidebar() {
 				);
 			}
 
-			const commonButtonProps = {
-				asChild: !item.disabled,
-				isActive: isActive,
-				className: cn(
-					"h-10 px-3 mx-2 rounded-lg transition-all duration-200",
-					"hover:bg-accent/50 hover:text-accent-foreground",
-					item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
-					isActive &&
-						!item.disabled &&
-						"bg-accent text-accent-foreground font-medium",
-				),
-				disabled: item.disabled,
-				tooltip: translatedTitle,
-			};
+			const buttonClassName = cn(
+				"h-10 px-3 mx-2 rounded-lg transition-all duration-200",
+				"hover:bg-accent/50 hover:text-accent-foreground",
+				item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
+				isActive &&
+					!item.disabled &&
+					"bg-accent text-accent-foreground font-medium",
+			);
 
 			const buttonContent = (
 				<>
 					<item.icon className="h-4 w-4 shrink-0" />
-					<span className="text-sm font-medium">{translatedTitle}</span>
+					<span className="text-sm font-medium leading-snug whitespace-normal">
+						{translatedTitle}
+					</span>
 				</>
 			);
 
 			if (isSubmenu) {
 				return (
 					<SidebarMenuSubItem key={translatedTitle}>
-            <SidebarMenuSubButton
-							{...commonButtonProps}
-              href={item.disabled ? undefined : item.href}
+						<SidebarMenuSubButton
+							asChild={!item.disabled}
+							isActive={isActive}
+							href={item.disabled ? undefined : item.href}
 							className={cn(
-								commonButtonProps.className,
-								"h-9 pl-3 pr-3 ml-0 mr-2 rounded-md",
-								"hover:bg-accent/30",
+								buttonClassName,
+								"h-auto min-h-9 py-2 pl-3 pr-3 ml-0 mr-2 rounded-md",
+								"[&>span:last-child]:whitespace-normal [&>span:last-child]:overflow-visible",
 								isActive &&
 									!item.disabled &&
 									"bg-accent/60 text-accent-foreground font-medium",
 							)}
 							onClick={(e) => {
-								if (item.disabled && item.href === "#") e.preventDefault();
-								if (
-									item.disabled &&
-									item.href !== "#" &&
-									item.href !== undefined
-								)
-									e.preventDefault();
+								if (item.disabled) e.preventDefault();
 							}}
 						>
 							{item.disabled ? (
-								<div className="flex items-center gap-3 w-full">
+								<span className="flex items-center gap-3 w-full">
 									{buttonContent}
-								</div>
+								</span>
 							) : (
 								<Link
 									href={item.href || "#"}
@@ -354,19 +350,20 @@ export default function AppSidebar() {
 
 			return (
 				<SidebarMenuItem key={translatedTitle} className="mb-1">
-          <SidebarMenuButton
-						{...commonButtonProps}
-            
+					<SidebarMenuButton
+						asChild={!item.disabled}
+						isActive={isActive}
+						className={buttonClassName}
+						disabled={item.disabled}
+						tooltip={translatedTitle}
 						onClick={(e) => {
-							if (item.disabled && item.href === "#") e.preventDefault();
-							if (item.disabled && item.href !== "#" && item.href !== undefined)
-								e.preventDefault();
+							if (item.disabled) e.preventDefault();
 						}}
 					>
 						{item.disabled ? (
-							<div className="flex items-center gap-3 w-full">
+							<span className="flex items-center gap-3 w-full">
 								{buttonContent}
-							</div>
+							</span>
 						) : (
 							<Link
 								href={item.href || "#"}
@@ -399,7 +396,7 @@ export default function AppSidebar() {
 					</div>
 					<div>
 						<span className="font-semibold text-base block">Hotelverse</span>
-						<span className="text-xs text-muted-foreground block">Sales</span>
+						<span className="text-xs text-muted-foreground block">{t("ventas")}</span>
 					</div>
 				</div>
 			</SidebarHeader>

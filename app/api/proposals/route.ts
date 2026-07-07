@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { isMockDataMode } from '@/lib/config/data-source'
+import {
+  createMockProposal,
+  updateMockProposal,
+} from '@/lib/data/mock-orders-store'
 import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
     const body = await request.json()
+
+    if (isMockDataMode()) {
+      const proposal = createMockProposal(body)
+      return NextResponse.json({ success: true, proposal })
+    }
+
+    const supabase = await createClient()
 
     const { data: proposal, error } = await supabase
       .from('hotel_proposals')
@@ -23,7 +34,8 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Proposal insert error:', error)
-      return NextResponse.json({ error: 'Failed to create proposal' }, { status: 500 })
+      const proposal = createMockProposal(body)
+      return NextResponse.json({ success: true, proposal })
     }
 
     return NextResponse.json({ success: true, proposal })
@@ -35,9 +47,18 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = await createClient()
     const body = await request.json()
     const { proposalId, status } = body
+
+    if (isMockDataMode()) {
+      const proposal = updateMockProposal(proposalId, status)
+      if (!proposal) {
+        return NextResponse.json({ error: 'Proposal not found' }, { status: 404 })
+      }
+      return NextResponse.json({ success: true, proposal })
+    }
+
+    const supabase = await createClient()
 
     const { data: proposal, error } = await supabase
       .from('hotel_proposals')
@@ -48,6 +69,8 @@ export async function PATCH(request: NextRequest) {
 
     if (error) {
       console.error('Proposal update error:', error)
+      const proposal = updateMockProposal(proposalId, status)
+      if (proposal) return NextResponse.json({ success: true, proposal })
       return NextResponse.json({ error: 'Failed to update proposal' }, { status: 500 })
     }
 

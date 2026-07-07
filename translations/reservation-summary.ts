@@ -30,6 +30,7 @@ export const reservationSummaryTranslations = {
     fullCatalog: "Catálogo completo",
     customize: "Personalizar",
     configure: "Configurar",
+    recommend: "Recomendar",
     manageOrder: "Gestionar pedido",
     
     // Table Headers
@@ -215,6 +216,7 @@ export const reservationSummaryTranslations = {
     fullCatalog: "Full Catalog",
     customize: "Customize",
     configure: "Configure",
+    recommend: "Recommend",
     manageOrder: "Manage order",
     
     // Table Headers

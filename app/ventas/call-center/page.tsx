@@ -110,12 +110,17 @@ export default function CallCenterPage() {
                   </Button>
                   <Button
                     onClick={handleStart}
-                    className="flex-1 bg-gray-600 hover:bg-gray-700"
+                    className="flex-1"
                     disabled={!selectedHotel}
                   >
                     {t("start")}
                   </Button>
                 </div>
+                {!selectedHotel && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    {t("selectHotelToContinue")}
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>

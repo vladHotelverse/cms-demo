@@ -73,7 +73,7 @@ export function CommissionTab() {
   const kpiData = [
     {
       title: t("totalCommission"),
-      value: "$8,450",
+      value: "€8,450",
       change: "+22.1%",
       trend: "up",
       icon: Coins,
@@ -83,7 +83,7 @@ export function CommissionTab() {
     },
     {
       title: t("totalUpsells"),
-      value: "$12,340",
+      value: "€12,340",
       change: "+18.5%",
       trend: "up",
       icon: Award,
@@ -93,7 +93,7 @@ export function CommissionTab() {
     },
     {
       title: t("totalExtras"),
-      value: "$9,870",
+      value: "€9,870",
       change: "+15.2%",
       trend: "up",
       icon: Target,
@@ -174,7 +174,7 @@ export function CommissionTab() {
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
                 <span>Progress</span>
-                <span>$8,450 / $10,800</span>
+                <span>€8,450 / €10,800</span>
               </div>
               <Progress value={78} className="h-2 sm:h-3" />
             </div>
@@ -189,16 +189,16 @@ export function CommissionTab() {
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-2">$45,892</div>
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-2">€45,892</div>
               <p className="text-xs sm:text-sm text-muted-foreground">{t('totalTeamCommission')}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">$12,340</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">€12,340</div>
                 <p className="text-xs text-muted-foreground">{t('thisMonth')}</p>
               </div>
               <div>
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">$33,552</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">€33,552</div>
                 <p className="text-xs text-muted-foreground">{t('ytd')}</p>
               </div>
             </div>

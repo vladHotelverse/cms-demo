@@ -69,6 +69,7 @@ interface ReservationDetailsTabProps {
   ) => void;
   onCloseTab: () => void;
   isInReservationMode?: boolean;
+  defaultAgentId?: string;
 }
 
 // Sample segments
@@ -83,6 +84,7 @@ const segments = [
 
 // Sample agents
 const agents = [
+  { id: 'agent-maria', name: 'Maria García' },
   { id: 'agent1', name: 'Ana García' },
   { id: 'agent2', name: 'Carlos López' },
   { id: 'agent3', name: 'María Fernández' },
@@ -121,9 +123,10 @@ const ReservationDetailsTab = memo(function ReservationDetailsTab({
   reservation,
   onShowAlert,
   onCloseTab,
+  defaultAgentId = 'agent-maria',
 }: ReservationDetailsTabProps) {
   const [selectedSegment, setSelectedSegment] = useState('loyalty2');
-  const [selectedAgent, setSelectedAgent] = useState('agent1');
+  const [selectedAgent, setSelectedAgent] = useState(defaultAgentId);
   const [viewMode, setViewMode] = useState<'list' | 'blocks' | 'map'>('blocks');
   const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
   const [selectedCommissionReason, setSelectedCommissionReason] = useState('');

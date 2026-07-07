@@ -26,7 +26,7 @@ export function CallCenterHeader({
           <TabsTrigger value="call-center">
             {t("callCenter")}
           </TabsTrigger>
-          <TabsTrigger value="dashboard" disabled>
+          <TabsTrigger value="dashboard">
             {t("dashboard")}
           </TabsTrigger>
         </TabsList>

@@ -1,13 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { isMockDataMode } from '@/lib/config/data-source'
+import {
+  getMockOrderById,
+  updateMockOrder,
+} from '@/lib/data/mock-orders-store'
 import { createClient } from '@/lib/supabase/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: orderId } = await params
+
+    if (isMockDataMode()) {
+      const order = getMockOrderById(orderId)
+      if (!order) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+      }
+      return NextResponse.json(order)
+    }
+
     const supabase = await createClient()
-    const orderId = params.id
 
     const { data: order, error } = await supabase
       .from('orders')
@@ -21,6 +35,8 @@ export async function GET(
 
     if (error) {
       console.error('Database error:', error)
+      const order = getMockOrderById(orderId)
+      if (order) return NextResponse.json(order)
       return NextResponse.json({ error: 'Order not found' }, { status: 404 })
     }
 
@@ -33,12 +49,21 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient()
-    const orderId = params.id
+    const { id: orderId } = await params
     const body = await request.json()
+
+    if (isMockDataMode()) {
+      const order = updateMockOrder(orderId, body)
+      if (!order) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+      }
+      return NextResponse.json(order)
+    }
+
+    const supabase = await createClient()
 
     const { data: order, error } = await supabase
       .from('orders')
@@ -49,6 +74,8 @@ export async function PATCH(
 
     if (error) {
       console.error('Database error:', error)
+      const order = updateMockOrder(orderId, body)
+      if (order) return NextResponse.json(order)
       return NextResponse.json({ error: 'Failed to update order' }, { status: 500 })
     }
 

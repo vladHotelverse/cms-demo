@@ -1,4 +1,11 @@
 import { useEffect, useState } from 'react'
+import { isMockDataMode } from '@/lib/config/data-source'
+import {
+  getMockTranslations,
+  mockCustomizationOptions,
+  mockRoomTypes,
+  mockSpecialOffers,
+} from '@/lib/data/mock-content'
 import { createClient } from '@/lib/supabase/client'
 
 // Types for our data - matching ABS structure with multilingual support
@@ -73,6 +80,12 @@ export function useTranslations(language: string = 'en', category?: string) {
     async function fetchTranslations() {
       try {
         setLoading(true)
+
+        if (isMockDataMode()) {
+          setTranslations(getMockTranslations(language))
+          return
+        }
+
         const supabase = createClient()
         let query = supabase
           .from('translations')
@@ -87,7 +100,6 @@ export function useTranslations(language: string = 'en', category?: string) {
 
         if (error) throw error
 
-        // Convert array to key-value map
         const translationMap: TranslationMap = {}
         data?.forEach((item) => {
           translationMap[item.key] = item.value
@@ -97,6 +109,7 @@ export function useTranslations(language: string = 'en', category?: string) {
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching translations:', err)
+        setTranslations(getMockTranslations(language))
       } finally {
         setLoading(false)
       }
@@ -118,8 +131,14 @@ export function useRoomTypes(active: boolean = true) {
     async function fetchRoomTypes() {
       try {
         setLoading(true)
+
+        if (isMockDataMode()) {
+          setRoomTypes(active ? mockRoomTypes : [])
+          return
+        }
+
         const supabase = createClient()
-        
+
         const { data, error } = await supabase
           .from('room_types')
           .select('*')
@@ -132,6 +151,7 @@ export function useRoomTypes(active: boolean = true) {
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching room types:', err)
+        setRoomTypes(mockRoomTypes)
       } finally {
         setLoading(false)
       }
@@ -153,8 +173,18 @@ export function useCustomizationOptions(category?: string, active: boolean = tru
     async function fetchOptions() {
       try {
         setLoading(true)
+
+        if (isMockDataMode()) {
+          let filtered = active ? mockCustomizationOptions : []
+          if (category) {
+            filtered = filtered.filter((o) => o.category === category)
+          }
+          setOptions(filtered)
+          return
+        }
+
         const supabase = createClient()
-        
+
         let query = supabase
           .from('customization_options')
           .select('*')
@@ -173,6 +203,7 @@ export function useCustomizationOptions(category?: string, active: boolean = tru
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching customization options:', err)
+        setOptions(mockCustomizationOptions)
       } finally {
         setLoading(false)
       }
@@ -194,9 +225,15 @@ export function useSpecialOffers(active: boolean = true) {
     async function fetchOffers() {
       try {
         setLoading(true)
+
+        if (isMockDataMode()) {
+          setOffers(active ? mockSpecialOffers : [])
+          return
+        }
+
         const supabase = createClient()
         const today = new Date().toISOString().split('T')[0]
-        
+
         const { data, error } = await supabase
           .from('special_offers')
           .select('*')
@@ -211,6 +248,7 @@ export function useSpecialOffers(active: boolean = true) {
       } catch (err) {
         setError(err as Error)
         console.error('Error fetching special offers:', err)
+        setOffers(mockSpecialOffers)
       } finally {
         setLoading(false)
       }

@@ -204,65 +204,29 @@ export default function FrontDeskUpsellPage() {
   }
 
 
-  // Generate mock test data
+  // Load orders from API (shared mock store / Supabase)
   useEffect(() => {
-    const generateMockData = () => {
-      const mockOrders: OrderFromAPI[] = []
-      const roomTypes = ['Doble', 'Doble Deluxe', 'Junior Suite']
-      const guestNames = [
-        'John Smith', 'Maria Garcia', 'David Wilson', 'Sarah Johnson', 'Michael Brown', 'Emma Davis', 'James Miller', 'Lisa Anderson',
-        'Robert Taylor', 'Jennifer White', 'William Jones', 'Ashley Martinez', 'Christopher Lee', 'Jessica Thompson', 'Daniel Clark',
-        'Amanda Rodriguez', 'Matthew Lewis', 'Michelle Walker', 'Joseph Hall', 'Stephanie Allen', 'Ryan Young', 'Nicole King',
-        'Andrew Wright', 'Rachel Lopez', 'Kevin Hill', 'Laura Scott', 'Brian Green', 'Kimberly Adams', 'Steven Baker', 'Rebecca Nelson',
-        'Thomas Carter', 'Donna Mitchell', 'Charles Perez', 'Catherine Roberts', 'Mark Turner', 'Sandra Phillips', 'Paul Campbell',
-        'Carol Parker', 'Donald Evans', 'Sharon Edwards', 'Kenneth Collins', 'Betty Stewart', 'Joshua Sanchez', 'Helen Morris',
-        'Jason Rogers', 'Deborah Reed', 'Frank Cook', 'Maria Morales', 'Gregory Murphy', 'Ruth Bailey'
-      ]
-      const emailDomains = ['gmail.com', 'hotmail.com', 'yahoo.com', 'outlook.com', 'icloud.com']
-      const occupancies = ['1/0/0', '2/0/0', '2/1/0', '3/0/0', '4/0/0', '2/2/0', '3/1/0', '4/2/0']
-      const extrasTypes = [
-        '2 reserved items', '5 reserved items', '1 reserved item', '4 reserved items', '3 reserved items',
-        'Recommend', 'Recommend', 'Recommend', 'Recommend', 'Recommend', 'Recommend',
-        '5 reserved items', '4 reserved items', '3 reserved items', '5 reserved items'
-      ]
-      
-      for (let i = 1; i <= 50; i++) {
-        const guestName = guestNames[i - 1] || `Guest ${i}`
-        const emailName = guestName.toLowerCase().replace(/\s+/g, '.')
-        const emailDomain = emailDomains[i % emailDomains.length]
-        // Set base date to May 2026
-        const checkInDate = new Date(2026, 4, 20) // May 20, 2026
-        checkInDate.setDate(checkInDate.getDate() + Math.floor(Math.random() * 10) - 5) // Spread around May 15-25
-        const formattedCheckIn = `${checkInDate.getDate().toString().padStart(2, '0')}/${(checkInDate.getMonth() + 1).toString().padStart(2, '0')}/${checkInDate.getFullYear()}`
-        const nights = Math.floor(Math.random() * 7) + 1
-        const extras = extrasTypes[i % extrasTypes.length]
-        
-        mockOrders.push({
-          id: `order-${i.toString().padStart(3, '0')}`,
-          locator: `LOC${(1000 + i).toString()}`,
-          name: guestName,
-          email: `${emailName}@${emailDomain}`,
-          checkIn: formattedCheckIn,
-          nights: nights.toString(),
-          roomType: roomTypes[i % roomTypes.length],
-          aci: occupancies[i % occupancies.length],
-          status: i % 3 === 0 ? 'Confirmed' : 'New',
-          extras: extras,
-          extrasCount: extras.includes('reserved') ? parseInt(extras.split(' ')[0]) : 0,
-          hasExtras: extras.includes('reserved'),
-          hasHotelverseRequest: Math.random() > 0.3,
-          orderItems: [],
-          proposals: []
-        })
+    let cancelled = false
+
+    async function loadOrders() {
+      setLoading(true)
+      try {
+        const response = await fetch("/api/orders")
+        if (response.ok) {
+          const data: OrderFromAPI[] = await response.json()
+          if (!cancelled) setOrders(data)
+        }
+      } catch (error) {
+        console.error("Failed to load orders:", error)
+      } finally {
+        if (!cancelled) setLoading(false)
       }
-      
-      setOrders(mockOrders)
-      setLoading(false)
     }
 
-    setLoading(true)
-    // Simulate loading time
-    setTimeout(generateMockData, 1000)
+    loadOrders()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // Use the mock orders
@@ -270,11 +234,8 @@ export default function FrontDeskUpsellPage() {
 
   // Calculate total commission from reservations with extras
   const totalCommission = reservations
-    .filter(res => res.extras.includes(t("reserved")))
-    .reduce((sum, res) => {
-      const itemCount = parseInt(res.extras.split(' ')[0]) || 0
-      return sum + (itemCount * 1.5) // 1.5€ commission per extra item
-    }, 0)
+    .filter((res) => res.hasExtras)
+    .reduce((sum, res) => sum + (res.extrasCount || 0) * 1.5, 0)
     .toFixed(2)
 
   // Filter reservations based on search term
@@ -305,7 +266,7 @@ export default function FrontDeskUpsellPage() {
 
   const handleExtrasButtonClick = (reservation: OrderFromAPI) => {
     // Check if this is an item preview (has reserved items) or recommendation button
-    const hasReservedItems = reservation.extras.includes(t("reserved"))
+    const hasReservedItems = reservation.hasExtras
     
     if (hasReservedItems) {
       // For items preview, open the summary modal
@@ -459,43 +420,45 @@ export default function FrontDeskUpsellPage() {
             {/* Info Banner */}
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
-                {t("showingReservationsForDays")} ({filteredReservations.length} {t("reservations")})
+                {loading
+                  ? t("loadingOrders")
+                  : `${t("showingReservationsForDays")} (${filteredReservations.length} ${t("reservations")})`}
               </p>
             </div>
 
             {/* Search Bar */}
             <div className="mb-6">
-              <div className={cn("flex justify-between items-center w-full")}>
+              <div className={cn("flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 w-full")}>
                 <Input
                   data-testid="reservations-search-input"
                   placeholder={t("searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn("border-gray-300 w-full max-w-xs")}
+                  className={cn("border-gray-300 w-full max-w-xs h-10")}
                 />
                 <ViewModeButtons onModeChange={handleViewModeChange} />
               </div>
             </div>
 
             {/* Reservations Table */}
-            <div className="border rounded-lg overflow-hidden">
-              <Table data-testid="reservations-table">
+            <div className="border rounded-lg overflow-x-auto">
+              <Table data-testid="reservations-table" className="min-w-[800px]">
                 <TableHeader className="bg-gray-50">
                   <TableRow>
                     <SortableHeader field="locator" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("Booking ID")}</SortableHeader>
                     <SortableHeader field="name" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("guest")}</SortableHeader>
-                    <TableHead>A / C / I</TableHead>
+                    <TableHead title={t("aciTooltip")}>{t("aci")}</TableHead>
                     <SortableHeader field="roomType" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("roomType")}</SortableHeader>
                     <SortableHeader field="checkIn" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("checkIn")}</SortableHeader>
                     <SortableHeader field="nights" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("nights")}</SortableHeader>
-                    <SortableHeader field="extras" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>Extras</SortableHeader>
+                    <SortableHeader field="extras" sortField={sortField} sortDirection={sortDirection} onSort={handleSort}>{t("extras")}</SortableHeader>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loading ? (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                        Loading orders...
+                        {t("loadingOrders")}
                       </TableCell>
                     </TableRow>
                   ) : sortedReservations.length === 0 ? (
@@ -527,11 +490,11 @@ export default function FrontDeskUpsellPage() {
                         <TableCell className="text-sm">
                           <Button
                             data-testid={`extras-button-${reservation.locator}`}
-                            variant={reservation.extras.includes(t("reserved")) ? "ghost" : "default"}
+                            variant={reservation.hasExtras ? "ghost" : "default"}
                             size="sm"
                             onClick={() => handleExtrasButtonClick(reservation)}
                           >
-                            {reservation.extras}
+                            {reservation.hasExtras ? reservation.extras : t("recommend")}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -571,6 +534,7 @@ export default function FrontDeskUpsellPage() {
                 onShowAlert={showAlert}
                 onCloseTab={() => handleCloseTab(tab.id)}
                 isInReservationMode={isInReservationMode}
+                defaultAgentId="agent-maria"
               />
             </TabsContent>
           ))}
