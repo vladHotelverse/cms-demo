@@ -1,30 +1,32 @@
-# CMS
+# Hotelverse CMS
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Hotel management and sales operations demo for front desk upsell, request management, commissions, and analytics.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/licenciasit-8741s-projects/v0-cms)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/BmXUmC85Lf7)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/hotelverse/cms-demo)
 
 ## Overview
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+Next.js app for the Hotelverse CMS sales module (`/ventas`), including front desk upsell, request management, users & commissions, call center, and sales analytics.
 
 ## Deployment
 
-Your project is live at:
+- **Vercel project:** [hotelverse/cms-demo](https://vercel.com/hotelverse/cms-demo)
+- **Production URL:** [https://v0-cms-beryl-pi.vercel.app](https://v0-cms-beryl-pi.vercel.app)
+- **Repository:** [vladHotelverse/cms-demo](https://github.com/vladHotelverse/cms-demo)
 
-**[https://vercel.com/licenciasit-8741s-projects/v0-cms](https://vercel.com/licenciasit-8741s-projects/v0-cms)**
+Connect the GitHub repository to the Hotelverse Vercel project under **Project Settings → Git**. Preview deployments are created automatically for pull requests.
 
-## Build your app
+## Local development
 
-Continue building your app on:
+```bash
+vp install
+./node_modules/.bin/next dev --port 3000
+```
 
-**[https://v0.dev/chat/projects/BmXUmC85Lf7](https://v0.dev/chat/projects/BmXUmC85Lf7)**
+Open [http://localhost:3000](http://localhost:3000).
 
-## How It Works
+## Scripts
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- `vp check` — format, lint, and type checks
+- `vp test` — run tests
+- `vp run test:e2e` — Playwright end-to-end tests

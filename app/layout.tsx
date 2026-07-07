@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Hotel Management System",
   description: "Manage hotel equipment and translations",
-  generator: 'v0.dev'
+  generator: 'Hotelverse CMS'
 }
 
 export default function RootLayout({
